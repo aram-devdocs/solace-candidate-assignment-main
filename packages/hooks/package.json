@@ -6,7 +6,13 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "eslint src/",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@repo/queries": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/utils": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.3.1"
@@ -14,7 +20,11 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@testing-library/react": "^14.1.2",
     "@types/react": "^18.3.3",
-    "typescript": "^5.5.4"
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^23.0.1",
+    "typescript": "^5.5.4",
+    "vitest": "^1.5.0"
   }
 }

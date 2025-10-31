@@ -41,6 +41,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@repo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -160,6 +163,15 @@ importers:
 
   packages/hooks:
     dependencies:
+      '@repo/queries':
+        specifier: workspace:*
+        version: link:../queries
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -170,12 +182,24 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@testing-library/react':
+        specifier: ^14.1.2
+        version: 14.3.1(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.26
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.7.0(vite@5.4.21(@types/node@20.19.24))
+      jsdom:
+        specifier: ^23.0.1
+        version: 23.2.0
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+      vitest:
+        specifier: ^1.5.0
+        version: 1.6.1(@types/node@20.19.24)(@vitest/ui@1.6.1)(jsdom@23.2.0)
 
   packages/queries:
     dependencies:
@@ -195,6 +219,9 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+      vitest:
+        specifier: ^1.5.0
+        version: 1.6.1(@types/node@20.19.24)(@vitest/ui@1.6.1)(jsdom@23.2.0)
 
   packages/services:
     dependencies:
@@ -256,6 +283,10 @@ importers:
         version: 5.9.3
 
   packages/utils:
+    dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -266,6 +297,9 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+      vitest:
+        specifier: ^1.5.0
+        version: 1.6.1(@types/node@20.19.24)(@vitest/ui@1.6.1)(jsdom@23.2.0)
 
 packages:
 

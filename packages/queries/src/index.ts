@@ -5,4 +5,4 @@
  * All queries return properly typed results using @repo/types.
  */
 
-export const placeholder = "Query functions will be added in follow-up tickets";
+export * from "./advocates";

@@ -53,3 +53,20 @@ For now, I will focus on MVP deliverables for submission.
 ## [PR 2 - Fix Github actions and deployment failures](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/15)
 
 Before I get started, I wanted to fix up a few build and typecheck failures. This resolves the advocate import and type annotations, getting a bit ahead of myself on some of the bugs I wanted to fix, but ES Lint / Build / Typecheck failures should be addressed immediately IMO. Tech debt avoidance is intentional, so little steps like this make a big difference.
+
+## [PR 3 - Fix search functionality](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/16)
+
+This is the first 'real' pull request where we start addressing some major concerns, first and foremost being the fact that the search doesn't work. The biggest culprit was the direct DOM manipulation and fetching. Checking by IDs or other static strings is far from typesafe, so we moved that into a hook with values saved as state so we can isolate the data in memory as we track it.
+
+While we were here, we went ahead and moved the code into the `@repo/hooks` package to keep UI and Business Logic separate, cleaning up our `page.tsx`. I noticed that debounce was not implemented, so a quick hook was added to handle that. While I was abstracting code, I went ahead and moved the fetch function into `@repo/queries`, and handled the hook that gathered that into the `useAdvocateSearch` hook.
+
+At this point, we have created:
+
+- `@repo/utils` package to isolate the filtering logic
+- `@repo/queries` package to handle API requests
+- `@repo/hooks` package to handle business logic
+- `@repo/types` package to handle the data types
+
+While this is a feature-low product, it is a great foundation to build on IMO for planning for scale. You will see this in every log probably, but tech debt avoidance is intentional, so little steps like this make a big difference.
+
+I then went to add some quality of life fixes, resolving the TH/TR HTML hydration bug and adding JSDoc comments to have everything feel production ready. I generated some unit tests using Claude to start hardening the logic we just wrote. These items are fantastic use cases for AI in development, as it lets me focus on system architecture, design patterns and code structure and quality, setting up enforcement boundaries to ensure that the code going into main is the code we would expect of an experienced dev, and letting the AI take isolated low context tasks.
