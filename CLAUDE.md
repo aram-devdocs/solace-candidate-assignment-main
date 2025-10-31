@@ -1,9 +1,3 @@
-# Claude Code Development Guide
-
-## Project Overview
-
-Solace is a healthcare advocate discovery platform built with modern web technologies. The application enables users to search and filter healthcare advocates by specialty, experience, location, and credentials.
-
 ## Architecture
 
 ### Monorepo Structure
