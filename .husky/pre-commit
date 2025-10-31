@@ -7,8 +7,16 @@ pnpm lint-staged
 echo "Linting all packages..."
 pnpm lint
 
+# Run type checking across all packages
+echo "Type checking all packages..."
+pnpm type-check
+
 # Run tests
 echo "Running tests..."
-cd apps/web && pnpm test run
+pnpm -F web test run
+
+# Run build across all packages
+echo "Building all packages..."
+pnpm build
 
 echo "Pre-commit checks passed!"
