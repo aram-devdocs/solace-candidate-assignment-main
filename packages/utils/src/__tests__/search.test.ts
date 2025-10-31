@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { filterAdvocates } from "../search";
-import { mockAdvocates } from "./fixtures/advocates";
+import { mockAdvocates } from "@repo/database/testing";
 
 describe("filterAdvocates", () => {
   it("should return all advocates when search term is empty", () => {

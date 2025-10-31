@@ -1,31 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fetchAdvocates } from "../advocates";
-import type { Advocate } from "@repo/types";
+import { createMockAdvocates } from "@repo/database/testing";
 
-const mockAdvocates: Advocate[] = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    city: "New York",
-    degree: "MD",
-    specialties: ["Cardiology"],
-    yearsOfExperience: 15,
-    phoneNumber: 5551234567,
-    createdAt: new Date("2024-01-01"),
-  },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    city: "Los Angeles",
-    degree: "DO",
-    specialties: ["Pediatrics"],
-    yearsOfExperience: 8,
-    phoneNumber: 5559876543,
-    createdAt: new Date("2024-01-02"),
-  },
-];
+const mockAdvocates = createMockAdvocates(2);
 
 describe("fetchAdvocates", () => {
   beforeEach(() => {

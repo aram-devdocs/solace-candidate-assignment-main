@@ -1,16 +1,16 @@
+#!/usr/bin/env tsx
+
 import type { InferInsertModel } from "drizzle-orm";
+import { db } from "../client";
 import { advocates } from "../schema";
 
 type NewAdvocate = InferInsertModel<typeof advocates>;
 
 /**
  * Seed data for advocates table.
- * This file is kept for backward compatibility but the seeding
- * logic has been moved to src/scripts/seed.ts with upsert support.
- *
- * @deprecated Use seedDatabase from src/scripts/seed.ts instead
+ * Uses proper types from schema to ensure type safety.
  */
-export const advocateData: Omit<NewAdvocate, "id" | "createdAt">[] = [
+const advocateSeedData: Omit<NewAdvocate, "id" | "createdAt">[] = [
   {
     firstName: "John",
     lastName: "Doe",
@@ -147,3 +147,62 @@ export const advocateData: Omit<NewAdvocate, "id" | "createdAt">[] = [
     phoneNumber: 5559872345,
   },
 ];
+
+/**
+ * Seeds the database with advocate data using upsert logic.
+ * Uses phone number as the unique constraint for conflict resolution.
+ *
+ * @throws {Error} If DATABASE_URL is not set or seeding fails
+ */
+async function seedDatabase(): Promise<void> {
+  const DATABASE_URL = process.env.DATABASE_URL;
+
+  if (!DATABASE_URL) {
+    throw new Error(
+      "DATABASE_URL environment variable is not set. Cannot seed database without connection."
+    );
+  }
+
+  console.log("Starting database seeding...");
+
+  try {
+    // Use upsert logic with onConflictDoUpdate
+    // Phone number is used as the unique identifier
+    for (const advocate of advocateSeedData) {
+      await db
+        .insert(advocates)
+        .values(advocate)
+        .onConflictDoUpdate({
+          target: advocates.phoneNumber,
+          set: {
+            firstName: advocate.firstName,
+            lastName: advocate.lastName,
+            city: advocate.city,
+            degree: advocate.degree,
+            specialties: advocate.specialties,
+            yearsOfExperience: advocate.yearsOfExperience,
+          },
+        });
+    }
+
+    console.log(`✓ Successfully seeded ${advocateSeedData.length} advocates`);
+  } catch (error) {
+    console.error("✗ Seeding failed:", error);
+    throw error;
+  }
+}
+
+// Run seeding if this file is executed directly
+if (require.main === module) {
+  seedDatabase()
+    .then(() => {
+      console.log("Seeding process completed");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("Seeding process failed:", error);
+      process.exit(1);
+    });
+}
+
+export { seedDatabase, advocateSeedData };

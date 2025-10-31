@@ -4,22 +4,39 @@
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./testing": {
+      "types": "./src/__tests__/fixtures/index.ts",
+      "default": "./src/__tests__/fixtures/index.ts"
+    }
+  },
   "scripts": {
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
+    "dev": "cd ../.. && docker compose up -d && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} tsx packages/database/src/migrate.ts && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} tsx packages/database/src/scripts/seed.ts && docker compose logs -f",
+    "dev:clean": "cd ../.. && docker compose down -v",
+    "db:generate": "cd ../.. && drizzle-kit generate",
+    "db:migrate": "cd ../.. && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} tsx packages/database/src/migrate.ts",
+    "db:push": "cd ../.. && drizzle-kit push",
+    "db:studio": "cd ../.. && drizzle-kit studio",
+    "db:seed": "cd ../.. && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} tsx packages/database/src/scripts/seed.ts",
     "lint": "eslint src/",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "drizzle-orm": "^0.32.1",
-    "postgres": "^3.4.4"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.14.12",
+    "@types/ws": "^8.5.13",
     "drizzle-kit": "^0.23.0",
+    "tsx": "^4.7.1",
     "typescript": "^5.5.4"
   }
 }
