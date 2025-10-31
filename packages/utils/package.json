@@ -13,6 +13,7 @@
     "@repo/types": "workspace:*"
   },
   "devDependencies": {
+    "@repo/database": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^5.5.4",

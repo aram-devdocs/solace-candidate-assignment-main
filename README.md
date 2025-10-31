@@ -54,53 +54,34 @@ pnpm install
 cp .env.example .env
 ```
 
-Edit `.env` and configure your database connection:
+The default `.env` configuration works out of the box for local development:
 
 ```bash
-DATABASE_URL=postgresql://postgres:password@localhost:5432/solaceassignment
+DATABASE_URL=postgres://postgres:postgres@db.localtest.me:5432/main
+NODE_ENV=development
 ```
 
-### 4. Start PostgreSQL (Docker)
+### 4. Start Development
 
 ```bash
-docker-compose up -d
-```
-
-### 5. Run Database Migrations
-
-```bash
-# Generate migration from schema
-pnpm db:generate
-
-# Apply migrations to database
-pnpm db:migrate
-```
-
-### 6. Seed the Database (Optional)
-
-Start the dev server first:
-
-```bash
+# Start database, run migrations, seed data, and start all apps
 pnpm dev
 ```
 
-Then in another terminal:
+This single command:
 
-```bash
-curl -X POST http://localhost:3000/api/seed
-```
-
-### 7. Start Development
-
-```bash
-# Start all apps in development mode
-pnpm dev
-
-# Or start specific app
-pnpm --filter web dev
-```
+- Starts PostgreSQL + Neon proxy via Docker Compose
+- Runs database migrations automatically
+- Seeds the database with initial data
+- Starts all development servers (web app on port 3000)
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+**Note:** The database containers keep running after you stop the dev command (Ctrl+C). To completely reset the database, run:
+
+```bash
+pnpm --filter @repo/database dev:clean
+```
 
 ## Available Scripts
 
@@ -119,9 +100,11 @@ pnpm format:check     # Check code formatting
 ### Database Management
 
 ```bash
-pnpm db:generate      # Generate migration from schema changes
-pnpm db:migrate       # Apply pending migrations
-pnpm db:studio        # Open Drizzle Studio (database GUI)
+pnpm --filter @repo/database dev        # Start database (auto-migrates & seeds)
+pnpm --filter @repo/database dev:clean  # Stop database and remove all data
+pnpm db:generate                         # Generate migration from schema changes
+pnpm db:migrate                          # Apply pending migrations
+pnpm db:studio                           # Open Drizzle Studio (database GUI)
 ```
 
 ### Package-Specific Commands
@@ -175,25 +158,22 @@ Pre-commit hooks automatically run before each commit:
 
 ## Database Setup Options
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker with Neon Proxy (Recommended)
+
+The default setup uses Docker Compose with Neon's local development proxy, ensuring your local environment matches production (Vercel + Neon):
 
 ```bash
-docker-compose up -d
-pnpm db:migrate
+pnpm dev  # Automatically starts Docker, migrates, and seeds
 ```
 
-### Option 2: Local PostgreSQL
+### Option 2: Cloud Database (Vercel/Production)
 
-1. Install PostgreSQL locally
-2. Create database: `createdb solaceassignment`
-3. Update `DATABASE_URL` in `.env`
-4. Run migrations: `pnpm db:migrate`
+For production or cloud development:
 
-### Option 3: Cloud Database
-
-1. Set up PostgreSQL on your cloud provider
-2. Update `DATABASE_URL` in `.env` with connection string
+1. Set up Neon PostgreSQL database
+2. Update `DATABASE_URL` in `.env` with your Neon connection string
 3. Run migrations: `pnpm db:migrate`
+4. Seed database: `pnpm --filter @repo/database db:seed`
 
 ## Architecture
 

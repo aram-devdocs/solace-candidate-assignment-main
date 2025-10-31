@@ -1,11 +1,15 @@
-import { advocateData } from "@repo/database";
+import { db, advocates } from "@repo/database";
 
+/**
+ * GET /api/advocates
+ * Returns all advocates from the database.
+ */
 export async function GET() {
-  // To use database instead of hardcoded data:
-  // import { db, advocates } from "@repo/database";
-  // const data = await db.select().from(advocates);
-
-  const data = advocateData;
-
-  return Response.json({ data });
+  try {
+    const data = await db.select().from(advocates);
+    return Response.json({ data });
+  } catch (error) {
+    console.error("Failed to fetch advocates:", error);
+    return Response.json({ error: "Failed to fetch advocates" }, { status: 500 });
+  }
 }

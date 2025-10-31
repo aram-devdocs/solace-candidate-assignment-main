@@ -5,7 +5,7 @@ export default defineConfig({
   out: "./packages/database/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/solaceassignment",
+    url: process.env.DATABASE_URL || "postgres://postgres:postgres@db.localtest.me:5432/main",
   },
   verbose: true,
   strict: true,
