@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+.next
+.turbo
+dist
+build
+out
+coverage
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Documentation (local AI-generated)
+docs/local/*
+
+# Migrations (generated)
+packages/database/migrations/*

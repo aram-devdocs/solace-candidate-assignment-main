@@ -1,0 +1,14 @@
+echo "Running pre-commit hooks..."
+
+# Run lint-staged (ESLint and Prettier on staged files)
+pnpm lint-staged
+
+# Run lint across all packages
+echo "Linting all packages..."
+pnpm lint
+
+# Run tests
+echo "Running tests..."
+cd apps/web && pnpm test run
+
+echo "Pre-commit checks passed!"
