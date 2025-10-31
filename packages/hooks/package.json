@@ -8,6 +8,11 @@
     "lint": "eslint src/",
     "type-check": "tsc --noEmit"
   },
+  "dependencies": {
+    "@repo/queries": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/utils": "workspace:*"
+  },
   "peerDependencies": {
     "react": "^18.3.1"
   },

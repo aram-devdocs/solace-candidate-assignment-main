@@ -41,6 +41,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@repo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -160,6 +163,15 @@ importers:
 
   packages/hooks:
     dependencies:
+      '@repo/queries':
+        specifier: workspace:*
+        version: link:../queries
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -256,6 +268,10 @@ importers:
         version: 5.9.3
 
   packages/utils:
+    dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
