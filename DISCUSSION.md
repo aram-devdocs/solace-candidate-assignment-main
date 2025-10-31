@@ -49,3 +49,7 @@ Reach goals will be adding things like:
 - Using Terraform to set up some IoC for deployment
 
 For now, I will focus on MVP deliverables for submission.
+
+## [PR 2 - Fix Github actions and deployment failures](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/15)
+
+Before I get started, I wanted to fix up a few build and typecheck failures. This resolves the advocate import and type annotations, getting a bit ahead of myself on some of the bugs I wanted to fix, but ES Lint / Build / Typecheck failures should be addressed immediately IMO. Tech debt avoidance is intentional, so little steps like this make a big difference.
