@@ -101,7 +101,7 @@ export function RootLayout({
   const navigationContent = renderNavigation ? renderNavigation(handleMenuClose) : navigation;
 
   return (
-    <div className="bg-secondary-50 flex min-h-screen flex-col">
+    <div className="bg-secondary-50 flex h-screen flex-col">
       {/* Header with overlay */}
       <div
         className={`relative md:transform-none ${isMenuOpen ? "max-md:-translate-x-64" : ""}`}

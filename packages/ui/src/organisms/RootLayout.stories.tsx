@@ -123,87 +123,93 @@ const getContentForRoute = (route: string) => {
   return contentMap[route] || contentMap.home;
 };
 
-export const Default: Story = {
-  render: () => {
-    const [activeRoute, setActiveRoute] = useState("home");
+function DefaultWrapper() {
+  const [activeRoute, setActiveRoute] = useState("home");
 
-    return (
-      <RootLayout
-        header={{}}
-        navigation={
-          <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
-        }
-        navigationHeader="MENU"
-      >
-        {getContentForRoute(activeRoute)}
-      </RootLayout>
-    );
-  },
+  return (
+    <RootLayout
+      header={{}}
+      navigation={
+        <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
+      }
+      navigationHeader="MENU"
+    >
+      {getContentForRoute(activeRoute)}
+    </RootLayout>
+  );
+}
+
+export const Default: Story = {
+  render: () => <DefaultWrapper />,
 };
+
+function WithFooterWrapper() {
+  const [activeRoute, setActiveRoute] = useState("home");
+
+  return (
+    <RootLayout
+      header={{
+        messageCount: 3,
+        notificationCount: 5,
+      }}
+      navigation={
+        <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
+      }
+      navigationHeader="MENU"
+      footer={{
+        links: [
+          { label: "Privacy Policy", href: "/privacy" },
+          { label: "Terms of Service", href: "/terms" },
+          { label: "Contact Us", href: "/contact" },
+        ],
+        copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
+      }}
+    >
+      {getContentForRoute(activeRoute)}
+    </RootLayout>
+  );
+}
 
 export const WithFooter: Story = {
-  render: () => {
-    const [activeRoute, setActiveRoute] = useState("home");
-
-    return (
-      <RootLayout
-        header={{
-          messageCount: 3,
-          notificationCount: 5,
-        }}
-        navigation={
-          <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
-        }
-        navigationHeader="MENU"
-        footer={{
-          links: [
-            { label: "Privacy Policy", href: "/privacy" },
-            { label: "Terms of Service", href: "/terms" },
-            { label: "Contact Us", href: "/contact" },
-          ],
-          copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
-        }}
-      >
-        {getContentForRoute(activeRoute)}
-      </RootLayout>
-    );
-  },
+  render: () => <WithFooterWrapper />,
 };
 
-export const WithNotifications: Story = {
-  render: () => {
-    const [activeRoute, setActiveRoute] = useState("home");
+function WithNotificationsWrapper() {
+  const [activeRoute, setActiveRoute] = useState("home");
 
-    return (
-      <RootLayout
-        header={{
-          messageCount: 5,
-          notificationCount: 12,
-        }}
-        navigation={
-          <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
-        }
-        navigationHeader="MENU"
-      >
-        <div className="p-8">
-          <h1 className="text-secondary-900 mb-4 text-3xl font-bold">Notifications Demo</h1>
-          <p className="text-secondary-700 mb-4">
-            Check the header for message and notification badges. Try clicking the navigation items.
-          </p>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="border-secondary-200 rounded-lg border bg-white p-6">
-              <h3 className="mb-2 font-semibold">Messages (5)</h3>
-              <p className="text-secondary-600 text-sm">You have unread messages</p>
-            </div>
-            <div className="border-secondary-200 rounded-lg border bg-white p-6">
-              <h3 className="mb-2 font-semibold">Notifications (12)</h3>
-              <p className="text-secondary-600 text-sm">You have new notifications</p>
-            </div>
+  return (
+    <RootLayout
+      header={{
+        messageCount: 5,
+        notificationCount: 12,
+      }}
+      navigation={
+        <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
+      }
+      navigationHeader="MENU"
+    >
+      <div className="p-8">
+        <h1 className="text-secondary-900 mb-4 text-3xl font-bold">Notifications Demo</h1>
+        <p className="text-secondary-700 mb-4">
+          Check the header for message and notification badges. Try clicking the navigation items.
+        </p>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="border-secondary-200 rounded-lg border bg-white p-6">
+            <h3 className="mb-2 font-semibold">Messages (5)</h3>
+            <p className="text-secondary-600 text-sm">You have unread messages</p>
+          </div>
+          <div className="border-secondary-200 rounded-lg border bg-white p-6">
+            <h3 className="mb-2 font-semibold">Notifications (12)</h3>
+            <p className="text-secondary-600 text-sm">You have new notifications</p>
           </div>
         </div>
-      </RootLayout>
-    );
-  },
+      </div>
+    </RootLayout>
+  );
+}
+
+export const WithNotifications: Story = {
+  render: () => <WithNotificationsWrapper />,
 };
 
 export const NoNavigation: Story = {
@@ -221,73 +227,73 @@ export const NoNavigation: Story = {
   },
 };
 
-export const CompleteExample: Story = {
-  render: () => {
-    const [activeRoute, setActiveRoute] = useState("home");
+function CompleteExampleWrapper() {
+  const [activeRoute, setActiveRoute] = useState("home");
 
-    return (
-      <RootLayout
-        header={{
-          messageCount: 2,
-          notificationCount: 4,
-          onMessagesClick: () => console.log("Messages"),
-          onNotificationsClick: () => console.log("Notifications"),
-          onProfileClick: () => console.log("Profile"),
-        }}
-        navigation={
-          <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
-        }
-        navigationHeader="MENU"
-        navigationFooter={
-          <div className="text-secondary-500 text-center text-xs">Version 1.0.0</div>
-        }
-        footer={{
-          links: [
-            { label: "Privacy", href: "/privacy" },
-            { label: "Terms", href: "/terms" },
-            { label: "Help", href: "/help" },
-          ],
-          copyright: FOOTER_COPYRIGHT,
-        }}
-      >
-        <div className="min-h-full p-8">
-          <div className="mx-auto max-w-7xl">
-            <h1 className="text-secondary-900 mb-2 text-3xl font-bold">
-              {navigationRoutes.find((r) => r.id === activeRoute)?.label || "Dashboard"}
-            </h1>
-            <p className="text-secondary-600 mb-8">
-              Welcome back! Here is an overview of your activity. Try clicking different navigation
-              items.
-            </p>
+  return (
+    <RootLayout
+      header={{
+        messageCount: 2,
+        notificationCount: 4,
+        onMessagesClick: () => console.log("Messages"),
+        onNotificationsClick: () => console.log("Notifications"),
+        onProfileClick: () => console.log("Profile"),
+      }}
+      navigation={
+        <InteractiveNavigation activeRoute={activeRoute} onRouteChange={setActiveRoute} />
+      }
+      navigationHeader="MENU"
+      navigationFooter={<div className="text-secondary-500 text-center text-xs">Version 1.0.0</div>}
+      footer={{
+        links: [
+          { label: "Privacy", href: "/privacy" },
+          { label: "Terms", href: "/terms" },
+          { label: "Help", href: "/help" },
+        ],
+        copyright: FOOTER_COPYRIGHT,
+      }}
+    >
+      <div className="min-h-full p-8">
+        <div className="mx-auto max-w-7xl">
+          <h1 className="text-secondary-900 mb-2 text-3xl font-bold">
+            {navigationRoutes.find((r) => r.id === activeRoute)?.label || "Dashboard"}
+          </h1>
+          <p className="text-secondary-600 mb-8">
+            Welcome back! Here is an overview of your activity. Try clicking different navigation
+            items.
+          </p>
 
-            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
-                <div className="text-secondary-600 mb-1 text-sm">Total Messages</div>
-                <div className="text-primary-700 text-3xl font-bold">24</div>
-              </div>
-              <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
-                <div className="text-secondary-600 mb-1 text-sm">Active Forms</div>
-                <div className="text-primary-700 text-3xl font-bold">8</div>
-              </div>
-              <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
-                <div className="text-secondary-600 mb-1 text-sm">Pending Tasks</div>
-                <div className="text-primary-700 text-3xl font-bold">12</div>
-              </div>
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
+              <div className="text-secondary-600 mb-1 text-sm">Total Messages</div>
+              <div className="text-primary-700 text-3xl font-bold">24</div>
             </div>
+            <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
+              <div className="text-secondary-600 mb-1 text-sm">Active Forms</div>
+              <div className="text-primary-700 text-3xl font-bold">8</div>
+            </div>
+            <div className="border-secondary-200 rounded-lg border bg-white p-6 shadow-sm">
+              <div className="text-secondary-600 mb-1 text-sm">Pending Tasks</div>
+              <div className="text-primary-700 text-3xl font-bold">12</div>
+            </div>
+          </div>
 
-            <div className="border-secondary-200 rounded-lg border bg-white shadow-sm">
-              <div className="border-secondary-200 border-b p-6">
-                <h2 className="text-xl font-semibold">Recent Activity</h2>
-              </div>
-              <div className="p-6">
-                <p className="text-secondary-600">
-                  Your recent activity will appear here. Current section: {activeRoute}
-                </p>
-              </div>
+          <div className="border-secondary-200 rounded-lg border bg-white shadow-sm">
+            <div className="border-secondary-200 border-b p-6">
+              <h2 className="text-xl font-semibold">Recent Activity</h2>
+            </div>
+            <div className="p-6">
+              <p className="text-secondary-600">
+                Your recent activity will appear here. Current section: {activeRoute}
+              </p>
             </div>
           </div>
         </div>
-      </RootLayout>
-    );
-  },
+      </div>
+    </RootLayout>
+  );
+}
+
+export const CompleteExample: Story = {
+  render: () => <CompleteExampleWrapper />,
 };

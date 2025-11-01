@@ -1,6 +1,12 @@
 module.exports = {
-  extends: ["eslint:recommended", "next/core-web-vitals", "prettier", "eslint-config-turbo"],
-  plugins: ["@typescript-eslint", "react", "react-hooks"],
+  extends: [
+    "eslint:recommended",
+    "next/core-web-vitals",
+    "plugin:jsx-a11y/recommended",
+    "prettier",
+    "eslint-config-turbo",
+  ],
+  plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
@@ -19,6 +25,15 @@ module.exports = {
     },
     react: {
       version: "detect",
+    },
+    "jsx-a11y": {
+      components: {
+        Button: "button",
+        Input: "input",
+        Icon: "span",
+        Avatar: "img",
+        Badge: "span",
+      },
     },
   },
   rules: {

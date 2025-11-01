@@ -6,6 +6,7 @@ export interface TableCellProps {
   as?: TableCellElement;
   children?: React.ReactNode;
   className?: string;
+  scope?: "col" | "row";
 }
 
 /**
@@ -13,20 +14,26 @@ export interface TableCellProps {
  * Does not support ref forwarding to maintain type safety across polymorphic elements
  *
  * @param as - HTML element to render (td or th)
+ * @param scope - Scope attribute for th elements (col or row)
  * @param props - Standard HTML table cell attributes
  */
 export function TableCell({
   as = "td",
   className = "",
   children,
+  scope,
   ...props
 }: TableCellProps & Omit<React.TdHTMLAttributes<HTMLTableCellElement>, keyof TableCellProps>) {
   const Component = as;
-  const baseClasses = "px-lg py-md text-left";
+  const baseClasses = "px-md py-sm md:px-lg md:py-md text-left";
   const variantClasses = Component === "th" ? "font-semibold" : "";
 
   return (
-    <Component className={`${baseClasses} ${variantClasses} ${className}`} {...props}>
+    <Component
+      className={`${baseClasses} ${variantClasses} ${className}`}
+      {...(Component === "th" && scope ? { scope } : {})}
+      {...props}
+    >
       {children}
     </Component>
   );

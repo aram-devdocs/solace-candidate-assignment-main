@@ -8,6 +8,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
  * Input component for text input fields
  *
  * @param variant - Visual variant of the input (default or error)
+ * @param aria-label - Accessible label for screen readers (required if no visible label)
  * @param props - Standard HTML input attributes
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(

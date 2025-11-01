@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Children, cloneElement, isValidElement, type ReactNode } from "react";
 import { useState } from "react";
+import { useDeviceSize } from "@repo/hooks";
 
 /**
  * Props for the NavigationMenu component
@@ -60,6 +61,11 @@ export function NavigationMenu({
   onProfileClick,
 }: NavigationMenuProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const deviceSize = useDeviceSize();
+
+  // Only apply collapsed state on desktop (md breakpoint and above)
+  // Mobile view always shows full labels regardless of collapse state
+  const isCollapsed = deviceSize !== "mobile" && collapsed;
 
   return (
     <>
@@ -77,7 +83,7 @@ export function NavigationMenu({
           bg-white
           md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
           ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
-          ${collapsed ? "w-20" : "w-64"}
+          ${isCollapsed ? "w-20" : "w-64"}
         `.trim()}
         style={{
           boxShadow: isOpen ? "-8px 0 24px -4px rgba(0, 0, 0, 0.15)" : "none",
@@ -102,7 +108,7 @@ export function NavigationMenu({
         <div className="hidden p-4 md:flex md:items-center md:justify-between">
           <span
             className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-semibold transition-opacity ${
-              collapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"
+              isCollapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"
             }`}
           >
             {header}
@@ -111,10 +117,10 @@ export function NavigationMenu({
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="border-primary-150 hover:bg-secondary-50 flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors"
-            aria-label={collapsed ? "Expand menu" : "Collapse menu"}
+            aria-label={isCollapsed ? "Expand menu" : "Collapse menu"}
             type="button"
           >
-            {collapsed ? (
+            {isCollapsed ? (
               <ChevronRight className="text-primary-700 pointer-events-none h-5 w-5" />
             ) : (
               <ChevronLeft className="text-primary-700 pointer-events-none h-5 w-5" />
@@ -129,9 +135,9 @@ export function NavigationMenu({
               if (isValidElement<{ collapsed?: boolean }>(child)) {
                 return (
                   <>
-                    {cloneElement(child, { collapsed })}
+                    {cloneElement(child, { collapsed: isCollapsed })}
                     {index < Children.count(children) - 1 && (
-                      <hr className="border-secondary-100 my-1" role="separator" />
+                      <hr className="border-secondary-100 my-1" />
                     )}
                   </>
                 );

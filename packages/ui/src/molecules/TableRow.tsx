@@ -1,21 +1,74 @@
 import React from "react";
 import { TableCell } from "../atoms/TableCell";
+import { ARIA_LABELS } from "../constants/accessibility";
 
 export interface TableRowProps {
   cells: React.ReactNode[];
+  /**
+   * Additional cells to show in expandable section on mobile
+   */
+  expandableCells?: Array<{ label: string; content: React.ReactNode }>;
+  /**
+   * Whether this row is currently expanded (controlled from parent)
+   */
+  isExpanded?: boolean;
+  /**
+   * Callback when expand/collapse button is clicked
+   */
+  onToggleExpand?: () => void;
 }
 
 /**
  * TableRow component for table data row
+ * Pure presentational component - state managed by parent
+ * Supports expandable cards on mobile for additional data
  *
  * @param cells - Array of cell content
+ * @param expandableCells - Additional cells shown in expandable section on mobile
+ * @param isExpanded - Whether row is currently expanded
+ * @param onToggleExpand - Callback when expand button clicked
  */
-export const TableRow: React.FC<TableRowProps> = ({ cells }) => {
+export const TableRow: React.FC<TableRowProps> = ({
+  cells,
+  expandableCells,
+  isExpanded = false,
+  onToggleExpand,
+}) => {
+  const hasExpandableContent = expandableCells && expandableCells.length > 0;
+
   return (
-    <tr className="border-secondary-200 hover:bg-primary-50 border-b transition-colors">
-      {cells.map((cell, index) => (
-        <TableCell key={index}>{cell}</TableCell>
-      ))}
-    </tr>
+    <>
+      <tr className="border-secondary-200 hover:bg-primary-50 border-b transition-colors">
+        {cells.map((cell, index) => (
+          <TableCell key={index}>{cell}</TableCell>
+        ))}
+        {hasExpandableContent && onToggleExpand && (
+          <TableCell className="xl:hidden">
+            <button
+              onClick={onToggleExpand}
+              aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
+              aria-expanded={isExpanded}
+              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"
+            >
+              {isExpanded ? "▲" : "▼"}
+            </button>
+          </TableCell>
+        )}
+      </tr>
+      {isExpanded && hasExpandableContent && (
+        <tr className="border-secondary-200 bg-secondary-50 border-b xl:hidden">
+          <td colSpan={cells.length + 1} className="p-md">
+            <div className="space-y-sm">
+              {expandableCells.map((item, index) => (
+                <div key={index} className="flex flex-col">
+                  <span className="text-secondary-700 text-sm font-semibold">{item.label}:</span>
+                  <span className="text-secondary-900">{item.content}</span>
+                </div>
+              ))}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 };

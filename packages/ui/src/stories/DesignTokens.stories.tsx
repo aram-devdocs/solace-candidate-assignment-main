@@ -490,7 +490,7 @@ export const ComponentExamples: Story = {
           <h3 className="mb-4 text-lg font-semibold">Greeting Card</h3>
           <div className="bg-greeting-background rounded-lg p-6">
             <h2 className="text-primary-700 font-serif text-3xl font-bold">Good Morning, Aram</h2>
-            <p className="text-secondary-600 mt-2">Hope you're having a great day!</p>
+            <p className="text-secondary-600 mt-2">Hope you&apos;re having a great day!</p>
           </div>
           <pre className="bg-secondary-900 mt-4 overflow-x-auto rounded p-3 text-xs text-white">
             {`<div className="bg-greeting-background rounded-lg p-6">

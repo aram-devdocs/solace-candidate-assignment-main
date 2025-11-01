@@ -1,11 +1,16 @@
 "use client";
 
-import { useAdvocateSearch } from "@repo/hooks";
+import { useAdvocateSearch, useDeviceSize, useExpandableRows } from "@repo/hooks";
 import { AdvocateListTemplate } from "@repo/ui";
+
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   const { searchTerm, filteredAdvocates, isLoading, error, handleSearchChange, handleResetSearch } =
     useAdvocateSearch();
+
+  const deviceSize = useDeviceSize();
+  const { expandedRows, toggleRow } = useExpandableRows(filteredAdvocates.length);
 
   return (
     <AdvocateListTemplate
@@ -15,6 +20,9 @@ export default function Home() {
       onResetSearch={handleResetSearch}
       isLoading={isLoading}
       error={error || undefined}
+      deviceSize={deviceSize}
+      expandedRows={expandedRows}
+      onToggleRow={toggleRow}
     />
   );
 }
