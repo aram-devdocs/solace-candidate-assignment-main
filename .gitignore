@@ -52,3 +52,4 @@ docs/local/*
 .env.production.local
 
 *storybook.log
+storybook-static
