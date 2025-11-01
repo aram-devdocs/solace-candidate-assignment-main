@@ -3,15 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useAdvocateSearch } from "@repo/hooks";
 import { AppLayout, AdvocateListTemplate } from "@repo/ui";
-
-const navigationItems = [
-  { icon: "Home", label: "Home", href: "/" },
-  { icon: "MessageSquare", label: "Messages", href: "/messages" },
-  { icon: "FileText", label: "Documents", href: "/documents" },
-  { icon: "Clipboard", label: "Tasks", href: "/tasks" },
-  { icon: "Heart", label: "Wellness", href: "/wellness" },
-  { icon: "HelpCircle", label: "Help", href: "/help" },
-];
+import { NAVIGATION_ITEMS } from "../constants/navigation";
 
 export default function Home() {
   const pathname = usePathname();
@@ -20,7 +12,7 @@ export default function Home() {
 
   return (
     <AppLayout
-      navigationItems={navigationItems}
+      navigationItems={NAVIGATION_ITEMS}
       currentPath={pathname}
       userInitials="AH"
       messageCount={3}

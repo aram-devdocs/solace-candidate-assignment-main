@@ -2,15 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { AppLayout, NotFoundState } from "@repo/ui";
-
-const navigationItems = [
-  { icon: "Home", label: "Home", href: "/" },
-  { icon: "MessageSquare", label: "Messages", href: "/messages" },
-  { icon: "FileText", label: "Documents", href: "/documents" },
-  { icon: "Clipboard", label: "Tasks", href: "/tasks" },
-  { icon: "Heart", label: "Wellness", href: "/wellness" },
-  { icon: "HelpCircle", label: "Help", href: "/help" },
-];
+import { NAVIGATION_ITEMS } from "../constants/navigation";
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -18,7 +10,7 @@ export default function NotFound() {
 
   return (
     <AppLayout
-      navigationItems={navigationItems}
+      navigationItems={NAVIGATION_ITEMS}
       currentPath={pathname}
       userInitials="AH"
       messageCount={3}
