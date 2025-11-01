@@ -8,6 +8,7 @@
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
+  - [Storybook: https://solace-storybook.aramhammoudeh.com](https://solace-storybook.aramhammoudeh.com)
 
 # Logs
 
@@ -109,3 +110,7 @@ export default function Home() {
 ```
 
 This makes a huge difference in readability and scaling, and allows us to target small chunks of the workspace at a time for refinement, without worrying about breaking the entire system.
+
+## [PR 6 - app.solace.health UI]()
+
+Everything is in place for a makeover, so lets go straight the source. Using the reference images, I am working to wireframe the UI to help present it as a feature of the existing application.

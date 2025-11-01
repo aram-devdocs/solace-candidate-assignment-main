@@ -6,17 +6,17 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
-          950: "#172554",
+          50: "#f0fdf9",
+          100: "#ccfbef",
+          200: "#99f6e0",
+          300: "#5fe9d0",
+          400: "#2dd4bf",
+          500: "#14b8a6",
+          600: "#0f9688",
+          700: "#2d5049",
+          800: "#1e3a34",
+          900: "#134239",
+          950: "#042f2e",
         },
         secondary: {
           50: "#f8fafc",
@@ -93,6 +93,9 @@ const config: Config = {
         xl: "0.75rem",
         "2xl": "1rem",
         full: "9999px",
+      },
+      backgroundImage: {
+        "gradient-banner": "linear-gradient(to right, #1d332d, #134239, #1e3a34)",
       },
     },
   },

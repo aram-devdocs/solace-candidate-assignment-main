@@ -1,8 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useAdvocateSearch } from "@repo/hooks";
-import { AppLayout, AdvocateListTemplate } from "@repo/ui";
+import { usePathname, useRouter } from "next/navigation";
+import { AppLayout, NotFoundState } from "@repo/ui";
 
 const navigationItems = [
   { icon: "Home", label: "Home", href: "/" },
@@ -13,10 +12,9 @@ const navigationItems = [
   { icon: "HelpCircle", label: "Help", href: "/help" },
 ];
 
-export default function Home() {
+export default function NotFound() {
   const pathname = usePathname();
-  const { searchTerm, filteredAdvocates, isLoading, error, handleSearchChange, handleResetSearch } =
-    useAdvocateSearch();
+  const router = useRouter();
 
   return (
     <AppLayout
@@ -26,14 +24,14 @@ export default function Home() {
       messageCount={3}
       notificationCount={5}
     >
-      <AdvocateListTemplate
-        advocates={filteredAdvocates}
-        searchTerm={searchTerm}
-        onSearchChange={handleSearchChange}
-        onResetSearch={handleResetSearch}
-        isLoading={isLoading}
-        error={error || undefined}
-      />
+      <div className="p-8">
+        <NotFoundState
+          title="Page Not Found"
+          message="The page you're looking for doesn't exist yet. We're still building out this feature."
+          actionText="Go to Home"
+          onAction={() => router.push("/")}
+        />
+      </div>
     </AppLayout>
   );
 }

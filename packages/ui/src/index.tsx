@@ -17,6 +17,18 @@ export type { TextProps } from "./atoms/Text";
 export { TableCell } from "./atoms/TableCell";
 export type { TableCellProps } from "./atoms/TableCell";
 
+export { Icon } from "./atoms/Icon";
+export type { IconProps } from "./atoms/Icon";
+
+export { Avatar } from "./atoms/Avatar";
+export type { AvatarProps } from "./atoms/Avatar";
+
+export { Badge } from "./atoms/Badge";
+export type { BadgeProps } from "./atoms/Badge";
+
+export { IconButton } from "./atoms/IconButton";
+export type { IconButtonProps } from "./atoms/IconButton";
+
 export { SearchBar } from "./molecules/SearchBar";
 export type { SearchBarProps } from "./molecules/SearchBar";
 
@@ -32,8 +44,29 @@ export type { LoadingStateProps } from "./molecules/LoadingState";
 export { ErrorState } from "./molecules/ErrorState";
 export type { ErrorStateProps } from "./molecules/ErrorState";
 
+export { NotFoundState } from "./molecules/NotFoundState";
+export type { NotFoundStateProps } from "./molecules/NotFoundState";
+
+export { NavigationItem } from "./molecules/NavigationItem";
+export type { NavigationItemProps } from "./molecules/NavigationItem";
+
+export { NavigationMenu } from "./molecules/NavigationMenu";
+export type { NavigationMenuProps } from "./molecules/NavigationMenu";
+
+export { Header } from "./molecules/Header";
+export type { HeaderProps } from "./molecules/Header";
+
+export { Footer } from "./molecules/Footer";
+export type { FooterProps } from "./molecules/Footer";
+
 export { AdvocateTable } from "./organisms/AdvocateTable";
 export type { AdvocateTableProps } from "./organisms/AdvocateTable";
 
+export { RootLayout } from "./organisms/RootLayout";
+export type { RootLayoutProps } from "./organisms/RootLayout";
+
 export { AdvocateListTemplate } from "./templates/AdvocateListTemplate";
 export type { AdvocateListTemplateProps } from "./templates/AdvocateListTemplate";
+
+export { AppLayout } from "./templates/AppLayout";
+export type { AppLayoutProps } from "./templates/AppLayout";

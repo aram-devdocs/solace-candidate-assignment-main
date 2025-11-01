@@ -12,11 +12,11 @@ export interface TableHeaderProps {
  */
 export const TableHeader: React.FC<TableHeaderProps> = ({ headers }) => {
   return (
-    <thead>
+    <thead className="bg-secondary-50 border-secondary-300 border-b-2">
       <tr>
         {headers.map((header, index) => (
           <TableCell key={index} as="th">
-            {header}
+            <span className="text-secondary-900 font-bold">{header}</span>
           </TableCell>
         ))}
       </tr>
