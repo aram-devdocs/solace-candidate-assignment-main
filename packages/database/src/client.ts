@@ -6,9 +6,11 @@ import * as schema from "./schema";
 // eslint-disable-next-line turbo/no-undeclared-env-vars
 let connectionString = process.env.DATABASE_URL;
 
-// Configure Neon for local development
+// Configure Neon for local development only (not in CI/CD)
 // eslint-disable-next-line turbo/no-undeclared-env-vars
-if (process.env.NODE_ENV === "development") {
+const isLocalDev = process.env.NODE_ENV === "development" && !process.env.CI;
+
+if (isLocalDev) {
   connectionString = connectionString || "postgres://postgres:postgres@db.localtest.me:5432/main";
 
   // Route local requests through the Neon proxy

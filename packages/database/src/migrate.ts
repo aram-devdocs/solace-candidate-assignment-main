@@ -7,9 +7,13 @@ import { resolve } from "path";
 // Configure Neon for environments without native WebSocket support
 neonConfig.webSocketConstructor = ws;
 
-// Configure Neon for local development (same as client.ts)
+// Configure Neon for local development only (not in CI/CD)
 // eslint-disable-next-line turbo/no-undeclared-env-vars
-if (process.env.NODE_ENV === "development" || !process.env.DATABASE_URL?.includes("neon.tech")) {
+const isLocalDev = process.env.NODE_ENV === "development" && !process.env.CI;
+const connectionString = process.env.DATABASE_URL || "";
+const isLocalDatabase = connectionString.includes("db.localtest.me");
+
+if (isLocalDev && isLocalDatabase) {
   // Route local requests through the Neon proxy
   neonConfig.fetchEndpoint = (host) => {
     const [protocol, port] = host === "db.localtest.me" ? ["http", 4444] : ["https", 443];
@@ -17,7 +21,6 @@ if (process.env.NODE_ENV === "development" || !process.env.DATABASE_URL?.include
   };
 
   // Use secure WebSocket only for cloud connections
-  const connectionString = process.env.DATABASE_URL || "";
   if (connectionString) {
     const connectionStringUrl = new URL(connectionString);
     neonConfig.useSecureWebSocket = connectionStringUrl.hostname !== "db.localtest.me";
