@@ -35,9 +35,9 @@ const VARIANT_CLASSES = {
 };
 
 const SIZE_CLASSES = {
-  sm: "h-8 w-8",
-  md: "h-9 w-9",
-  lg: "h-12 w-12",
+  sm: "h-icon-sm w-icon-sm",
+  md: "h-icon-md w-icon-md",
+  lg: "h-icon-lg w-icon-lg",
 };
 
 const ICON_SIZE_CLASSES = {

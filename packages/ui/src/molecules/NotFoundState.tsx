@@ -49,7 +49,7 @@ export function NotFoundState({
 }: NotFoundStateProps) {
   return (
     <div
-      className={`flex min-h-[400px] flex-col items-center justify-center px-4 py-12 ${className}`.trim()}
+      className={`min-h-section-min flex flex-col items-center justify-center px-4 py-12 ${className}`.trim()}
       {...props}
     >
       <div className="max-w-md text-center">

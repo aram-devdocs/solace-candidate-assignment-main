@@ -67,7 +67,7 @@ export function Header({
 }: HeaderProps) {
   return (
     <header className="bg-primary-700 w-full text-white shadow-md">
-      <div className="flex h-16 items-center justify-between px-4 md:px-6">
+      <div className="h-header flex items-center justify-between px-4 md:px-6">
         {/* Left: Logo */}
         <div className="flex items-center gap-4">
           {logo && <div className="flex-shrink-0">{logo}</div>}
@@ -79,7 +79,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={onMessagesClick}
-              className="hover:bg-primary-600 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
               aria-label="Messages"
             >
               <svg
@@ -110,7 +110,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={onNotificationsClick}
-              className="hover:bg-primary-600 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
               aria-label="Notifications"
             >
               <svg
@@ -148,7 +148,7 @@ export function Header({
           {/* User Profile (desktop only) */}
           <button
             onClick={onProfileClick}
-            className="bg-primary-600 hidden h-[36px] w-[36px] items-center justify-center rounded-full transition-transform hover:scale-110 md:flex"
+            className="bg-primary-600 h-icon-md w-icon-md hidden items-center justify-center rounded-full transition-transform hover:scale-110 md:flex"
             aria-label="User profile"
           >
             <svg
