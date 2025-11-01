@@ -3,7 +3,6 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Children, cloneElement, isValidElement, type ReactNode } from "react";
 import { useState } from "react";
-import { IconButton } from "../atoms/IconButton";
 
 /**
  * Props for the NavigationMenu component
@@ -30,6 +29,10 @@ export interface NavigationMenuProps {
    * Footer content for the menu
    */
   footer?: ReactNode;
+  /**
+   * Callback when profile is clicked (mobile menu only)
+   */
+  onProfileClick?: () => void;
 }
 
 /**
@@ -54,64 +57,66 @@ export function NavigationMenu({
   onClose,
   header = "MENU",
   footer,
+  onProfileClick,
 }: NavigationMenuProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <>
-      {/* Mobile overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden" onClick={onClose} />
-      )}
-
       {/* Navigation sidebar */}
       <aside
         className={`
-          border-primary-150 fixed
-          left-0 top-0
+          md:border-primary-150
+          fixed
+          right-0
+          top-0
           z-50
-          flex
-          h-screen flex-col
-          border-r bg-white
-          transition-all
-          duration-300 md:sticky
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          flex h-screen
+          flex-col
+          bg-white
+          transition-all duration-300 md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
+          ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
           ${collapsed ? "w-20" : "w-64"}
         `.trim()}
+        style={{
+          boxShadow: isOpen ? "-8px 0 24px -4px rgba(0, 0, 0, 0.15)" : "none",
+        }}
       >
-        {/* Header with collapse toggle */}
-        <div className="border-secondary-200 flex items-center justify-between border-b p-4">
+        {/* Mobile: Close Menu button */}
+        <div className="p-4 md:hidden">
+          <button
+            onClick={onClose}
+            className="border-primary-700 hover:bg-secondary-50 flex w-full items-center justify-between rounded-md border px-6 py-3 transition-colors"
+            aria-label="Close menu"
+            type="button"
+          >
+            <span className="text-primary-700 text-base font-semibold">Close Menu</span>
+            <X className="text-primary-700 h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Desktop: Header with collapse toggle */}
+        <div className="hidden p-4 md:flex md:items-center md:justify-between">
           <span
-            className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-normal transition-opacity ${
+            className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-semibold transition-opacity ${
               collapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"
             }`}
           >
             {header}
           </span>
 
-          {/* Desktop: Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="border-primary-150 hover:bg-secondary-50 hidden h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors md:flex"
+            className="border-primary-150 hover:bg-secondary-50 flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors"
             aria-label={collapsed ? "Expand menu" : "Collapse menu"}
             type="button"
           >
             {collapsed ? (
-              <ChevronRight className="text-primary-150 pointer-events-none h-5 w-5" />
+              <ChevronRight className="text-primary-700 pointer-events-none h-5 w-5" />
             ) : (
-              <ChevronLeft className="text-primary-150 pointer-events-none h-5 w-5" />
+              <ChevronLeft className="text-primary-700 pointer-events-none h-5 w-5" />
             )}
           </button>
-
-          {/* Mobile: Close button */}
-          <IconButton
-            icon={X}
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="md:hidden"
-            aria-label="Close menu"
-          />
         </div>
 
         {/* Navigation items */}
@@ -130,6 +135,42 @@ export function NavigationMenu({
               }
               return child;
             })}
+
+            {/* Mobile: Profile avatar as navigation row (no divider, no text) */}
+            <button
+              onClick={onProfileClick}
+              className="flex items-center gap-3 rounded-md px-4 py-3 transition-colors md:hidden"
+              aria-label="User profile"
+            >
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
+                <div className="bg-primary-600 hover:bg-primary-700 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4.61523 20.3073C4.61523 17.7583 7.92144 15.6919 11.9999 15.6919C16.0783 15.6919 19.3845 17.7583 19.3845 20.3073"
+                      stroke="white"
+                      strokeWidth="2.00107"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
+                    <path
+                      d="M12.0002 12.9232C14.5492 12.9232 16.6155 10.8568 16.6155 8.30777C16.6155 5.75876 14.5492 3.69238 12.0002 3.69238C9.45114 3.69238 7.38477 5.75876 7.38477 8.30777C7.38477 10.8568 9.45114 12.9232 12.0002 12.9232Z"
+                      stroke="white"
+                      strokeWidth="2.00107"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </button>
           </div>
         </nav>
 

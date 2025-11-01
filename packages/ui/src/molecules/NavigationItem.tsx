@@ -1,5 +1,7 @@
+"use client";
+
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
-import { cloneElement } from "react";
+import { cloneElement, useState } from "react";
 
 /**
  * Props for the NavigationItem component
@@ -48,16 +50,23 @@ export function NavigationItem({
   className = "",
   ...props
 }: NavigationItemProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const baseClasses =
     "flex items-center gap-3 px-4 py-3 transition-colors rounded-md text-sm font-normal no-underline";
-  const textClasses = active ? "text-success-600" : "text-secondary-600 hover:text-secondary-900";
+  const textClasses = active ? "text-[#275E50]" : "text-secondary-600 hover:text-secondary-900";
 
   return (
-    <a className={`${baseClasses} ${textClasses} ${className}`.trim()} {...props}>
+    <a
+      className={`${baseClasses} ${textClasses} ${className}`.trim()}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...props}
+    >
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
-        {cloneElement(icon, { active })}
+        {cloneElement(icon, { active: active || isHovered })}
       </div>
-      <span className={collapsed ? "hidden" : ""}>{label}</span>
+      <span className={collapsed ? "hidden" : "whitespace-nowrap"}>{label}</span>
     </a>
   );
 }

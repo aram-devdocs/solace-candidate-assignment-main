@@ -83,6 +83,9 @@ export type { HeaderProps } from "./molecules/Header";
 export { Footer } from "./molecules/Footer";
 export type { FooterProps } from "./molecules/Footer";
 
+export { Greeting } from "./molecules/Greeting";
+export type { GreetingProps } from "./molecules/Greeting";
+
 export { SkeletonSearchBar } from "./molecules/SkeletonSearchBar";
 
 export { SkeletonTableHeader } from "./molecules/SkeletonTableHeader";

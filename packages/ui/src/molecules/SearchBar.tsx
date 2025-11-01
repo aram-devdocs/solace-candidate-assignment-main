@@ -1,7 +1,6 @@
 import React from "react";
 import { Input } from "../atoms/Input";
 import { Button } from "../atoms/Button";
-import { Text } from "../atoms/Text";
 
 export interface SearchBarProps {
   value: string;
@@ -25,19 +24,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search...",
 }) => {
   return (
-    <div className="space-y-md">
-      <Text as="p" variant="body">
-        Search
-      </Text>
-      <Text as="p" variant="small" color="secondary">
-        Searching for: {value}
-      </Text>
-      <div className="gap-md flex">
-        <Input value={value} onChange={onChange} placeholder={placeholder} />
-        <Button onClick={onReset} variant="secondary">
-          Reset Search
-        </Button>
-      </div>
+    <div className="gap-md flex">
+      <Input value={value} onChange={onChange} placeholder={placeholder} />
+      <Button onClick={onReset} variant="secondary">
+        Reset Search
+      </Button>
     </div>
   );
 };

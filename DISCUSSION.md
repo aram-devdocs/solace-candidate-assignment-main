@@ -118,3 +118,7 @@ Everything is in place for a makeover, so lets go straight the source. Using the
 Taking html snippets directly from the app.solace.health site, I was able to get SVG's for the logo and menu icons, and the rest I was able to recreate one by one from reference and just CSS styling. While not a perfect 1:1 match, the theme is fairly close and should serve as a nice guide on the layout on how we should style the table.
 
 Looking at the table, it in mobile view to the right, it goes on as long as the list, has no pagination controls, no filtering or sorting, and needs dynamic views based on the screen size to truly be a responsive application. I will kick most of this into seperate PRs so I can isolate the table itself outside of the theme code.
+
+A fun side tangent I went on here was copying the greeding badge with its different states for morning, afternoon, and evening. I was able to find those three states (couldnt find a night one) for mobile and web views. This added a nice homage to the orignal, and helped me tie in some of the same theming to the new app.
+
+I do notice some small differences upon review, but I feel I am 90% of the way there, so after a timebox UI session, I will move on to mobile responsiveness in the next pr.

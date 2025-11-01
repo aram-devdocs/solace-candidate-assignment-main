@@ -84,11 +84,19 @@ export function RootLayout({
 
   return (
     <div className="bg-secondary-50 flex min-h-screen flex-col">
-      {/* Header */}
-      <Header {...header} onMenuClick={() => setIsMenuOpen(true)} />
+      {/* Header with overlay */}
+      <div
+        className={`relative transition-transform duration-300 md:transform-none ${
+          isMenuOpen ? "max-md:-translate-x-64" : ""
+        }`}
+      >
+        {/* White overlay on header when menu is open */}
+        {isMenuOpen && <div className="absolute inset-0 z-30 bg-white bg-opacity-40 md:hidden" />}
+        <Header {...header} onMenuClick={() => setIsMenuOpen(true)} />
+      </div>
 
       {/* Main content area with navigation */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         {/* Navigation sidebar */}
         {showNavigation && navigation && (
           <NavigationMenu
@@ -96,17 +104,25 @@ export function RootLayout({
             onClose={() => setIsMenuOpen(false)}
             header={navigationHeader}
             footer={navigationFooter}
+            onProfileClick={header.onProfileClick}
           >
             {navigation}
           </NavigationMenu>
         )}
 
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        {/* Page content with push effect and overlay on mobile */}
+        <div
+          className={`relative flex flex-1 flex-col transition-transform duration-300 md:transform-none ${
+            isMenuOpen ? "max-md:-translate-x-64" : ""
+          }`}
+        >
+          {/* White overlay when menu is open */}
+          {isMenuOpen && <div className="absolute inset-0 z-30 bg-white bg-opacity-40 md:hidden" />}
+          <main className="flex-1 overflow-y-auto">{children}</main>
+          {/* Footer */}
+          {footer && <Footer {...footer} />}
+        </div>
       </div>
-
-      {/* Footer */}
-      {footer && <Footer {...footer} />}
     </div>
   );
 }

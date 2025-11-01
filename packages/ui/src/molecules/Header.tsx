@@ -68,19 +68,12 @@ export function Header({
   return (
     <header className="bg-primary-700 w-full text-white shadow-md">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        {/* Left: Hamburger (mobile) + Logo */}
+        {/* Left: Logo */}
         <div className="flex items-center gap-4">
-          <IconButton
-            icon={Menu}
-            variant="primary"
-            onClick={onMenuClick}
-            className="hover:bg-primary-800 bg-transparent md:hidden"
-            aria-label="Open menu"
-          />
           {logo && <div className="flex-shrink-0">{logo}</div>}
         </div>
 
-        {/* Right: Actions + Profile */}
+        {/* Right: Actions + Profile (desktop) / Hamburger (mobile) */}
         <div className="flex items-center gap-2">
           {/* Messages */}
           <div className="relative">
@@ -143,10 +136,19 @@ export function Header({
             ) : null}
           </div>
 
-          {/* User Profile */}
+          {/* Hamburger Menu (mobile only) - replaces profile avatar position */}
+          <IconButton
+            icon={Menu}
+            variant="primary"
+            onClick={onMenuClick}
+            className="hover:bg-primary-800 bg-transparent md:hidden"
+            aria-label="Open menu"
+          />
+
+          {/* User Profile (desktop only) */}
           <button
             onClick={onProfileClick}
-            className="bg-primary-600 hover:bg-primary-500 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors"
+            className="bg-primary-600 hover:bg-primary-500 hidden h-[36px] w-[36px] items-center justify-center rounded-full transition-colors md:flex"
             aria-label="User profile"
           >
             <svg
