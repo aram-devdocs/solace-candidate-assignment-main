@@ -1,31 +1,33 @@
 import React from "react";
 
-export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
-  as?: "td" | "th";
+type TableCellElement = "td" | "th";
+
+export interface TableCellProps {
+  as?: TableCellElement;
+  children?: React.ReactNode;
+  className?: string;
 }
 
 /**
  * TableCell component for table data cells
+ * Does not support ref forwarding to maintain type safety across polymorphic elements
  *
  * @param as - HTML element to render (td or th)
  * @param props - Standard HTML table cell attributes
  */
-export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  ({ as = "td", className = "", children, ...props }, ref) => {
-    const Component = as;
-    const baseClasses = "px-lg py-md text-left";
-    const variantClasses = as === "th" ? "font-semibold" : "";
+export function TableCell({
+  as = "td",
+  className = "",
+  children,
+  ...props
+}: TableCellProps & Omit<React.TdHTMLAttributes<HTMLTableCellElement>, keyof TableCellProps>) {
+  const Component = as;
+  const baseClasses = "px-lg py-md text-left";
+  const variantClasses = Component === "th" ? "font-semibold" : "";
 
-    return (
-      <Component
-        ref={ref as any}
-        className={`${baseClasses} ${variantClasses} ${className}`}
-        {...props}
-      >
-        {children}
-      </Component>
-    );
-  }
-);
-
-TableCell.displayName = "TableCell";
+  return (
+    <Component className={`${baseClasses} ${variantClasses} ${className}`} {...props}>
+      {children}
+    </Component>
+  );
+}

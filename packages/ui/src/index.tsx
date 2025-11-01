@@ -20,6 +20,9 @@ export type { TableCellProps } from "./atoms/TableCell";
 export { Icon } from "./atoms/Icon";
 export type { IconProps } from "./atoms/Icon";
 
+export { CustomIcon } from "./atoms/CustomIcon";
+export type { CustomIconProps } from "./atoms/CustomIcon";
+
 export { Avatar } from "./atoms/Avatar";
 export type { AvatarProps } from "./atoms/Avatar";
 
@@ -49,6 +52,10 @@ export type { HealthInsuranceIconProps } from "./atoms/HealthInsuranceIcon";
 
 export { HelpIcon } from "./atoms/HelpIcon";
 export type { HelpIconProps } from "./atoms/HelpIcon";
+
+export { MorningIllustration } from "./atoms/MorningIllustration";
+export { AfternoonIllustration } from "./atoms/AfternoonIllustration";
+export { EveningIllustration } from "./atoms/EveningIllustration";
 
 export { SkeletonLine } from "./atoms/SkeletonLine";
 export type { SkeletonLineProps } from "./atoms/SkeletonLine";

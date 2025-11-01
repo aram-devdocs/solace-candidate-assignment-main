@@ -19,6 +19,9 @@ module.exports = {
     },
   },
   ignorePatterns: [".*.js", "node_modules/", "dist/"],
+  rules: {
+    "@typescript-eslint/no-explicit-any": "error",
+  },
   overrides: [
     {
       files: ["*.js?(x)", "*.ts?(x)"],

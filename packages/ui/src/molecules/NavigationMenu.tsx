@@ -123,10 +123,10 @@ export function NavigationMenu({
         <nav className="flex-1 overflow-y-auto p-2">
           <div className="flex flex-col">
             {Children.map(children, (child, index) => {
-              if (isValidElement(child)) {
+              if (isValidElement<{ collapsed?: boolean }>(child)) {
                 return (
                   <>
-                    {cloneElement(child, { collapsed } as any)}
+                    {cloneElement(child, { collapsed })}
                     {index < Children.count(children) - 1 && (
                       <hr className="border-secondary-100 my-1" role="separator" />
                     )}

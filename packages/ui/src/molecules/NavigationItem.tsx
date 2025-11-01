@@ -54,7 +54,7 @@ export function NavigationItem({
 
   const baseClasses =
     "flex items-center gap-3 px-4 py-3 transition-colors rounded-md text-sm font-normal no-underline";
-  const textClasses = active ? "text-[#275E50]" : "text-secondary-600 hover:text-secondary-900";
+  const textClasses = active ? "text-primary-600" : "text-secondary-600 hover:text-secondary-900";
 
   return (
     <a

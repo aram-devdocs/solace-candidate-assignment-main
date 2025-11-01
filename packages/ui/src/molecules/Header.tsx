@@ -79,7 +79,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={onMessagesClick}
-              className="hover:bg-primary-800 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
               aria-label="Messages"
             >
               <svg
@@ -110,7 +110,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={onNotificationsClick}
-              className="hover:bg-primary-800 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
               aria-label="Notifications"
             >
               <svg
@@ -148,7 +148,7 @@ export function Header({
           {/* User Profile (desktop only) */}
           <button
             onClick={onProfileClick}
-            className="bg-primary-600 hover:bg-primary-500 hidden h-[36px] w-[36px] items-center justify-center rounded-full transition-colors md:flex"
+            className="bg-primary-600 hidden h-[36px] w-[36px] items-center justify-center rounded-full transition-transform hover:scale-110 md:flex"
             aria-label="User profile"
           >
             <svg
