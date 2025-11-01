@@ -123,7 +123,7 @@ A fun side tangent I went on here was copying the greeding badge with its differ
 
 I do notice some small differences upon review, but I feel I am 90% of the way there, so after a timebox UI session, I will move on to mobile responsiveness in the next pr.
 
-## [PR 7 - Responsiveness and Accessibility]()
+## [PR 7 - Responsiveness and Accessibility](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/21)
 
 A standard for web design is creating an application that can be used on any size screen, with any type of device. Screen readers, keyboard only navigation, and mobile responsiveness are all critical to accessibility and usability. So here we tackle that from the bottom up, ensuring each atomic component has these traits, and building layouts in the template to ensure that you can use it wherever you need.
 
