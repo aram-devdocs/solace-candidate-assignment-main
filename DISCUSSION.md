@@ -111,7 +111,7 @@ export default function Home() {
 
 This makes a huge difference in readability and scaling, and allows us to target small chunks of the workspace at a time for refinement, without worrying about breaking the entire system.
 
-## [PR 6 - app.solace.health UI]()
+## [PR 6 - app.solace.health UI](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/20)
 
 Everything is in place for a makeover, so lets go straight the source. Using the reference images, I am working to wireframe the UI to help present it as a feature of the existing application.
 
@@ -122,3 +122,11 @@ Looking at the table, it in mobile view to the right, it goes on as long as the 
 A fun side tangent I went on here was copying the greeding badge with its different states for morning, afternoon, and evening. I was able to find those three states (couldnt find a night one) for mobile and web views. This added a nice homage to the orignal, and helped me tie in some of the same theming to the new app.
 
 I do notice some small differences upon review, but I feel I am 90% of the way there, so after a timebox UI session, I will move on to mobile responsiveness in the next pr.
+
+## [PR 7 - Responsiveness and Accessibility](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/21)
+
+A standard for web design is creating an application that can be used on any size screen, with any type of device. Screen readers, keyboard only navigation, and mobile responsiveness are all critical to accessibility and usability. So here we tackle that from the bottom up, ensuring each atomic component has these traits, and building layouts in the template to ensure that you can use it wherever you need.
+
+Noticible changes here are tab navigation and focus states, static screen reader prompts for different states, mobile tablet and web views, switching the table to have an expandable row as the screen width gets smaller, so that we can view key data without scrolling horizontally, and just general cleanup and consolidation of breakpoints and design states.
+
+For more in depth projects I would build custom scripts to test for things like responsiveness, theme consistency, but that is beyond the scope of this project. Instead, we will rely on manual testing (bad practice but timeboxing is imporant) and then add es-lint rules for accessibility for now. This ensures that bad code wont break the app in terms of usability. This caught a few bad practices I have made so far, so that makes up the rest of the file changes here.

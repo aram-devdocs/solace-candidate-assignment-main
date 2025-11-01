@@ -51,24 +51,28 @@ const mockAdvocates: Advocate[] = [
   },
 ];
 
+function DefaultWrapper({ initialSearchTerm = "" }: { initialSearchTerm?: string }) {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  return (
+    <AdvocateListTemplate
+      advocates={mockAdvocates}
+      searchTerm={searchTerm}
+      onSearchChange={(e) => setSearchTerm(e.target.value)}
+      onResetSearch={() => setSearchTerm("")}
+      deviceSize="desktop"
+    />
+  );
+}
+
 export const Default: Story = {
   args: {
     advocates: mockAdvocates,
     searchTerm: "",
     onSearchChange: () => {},
     onResetSearch: () => {},
+    deviceSize: "desktop" as const,
   },
-  render: (args) => {
-    const [searchTerm, setSearchTerm] = useState(args.searchTerm);
-    return (
-      <AdvocateListTemplate
-        {...args}
-        searchTerm={searchTerm}
-        onSearchChange={(e) => setSearchTerm(e.target.value)}
-        onResetSearch={() => setSearchTerm("")}
-      />
-    );
-  },
+  render: () => <DefaultWrapper />,
 };
 
 export const Loading: Story = {
@@ -78,6 +82,7 @@ export const Loading: Story = {
     onSearchChange: () => {},
     onResetSearch: () => {},
     isLoading: true,
+    deviceSize: "desktop",
   },
 };
 
@@ -88,8 +93,24 @@ export const Error: Story = {
     onSearchChange: () => {},
     onResetSearch: () => {},
     error: "Failed to load advocates",
+    deviceSize: "desktop",
   },
 };
+
+function WithSearchWrapper() {
+  const [searchTerm, setSearchTerm] = useState("John");
+  return (
+    <AdvocateListTemplate
+      advocates={mockAdvocates.filter((a) =>
+        a.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+      )}
+      searchTerm={searchTerm}
+      onSearchChange={(e) => setSearchTerm(e.target.value)}
+      onResetSearch={() => setSearchTerm("")}
+      deviceSize="desktop"
+    />
+  );
+}
 
 export const WithSearch: Story = {
   args: {
@@ -97,19 +118,7 @@ export const WithSearch: Story = {
     searchTerm: "John",
     onSearchChange: () => {},
     onResetSearch: () => {},
+    deviceSize: "desktop" as const,
   },
-  render: (args) => {
-    const [searchTerm, setSearchTerm] = useState(args.searchTerm);
-    return (
-      <AdvocateListTemplate
-        {...args}
-        advocates={mockAdvocates.filter((a) =>
-          a.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-        )}
-        searchTerm={searchTerm}
-        onSearchChange={(e) => setSearchTerm(e.target.value)}
-        onResetSearch={() => setSearchTerm("")}
-      />
-    );
-  },
+  render: () => <WithSearchWrapper />,
 };

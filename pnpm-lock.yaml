@@ -166,6 +166,9 @@ importers:
       eslint-config-turbo:
         specifier: ^2.0.0
         version: 2.6.0(eslint@8.57.1)(turbo@2.6.0)
+      eslint-plugin-jsx-a11y:
+        specifier: ^6.10.2
+        version: 6.10.2(eslint@8.57.1)
       eslint-plugin-react:
         specifier: ^7.34.1
         version: 7.37.5(eslint@8.57.1)
@@ -277,6 +280,9 @@ importers:
       '@repo/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       lucide-react:
         specifier: ^0.552.0
         version: 0.552.0(react@18.3.1)
@@ -299,6 +305,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@storybook/addon-a11y':
+        specifier: ^10.0.2
+        version: 10.0.2(storybook@8.4.7(prettier@3.6.2))
       '@storybook/addon-essentials':
         specifier: 8.4.7
         version: 8.4.7(@types/react@18.3.26)(storybook@8.4.7(prettier@3.6.2))
@@ -332,6 +341,9 @@ importers:
       eslint-plugin-storybook:
         specifier: ^10.0.2
         version: 10.0.2(eslint@8.57.1)(storybook@8.4.7(prettier@3.6.2))(typescript@5.9.3)
+      focus-visible:
+        specifier: ^5.2.1
+        version: 5.2.1
       postcss:
         specifier: ^8.4.40
         version: 8.5.6
@@ -1379,6 +1391,11 @@ packages:
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
+
+  '@storybook/addon-a11y@10.0.2':
+    resolution: {integrity: sha512-iJJ+AXsi1oHOJ88lm/9Y2xoFJqkMOduORGk8VMPTE8fKO0THkBOSZboVHrPRiCADBLbkK9CIIzCoMzZd1XnakQ==}
+    peerDependencies:
+      storybook: ^10.0.2
 
   '@storybook/addon-actions@8.4.7':
     resolution: {integrity: sha512-mjtD5JxcPuW74T6h7nqMxWTvDneFtokg88p6kQ5OnC1M259iAXb//yiSZgu/quunMHPCXSiqn4FNOSgASTSbsA==}
@@ -2739,6 +2756,9 @@ packages:
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+
+  focus-visible@5.2.1:
+    resolution: {integrity: sha512-8Bx950VD1bWTQJEH/AM6SpEk+SU55aVnp4Ujhuuxy3eMEBCRwBnTBnVXr9YAPvZL3/CNjCa8u4IWfNmEO53whA==}
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -5110,6 +5130,12 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
+  '@storybook/addon-a11y@10.0.2(storybook@8.4.7(prettier@3.6.2))':
+    dependencies:
+      '@storybook/global': 5.0.0
+      axe-core: 4.11.0
+      storybook: 8.4.7(prettier@3.6.2)
+
   '@storybook/addon-actions@8.4.7(storybook@8.4.7(prettier@3.6.2))':
     dependencies:
       '@storybook/global': 5.0.0
@@ -6835,6 +6861,8 @@ snapshots:
       rimraf: 3.0.2
 
   flatted@3.3.3: {}
+
+  focus-visible@5.2.1: {}
 
   for-each@0.3.5:
     dependencies:

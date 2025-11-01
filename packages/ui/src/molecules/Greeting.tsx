@@ -54,17 +54,23 @@ export const Greeting: React.FC<GreetingProps> = ({ userName, timePeriod, classN
       className={`bg-greeting-background border-secondary-200 flex flex-col items-center justify-between overflow-hidden rounded-lg border shadow-md md:flex-row ${className}`}
     >
       {/* PNG for mobile - centered above text */}
-      <img src={imageSrc} alt={imageAlt} width="64" height="64" className="mt-xl block md:hidden" />
-
-      <h1 className="text-secondary-900 p-xl font-serif text-3xl font-bold">{greetingText}</h1>
-
-      {/* PNG for tablet - right side */}
       <img
         src={imageSrc}
         alt={imageAlt}
-        width="150"
-        height="150"
-        className="mr-xl hidden md:block lg:hidden"
+        width="64"
+        height="64"
+        className="mt-xl block max-w-full object-contain md:hidden"
+      />
+
+      <h1 className="text-secondary-900 p-xl font-serif text-3xl font-bold">{greetingText}</h1>
+
+      {/* PNG for tablet - right side, same size as mobile */}
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        width="64"
+        height="64"
+        className="mr-xl hidden max-w-full object-contain md:block lg:hidden"
       />
 
       {/* SVG for desktop - full height */}

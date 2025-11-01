@@ -58,13 +58,13 @@ export const CustomContent: Story = {
           <span className="text-secondary-500 text-sm">Compassionate care for everyone</span>
         </div>
         <div className="flex gap-4">
-          <a href="#" className="text-primary-700 hover:text-primary-800">
+          <a href="https://facebook.com" className="text-primary-700 hover:text-primary-800">
             Facebook
           </a>
-          <a href="#" className="text-primary-700 hover:text-primary-800">
+          <a href="https://twitter.com" className="text-primary-700 hover:text-primary-800">
             Twitter
           </a>
-          <a href="#" className="text-primary-700 hover:text-primary-800">
+          <a href="https://linkedin.com" className="text-primary-700 hover:text-primary-800">
             LinkedIn
           </a>
         </div>

@@ -77,7 +77,7 @@ export function NavigationMenu({
           bg-white
           md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
           ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
-          ${collapsed ? "w-20" : "w-64"}
+          w-64 ${collapsed ? "md:w-20" : "md:w-64"}
         `.trim()}
         style={{
           boxShadow: isOpen ? "-8px 0 24px -4px rgba(0, 0, 0, 0.15)" : "none",
@@ -131,7 +131,7 @@ export function NavigationMenu({
                   <>
                     {cloneElement(child, { collapsed })}
                     {index < Children.count(children) - 1 && (
-                      <hr className="border-secondary-100 my-1" role="separator" />
+                      <hr className="border-secondary-100 my-1" />
                     )}
                   </>
                 );

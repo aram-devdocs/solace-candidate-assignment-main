@@ -33,24 +33,26 @@ const navigationItems = (
   </>
 );
 
-export const Default: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
+function DefaultWrapper() {
+  const [isOpen, setIsOpen] = useState(false);
 
-    return (
-      <div className="h-screen">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-primary-700 m-4 rounded-md px-4 py-2 text-white"
-        >
-          Open Menu
-        </button>
-        <NavigationMenu isOpen={isOpen} onClose={() => setIsOpen(false)} header="MENU">
-          {navigationItems}
-        </NavigationMenu>
-      </div>
-    );
-  },
+  return (
+    <div className="h-screen">
+      <button
+        onClick={() => setIsOpen(true)}
+        className="bg-primary-700 m-4 rounded-md px-4 py-2 text-white"
+      >
+        Open Menu
+      </button>
+      <NavigationMenu isOpen={isOpen} onClose={() => setIsOpen(false)} header="MENU">
+        {navigationItems}
+      </NavigationMenu>
+    </div>
+  );
+}
+
+export const Default: Story = {
+  render: () => <DefaultWrapper />,
 };
 
 export const Open: Story = {
@@ -97,33 +99,35 @@ export const CustomHeader: Story = {
   ),
 };
 
-export const Interactive: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(true);
+function InteractiveWrapper() {
+  const [isOpen, setIsOpen] = useState(true);
 
-    return (
-      <div className="flex h-screen">
-        <NavigationMenu
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          header="MENU"
-          footer={<div className="text-secondary-500 text-xs">{FOOTER_COPYRIGHT}</div>}
+  return (
+    <div className="flex h-screen">
+      <NavigationMenu
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        header="MENU"
+        footer={<div className="text-secondary-500 text-xs">{FOOTER_COPYRIGHT}</div>}
+      >
+        {navigationItems}
+      </NavigationMenu>
+      <div className="flex-1 p-8">
+        <h1 className="mb-4 text-2xl font-bold">Page Content</h1>
+        <p className="text-secondary-700 mb-4">
+          This demonstrates how the navigation menu works alongside page content.
+        </p>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="bg-primary-700 rounded-md px-4 py-2 text-white"
         >
-          {navigationItems}
-        </NavigationMenu>
-        <div className="flex-1 p-8">
-          <h1 className="mb-4 text-2xl font-bold">Page Content</h1>
-          <p className="text-secondary-700 mb-4">
-            This demonstrates how the navigation menu works alongside page content.
-          </p>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="bg-primary-700 rounded-md px-4 py-2 text-white"
-          >
-            {isOpen ? "Close" : "Open"} Menu
-          </button>
-        </div>
+          {isOpen ? "Close" : "Open"} Menu
+        </button>
       </div>
-    );
-  },
+    </div>
+  );
+}
+
+export const Interactive: Story = {
+  render: () => <InteractiveWrapper />,
 };

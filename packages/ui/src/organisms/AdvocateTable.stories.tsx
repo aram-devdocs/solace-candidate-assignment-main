@@ -53,17 +53,34 @@ const mockAdvocates: Advocate[] = [
 export const Default: Story = {
   args: {
     advocates: mockAdvocates,
+    deviceSize: "desktop",
   },
 };
 
 export const SingleAdvocate: Story = {
   args: {
     advocates: [mockAdvocates[0]],
+    deviceSize: "desktop",
   },
 };
 
 export const Empty: Story = {
   args: {
     advocates: [],
+    deviceSize: "desktop",
+  },
+};
+
+export const MobileView: Story = {
+  args: {
+    advocates: mockAdvocates,
+    deviceSize: "mobile",
+  },
+};
+
+export const TabletView: Story = {
+  args: {
+    advocates: mockAdvocates,
+    deviceSize: "tablet",
   },
 };

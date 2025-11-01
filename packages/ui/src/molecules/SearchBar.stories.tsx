@@ -14,23 +14,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function SearchBarWrapper({ initialValue = "" }: { initialValue?: string }) {
+  const [value, setValue] = useState(initialValue);
+  return (
+    <SearchBar
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onReset={() => setValue("")}
+    />
+  );
+}
+
 export const Default: Story = {
   args: {
     value: "",
     onChange: () => {},
     onReset: () => {},
   },
-  render: (args) => {
-    const [value, setValue] = useState(args.value);
-    return (
-      <SearchBar
-        {...args}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onReset={() => setValue("")}
-      />
-    );
-  },
+  render: () => <SearchBarWrapper />,
 };
 
 export const WithValue: Story = {
@@ -39,15 +40,5 @@ export const WithValue: Story = {
     onChange: () => {},
     onReset: () => {},
   },
-  render: (args) => {
-    const [value, setValue] = useState(args.value);
-    return (
-      <SearchBar
-        {...args}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onReset={() => setValue("")}
-      />
-    );
-  },
+  render: () => <SearchBarWrapper initialValue="John" />,
 };

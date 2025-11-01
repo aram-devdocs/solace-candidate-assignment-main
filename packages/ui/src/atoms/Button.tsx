@@ -12,11 +12,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", className = "", children, ...props }, ref) => {
-    const baseClasses = "px-lg py-sm rounded-md font-medium transition-colors";
+    const baseClasses =
+      "px-lg py-sm rounded-md font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
     const variantClasses = {
-      primary: "bg-primary-700 text-white hover:bg-primary-800 active:bg-primary-900",
+      primary:
+        "bg-primary-700 text-white hover:bg-primary-800 active:bg-primary-900 focus-visible:ring-primary-500",
       secondary:
-        "bg-secondary-200 text-secondary-900 hover:bg-secondary-300 active:bg-secondary-400",
+        "bg-secondary-200 text-secondary-900 hover:bg-secondary-300 active:bg-secondary-400 focus-visible:ring-secondary-500",
     };
 
     return (

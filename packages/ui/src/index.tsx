@@ -121,3 +121,14 @@ export { SkeletonAdvocateListTemplate } from "./templates/SkeletonAdvocateListTe
 export type { SkeletonAdvocateListTemplateProps } from "./templates/SkeletonAdvocateListTemplate";
 
 export { COMPANY_NAME, FOOTER_COPYRIGHT, FOOTER_COPYRIGHT_WITH_RIGHTS } from "./constants/footer";
+
+export { BREAKPOINTS, getDeviceSize, type DeviceSize } from "@repo/utils";
+
+export {
+  ADVOCATE_TABLE_COLUMNS,
+  ADVOCATE_TABLE_HEADERS,
+  EXPANDABLE_COLUMNS,
+} from "./constants/table";
+export type { AdvocateColumnKey } from "./constants/table";
+
+export { ARIA_LABELS, SR_ANNOUNCEMENTS, A11Y_ROLES } from "./constants/accessibility";

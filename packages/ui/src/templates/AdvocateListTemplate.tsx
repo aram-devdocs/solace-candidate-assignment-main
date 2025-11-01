@@ -7,6 +7,7 @@ import { AdvocateTable } from "../organisms/AdvocateTable";
 import { SkeletonGreeting } from "../molecules/SkeletonGreeting";
 import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
 import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
+import type { DeviceSize } from "@repo/utils";
 
 export interface AdvocateListTemplateProps {
   advocates: Advocate[];
@@ -15,10 +16,26 @@ export interface AdvocateListTemplateProps {
   onResetSearch: () => void;
   isLoading?: boolean;
   error?: string;
+  /**
+   * Current device size (from useDeviceSize hook in parent)
+   */
+  deviceSize: DeviceSize;
+  /**
+   * Set of expanded row indices (from useExpandableRows hook in parent)
+   */
+  expandedRows?: Set<number>;
+  /**
+   * Callback to toggle row expansion
+   */
+  onToggleRow?: (index: number) => void; // eslint-disable-line no-unused-vars
 }
 
 /**
  * AdvocateListTemplate complete page layout with search and table
+ * Responsive: Adjusts padding and spacing for different screen sizes
+ * Mobile: p-md, my-lg
+ * Tablet: p-lg, my-xl
+ * Desktop: p-xl, my-2xl
  *
  * @param advocates - Array of advocates to display
  * @param searchTerm - Current search term
@@ -34,6 +51,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   onResetSearch,
   isLoading = false,
   error,
+  deviceSize,
+  expandedRows,
+  onToggleRow,
 }) => {
   const getTimePeriod = (): "morning" | "afternoon" | "evening" => {
     const hour = new Date().getHours();
@@ -42,16 +62,19 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
     return "evening";
   };
 
+  const paddingClasses = "p-md md:p-lg lg:p-xl";
+  const spacingClasses = "my-lg md:my-xl lg:my-2xl";
+
   if (isLoading) {
     return (
-      <main className="p-xl">
-        <div className="my-2xl">
+      <main className={paddingClasses}>
+        <div className={spacingClasses}>
           <SkeletonGreeting />
         </div>
-        <div className="my-2xl">
+        <div className={spacingClasses}>
           <SkeletonSearchBar />
         </div>
-        <div className="my-2xl">
+        <div className={spacingClasses}>
           <SkeletonAdvocateTable />
         </div>
       </main>
@@ -60,8 +83,8 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (error) {
     return (
-      <main className="p-xl">
-        <div className="my-2xl">
+      <main className={paddingClasses}>
+        <div className={spacingClasses}>
           <Greeting userName="Aram" timePeriod={getTimePeriod()} />
         </div>
         <ErrorState error={error} />
@@ -70,15 +93,20 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   }
 
   return (
-    <main className="p-xl">
-      <div className="my-2xl">
+    <main className={paddingClasses}>
+      <div className={spacingClasses}>
         <Greeting userName="Aram" timePeriod={getTimePeriod()} />
       </div>
-      <div className="my-2xl">
+      <div className={spacingClasses}>
         <SearchBar value={searchTerm} onChange={onSearchChange} onReset={onResetSearch} />
       </div>
-      <div className="my-2xl">
-        <AdvocateTable advocates={advocates} />
+      <div className={spacingClasses}>
+        <AdvocateTable
+          advocates={advocates}
+          deviceSize={deviceSize}
+          expandedRows={expandedRows}
+          onToggleRow={onToggleRow}
+        />
       </div>
     </main>
   );

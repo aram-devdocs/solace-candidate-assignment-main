@@ -76,15 +76,15 @@ export const NavigationList: Story = {
   render: () => (
     <nav className="flex flex-col">
       <NavigationItem icon={<HomeIcon />} label="Home" href="/" active />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<MessagesIcon />} label="Messages" href="/messages" />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<NotesIcon />} label="Notes" href="/notes" />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<FormsIcon />} label="Forms" href="/forms" />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<HealthInsuranceIcon />} label="Health Insurance" href="/insurance" />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<HelpIcon />} label="Help" href="/help" />
     </nav>
   ),
@@ -101,11 +101,11 @@ export const CollapsedNavigation: Story = {
   render: () => (
     <nav className="flex flex-col">
       <NavigationItem icon={<HomeIcon />} label="Home" href="/" active collapsed />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<MessagesIcon />} label="Messages" href="/messages" collapsed />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<NotesIcon />} label="Notes" href="/notes" collapsed />
-      <hr className="border-secondary-200 my-1" role="separator" />
+      <hr className="border-secondary-200 my-1" />
       <NavigationItem icon={<FormsIcon />} label="Forms" href="/forms" collapsed />
     </nav>
   ),
