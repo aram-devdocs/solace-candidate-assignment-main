@@ -1,11 +1,15 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { migrate } from "drizzle-orm/neon-serverless/migrator";
 import { Pool, neonConfig } from "@neondatabase/serverless";
-import ws from "ws";
 import { resolve } from "path";
 
-// Configure Neon for environments without native WebSocket support
-neonConfig.webSocketConstructor = ws;
+// Set WebSocket constructor only for Node.js environments
+// Migration scripts always run in Node.js (local dev and CI/CD), so this will always execute
+// eslint-disable-next-line turbo/no-undeclared-env-vars
+if (typeof process !== "undefined" && process.versions?.node) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  neonConfig.webSocketConstructor = require("ws");
+}
 
 // Configure Neon for local development only (not in CI/CD)
 // eslint-disable-next-line turbo/no-undeclared-env-vars

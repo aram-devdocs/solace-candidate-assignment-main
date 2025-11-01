@@ -1,6 +1,5 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Pool, neonConfig } from "@neondatabase/serverless";
-import ws from "ws";
 import * as schema from "./schema";
 
 // eslint-disable-next-line turbo/no-undeclared-env-vars
@@ -27,8 +26,15 @@ if (isLocalDev) {
   neonConfig.wsProxy = (host) => (host === "db.localtest.me" ? `${host}:4444/v2` : `${host}/v2`);
 }
 
-// Set WebSocket constructor for environments that don't support WebSocket natively (Node.js)
-neonConfig.webSocketConstructor = ws;
+// Set WebSocket constructor only for Node.js environments
+// Serverless environments (Vercel, Cloudflare Workers) have native WebSocket support
+// eslint-disable-next-line turbo/no-undeclared-env-vars
+if (typeof process !== "undefined" && process.versions?.node) {
+  // Only import ws in Node.js runtime, not in serverless/edge environments
+  // This prevents "Cannot find module 'ws'" errors in Vercel deployments
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  neonConfig.webSocketConstructor = require("ws");
+}
 
 /**
  * Creates and configures the Neon serverless database client.
