@@ -24,28 +24,30 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({ advocates }) => {
   ];
 
   return (
-    <table className="w-full border-collapse">
-      <TableHeader headers={headers} />
-      <tbody>
-        {advocates.map((advocate, index) => (
-          <TableRow
-            key={index}
-            cells={[
-              advocate.firstName,
-              advocate.lastName,
-              advocate.city,
-              advocate.degree,
-              <div key={`specialties-${index}`}>
-                {advocate.specialties.map((s, i) => (
-                  <div key={i}>{s}</div>
-                ))}
-              </div>,
-              advocate.yearsOfExperience,
-              advocate.phoneNumber,
-            ]}
-          />
-        ))}
-      </tbody>
-    </table>
+    <div className="border-secondary-200 w-full overflow-x-auto rounded-lg border">
+      <table className="w-full border-collapse">
+        <TableHeader headers={headers} />
+        <tbody>
+          {advocates.map((advocate, index) => (
+            <TableRow
+              key={index}
+              cells={[
+                advocate.firstName,
+                advocate.lastName,
+                advocate.city,
+                advocate.degree,
+                <div key={`specialties-${index}`}>
+                  {advocate.specialties.map((s, i) => (
+                    <div key={i}>{s}</div>
+                  ))}
+                </div>,
+                advocate.yearsOfExperience,
+                advocate.phoneNumber,
+              ]}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };

@@ -8,6 +8,7 @@
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
+  - [Storybook: https://solace-storybook.aramhammoudeh.com](https://solace-storybook.aramhammoudeh.com)
 
 # Logs
 
@@ -109,3 +110,15 @@ export default function Home() {
 ```
 
 This makes a huge difference in readability and scaling, and allows us to target small chunks of the workspace at a time for refinement, without worrying about breaking the entire system.
+
+## [PR 6 - app.solace.health UI]()
+
+Everything is in place for a makeover, so lets go straight the source. Using the reference images, I am working to wireframe the UI to help present it as a feature of the existing application.
+
+Taking html snippets directly from the app.solace.health site, I was able to get SVG's for the logo and menu icons, and the rest I was able to recreate one by one from reference and just CSS styling. While not a perfect 1:1 match, the theme is fairly close and should serve as a nice guide on the layout on how we should style the table.
+
+Looking at the table, it in mobile view to the right, it goes on as long as the list, has no pagination controls, no filtering or sorting, and needs dynamic views based on the screen size to truly be a responsive application. I will kick most of this into seperate PRs so I can isolate the table itself outside of the theme code.
+
+A fun side tangent I went on here was copying the greeding badge with its different states for morning, afternoon, and evening. I was able to find those three states (couldnt find a night one) for mobile and web views. This added a nice homage to the orignal, and helped me tie in some of the same theming to the new app.
+
+I do notice some small differences upon review, but I feel I am 90% of the way there, so after a timebox UI session, I will move on to mobile responsiveness in the next pr.

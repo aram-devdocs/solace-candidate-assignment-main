@@ -1,10 +1,12 @@
 import React from "react";
 import type { Advocate } from "@repo/types";
-import { Text } from "../atoms/Text";
+import { Greeting } from "../molecules/Greeting";
 import { SearchBar } from "../molecules/SearchBar";
-import { LoadingState } from "../molecules/LoadingState";
 import { ErrorState } from "../molecules/ErrorState";
 import { AdvocateTable } from "../organisms/AdvocateTable";
+import { SkeletonGreeting } from "../molecules/SkeletonGreeting";
+import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
+import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
 
 export interface AdvocateListTemplateProps {
   advocates: Advocate[];
@@ -33,13 +35,25 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   isLoading = false,
   error,
 }) => {
+  const getTimePeriod = (): "morning" | "afternoon" | "evening" => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "morning";
+    if (hour < 18) return "afternoon";
+    return "evening";
+  };
+
   if (isLoading) {
     return (
       <main className="p-xl">
-        <Text as="h1" variant="h1">
-          Solace Advocates
-        </Text>
-        <LoadingState message="Loading advocates..." />
+        <div className="my-2xl">
+          <SkeletonGreeting />
+        </div>
+        <div className="my-2xl">
+          <SkeletonSearchBar />
+        </div>
+        <div className="my-2xl">
+          <SkeletonAdvocateTable />
+        </div>
       </main>
     );
   }
@@ -47,9 +61,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   if (error) {
     return (
       <main className="p-xl">
-        <Text as="h1" variant="h1">
-          Solace Advocates
-        </Text>
+        <div className="my-2xl">
+          <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+        </div>
         <ErrorState error={error} />
       </main>
     );
@@ -57,9 +71,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   return (
     <main className="p-xl">
-      <Text as="h1" variant="h1">
-        Solace Advocates
-      </Text>
+      <div className="my-2xl">
+        <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+      </div>
       <div className="my-2xl">
         <SearchBar value={searchTerm} onChange={onSearchChange} onReset={onResetSearch} />
       </div>

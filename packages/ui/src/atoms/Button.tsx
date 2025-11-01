@@ -14,7 +14,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", className = "", children, ...props }, ref) => {
     const baseClasses = "px-lg py-sm rounded-md font-medium transition-colors";
     const variantClasses = {
-      primary: "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800",
+      primary: "bg-primary-700 text-white hover:bg-primary-800 active:bg-primary-900",
       secondary:
         "bg-secondary-200 text-secondary-900 hover:bg-secondary-300 active:bg-secondary-400",
     };

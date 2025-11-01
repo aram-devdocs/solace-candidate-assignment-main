@@ -12,7 +12,7 @@ export interface TableRowProps {
  */
 export const TableRow: React.FC<TableRowProps> = ({ cells }) => {
   return (
-    <tr>
+    <tr className="border-secondary-200 hover:bg-primary-50 border-b transition-colors">
       {cells.map((cell, index) => (
         <TableCell key={index}>{cell}</TableCell>
       ))}

@@ -14,7 +14,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ variant = "default", className = "", ...props }, ref) => {
     const baseClasses = "px-md py-sm rounded-md transition-colors";
     const variantClasses = {
-      default: "border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500",
+      default:
+        "border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700",
       error: "border border-error-500 focus:outline-none focus:ring-2 focus:ring-error-500",
     };
 

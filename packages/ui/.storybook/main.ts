@@ -21,5 +21,16 @@ const config: StorybookConfig = {
     name: getAbsolutePath("@storybook/react-vite"),
     options: {},
   },
+  async viteFinal(config) {
+    return {
+      ...config,
+      css: {
+        ...config.css,
+        postcss: {
+          plugins: [require("tailwindcss"), require("autoprefixer")],
+        },
+      },
+    };
+  },
 };
 export default config;
