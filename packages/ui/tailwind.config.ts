@@ -4,16 +4,34 @@ const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          "Lato",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "Oxygen",
+          "Ubuntu",
+          "Cantarell",
+          "Fira Sans",
+          "Droid Sans",
+          "Helvetica Neue",
+          "sans-serif",
+        ],
+        serif: ["Mollie Glaston", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+      },
       colors: {
         primary: {
           50: "#f0fdf9",
           100: "#ccfbef",
+          150: "#B0C8BF",
           200: "#99f6e0",
           300: "#5fe9d0",
           400: "#2dd4bf",
           500: "#14b8a6",
-          600: "#0f9688",
-          700: "#2d5049",
+          600: "#275E50",
+          700: "#1D4239",
           800: "#1e3a34",
           900: "#134239",
           950: "#042f2e",
@@ -95,7 +113,16 @@ const config: Config = {
         full: "9999px",
       },
       backgroundImage: {
-        "gradient-banner": "linear-gradient(to right, #1d332d, #134239, #1e3a34)",
+        "gradient-banner": "linear-gradient(to right, #1D4239, #134239, #1e3a34)",
+      },
+      keyframes: {
+        shimmer: {
+          "0%": { backgroundPosition: "-1000px 0" },
+          "100%": { backgroundPosition: "1000px 0" },
+        },
+      },
+      animation: {
+        shimmer: "shimmer 2s infinite linear",
       },
     },
   },

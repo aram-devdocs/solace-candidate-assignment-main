@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Footer } from "./Footer";
+import { FOOTER_COPYRIGHT_WITH_RIGHTS } from "../constants/footer";
 
 const meta: Meta<typeof Footer> = {
   title: "Molecules/Footer",
@@ -15,7 +16,7 @@ type Story = StoryObj<typeof Footer>;
 
 export const Default: Story = {
   args: {
-    copyright: "© 2024 Solace Health. All rights reserved.",
+    copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
   },
 };
 
@@ -26,7 +27,7 @@ export const WithLinks: Story = {
       { label: "Terms of Service", href: "/terms" },
       { label: "Contact Us", href: "/contact" },
     ],
-    copyright: "© 2024 Solace Health. All rights reserved.",
+    copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
   },
 };
 
@@ -44,7 +45,7 @@ export const LinksOnly: Story = {
 
 export const CopyrightOnly: Story = {
   args: {
-    copyright: "© 2024 Solace Health. All rights reserved.",
+    copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
   },
 };
 
@@ -69,7 +70,7 @@ export const CustomContent: Story = {
         </div>
       </div>
     ),
-    copyright: "© 2024 Solace Health. All rights reserved.",
+    copyright: FOOTER_COPYRIGHT_WITH_RIGHTS,
   },
 };
 
@@ -87,7 +88,7 @@ export const FullPageExample: Story = {
           { label: "Contact Us", href: "/contact" },
           { label: "Help Center", href: "/help" },
         ]}
-        copyright="© 2024 Solace Health. All rights reserved."
+        copyright={FOOTER_COPYRIGHT_WITH_RIGHTS}
       />
     </div>
   ),

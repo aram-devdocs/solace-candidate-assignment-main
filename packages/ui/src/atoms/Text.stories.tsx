@@ -61,3 +61,28 @@ export const ErrorText: Story = {
     children: "Error message",
   },
 };
+
+export const FontComparison: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <div>
+        <Text as="h1" variant="h1">
+          Mollie Glaston Serif Heading
+        </Text>
+        <Text as="p" variant="body" className="mt-2">
+          This is Lato sans-serif body text. Notice the difference between the elegant serif font
+          above and this clean sans-serif font.
+        </Text>
+      </div>
+      <div>
+        <Text as="h2" variant="h2">
+          Another Serif Heading
+        </Text>
+        <Text as="p" variant="body" className="mt-2">
+          Lato is used for all body text to ensure readability, while Mollie Glaston adds
+          sophistication to headings.
+        </Text>
+      </div>
+    </div>
+  ),
+};

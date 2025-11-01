@@ -19,11 +19,11 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
     const Component = as;
 
     const variantClasses = {
-      h1: "text-3xl font-bold",
-      h2: "text-2xl font-semibold",
-      h3: "text-xl font-semibold",
-      body: "text-base",
-      small: "text-sm",
+      h1: "text-3xl font-bold font-serif",
+      h2: "text-2xl font-semibold font-serif",
+      h3: "text-xl font-semibold font-serif",
+      body: "text-base font-sans",
+      small: "text-sm font-sans",
     };
 
     const colorClasses = {

@@ -114,3 +114,7 @@ This makes a huge difference in readability and scaling, and allows us to target
 ## [PR 6 - app.solace.health UI]()
 
 Everything is in place for a makeover, so lets go straight the source. Using the reference images, I am working to wireframe the UI to help present it as a feature of the existing application.
+
+Taking html snippets directly from the app.solace.health site, I was able to get SVG's for the logo and menu icons, and the rest I was able to recreate one by one from reference and just CSS styling. While not a perfect 1:1 match, the theme is fairly close and should serve as a nice guide on the layout on how we should style the table.
+
+Looking at the table, it in mobile view to the right, it goes on as long as the list, has no pagination controls, no filtering or sorting, and needs dynamic views based on the screen size to truly be a responsive application. I will kick most of this into seperate PRs so I can isolate the table itself outside of the theme code.

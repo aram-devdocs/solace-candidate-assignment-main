@@ -2,9 +2,10 @@ import React from "react";
 import type { Advocate } from "@repo/types";
 import { Text } from "../atoms/Text";
 import { SearchBar } from "../molecules/SearchBar";
-import { LoadingState } from "../molecules/LoadingState";
 import { ErrorState } from "../molecules/ErrorState";
 import { AdvocateTable } from "../organisms/AdvocateTable";
+import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
+import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
 
 export interface AdvocateListTemplateProps {
   advocates: Advocate[];
@@ -39,7 +40,12 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
         <Text as="h1" variant="h1">
           Solace Advocates
         </Text>
-        <LoadingState message="Loading advocates..." />
+        <div className="my-2xl">
+          <SkeletonSearchBar />
+        </div>
+        <div className="my-2xl">
+          <SkeletonAdvocateTable />
+        </div>
       </main>
     );
   }

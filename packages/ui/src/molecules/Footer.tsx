@@ -26,14 +26,14 @@ export interface FooterProps {
  *
  * @example
  * ```tsx
- * import { Footer } from "@repo/ui";
+ * import { Footer, FOOTER_COPYRIGHT_WITH_RIGHTS } from "@repo/ui";
  *
  * <Footer
  *   links={[
  *     { label: "Privacy Policy", href: "/privacy" },
  *     { label: "Terms of Service", href: "/terms" },
  *   ]}
- *   copyright="© 2024 Solace Health. All rights reserved."
+ *   copyright={FOOTER_COPYRIGHT_WITH_RIGHTS}
  * />
  * ```
  */

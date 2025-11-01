@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Home, MessageSquare, FileText, Clipboard, Heart, HelpCircle } from "lucide-react";
+import { HomeIcon } from "../atoms/HomeIcon";
+import { MessagesIcon } from "../atoms/MessagesIcon";
+import { NotesIcon } from "../atoms/NotesIcon";
+import { FormsIcon } from "../atoms/FormsIcon";
+import { HealthInsuranceIcon } from "../atoms/HealthInsuranceIcon";
+import { HelpIcon } from "../atoms/HelpIcon";
 import { NavigationItem } from "./NavigationItem";
 
 const meta: Meta<typeof NavigationItem> = {
@@ -23,7 +28,7 @@ type Story = StoryObj<typeof NavigationItem>;
 
 export const Default: Story = {
   args: {
-    icon: Home,
+    icon: <HomeIcon />,
     label: "Home",
     href: "/",
     active: false,
@@ -32,7 +37,7 @@ export const Default: Story = {
 
 export const Active: Story = {
   args: {
-    icon: Home,
+    icon: <HomeIcon />,
     label: "Home",
     href: "/",
     active: true,
@@ -41,7 +46,7 @@ export const Active: Story = {
 
 export const Inactive: Story = {
   args: {
-    icon: MessageSquare,
+    icon: <MessagesIcon />,
     label: "Messages",
     href: "/messages",
     active: false,
@@ -50,7 +55,7 @@ export const Inactive: Story = {
 
 export const Collapsed: Story = {
   args: {
-    icon: Home,
+    icon: <HomeIcon />,
     label: "Home",
     href: "/",
     collapsed: true,
@@ -59,7 +64,7 @@ export const Collapsed: Story = {
 
 export const CollapsedActive: Story = {
   args: {
-    icon: Home,
+    icon: <HomeIcon />,
     label: "Home",
     href: "/",
     collapsed: true,
@@ -69,13 +74,18 @@ export const CollapsedActive: Story = {
 
 export const NavigationList: Story = {
   render: () => (
-    <nav className="flex flex-col gap-1">
-      <NavigationItem icon={Home} label="Home" href="/" active />
-      <NavigationItem icon={MessageSquare} label="Messages" href="/messages" />
-      <NavigationItem icon={FileText} label="Notes" href="/notes" />
-      <NavigationItem icon={Clipboard} label="Forms" href="/forms" />
-      <NavigationItem icon={Heart} label="Health Insurance" href="/insurance" />
-      <NavigationItem icon={HelpCircle} label="Help" href="/help" />
+    <nav className="flex flex-col">
+      <NavigationItem icon={<HomeIcon />} label="Home" href="/" active />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<MessagesIcon />} label="Messages" href="/messages" />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<NotesIcon />} label="Notes" href="/notes" />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<FormsIcon />} label="Forms" href="/forms" />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<HealthInsuranceIcon />} label="Health Insurance" href="/insurance" />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<HelpIcon />} label="Help" href="/help" />
     </nav>
   ),
 };
@@ -89,11 +99,14 @@ export const CollapsedNavigation: Story = {
     ),
   ],
   render: () => (
-    <nav className="flex flex-col gap-1">
-      <NavigationItem icon={Home} label="Home" href="/" active collapsed />
-      <NavigationItem icon={MessageSquare} label="Messages" href="/messages" collapsed />
-      <NavigationItem icon={FileText} label="Notes" href="/notes" collapsed />
-      <NavigationItem icon={Clipboard} label="Forms" href="/forms" collapsed />
+    <nav className="flex flex-col">
+      <NavigationItem icon={<HomeIcon />} label="Home" href="/" active collapsed />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<MessagesIcon />} label="Messages" href="/messages" collapsed />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<NotesIcon />} label="Notes" href="/notes" collapsed />
+      <hr className="border-secondary-200 my-1" role="separator" />
+      <NavigationItem icon={<FormsIcon />} label="Forms" href="/forms" collapsed />
     </nav>
   ),
 };

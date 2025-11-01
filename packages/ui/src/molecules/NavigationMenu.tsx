@@ -67,14 +67,14 @@ export function NavigationMenu({
       {/* Navigation sidebar */}
       <aside
         className={`
-          border-secondary-200 fixed
+          border-primary-150 fixed
           left-0 top-0
           z-50
           flex
-          h-full flex-col
+          h-screen flex-col
           border-r bg-white
           transition-all
-          duration-300 md:relative
+          duration-300 md:sticky
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${collapsed ? "w-20" : "w-64"}
         `.trim()}
@@ -82,8 +82,8 @@ export function NavigationMenu({
         {/* Header with collapse toggle */}
         <div className="border-secondary-200 flex items-center justify-between border-b p-4">
           <span
-            className={`text-secondary-600 text-sm font-bold transition-opacity ${
-              collapsed ? "w-0 opacity-0" : "opacity-100"
+            className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-normal transition-opacity ${
+              collapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"
             }`}
           >
             {header}
@@ -92,14 +92,14 @@ export function NavigationMenu({
           {/* Desktop: Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hover:bg-secondary-100 hidden h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full transition-colors md:flex"
+            className="border-primary-150 hover:bg-secondary-50 hidden h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors md:flex"
             aria-label={collapsed ? "Expand menu" : "Collapse menu"}
             type="button"
           >
             {collapsed ? (
-              <ChevronRight className="text-primary-700 h-5 w-5" />
+              <ChevronRight className="text-primary-150 pointer-events-none h-5 w-5" />
             ) : (
-              <ChevronLeft className="text-primary-700 h-5 w-5" />
+              <ChevronLeft className="text-primary-150 pointer-events-none h-5 w-5" />
             )}
           </button>
 
@@ -116,10 +116,17 @@ export function NavigationMenu({
 
         {/* Navigation items */}
         <nav className="flex-1 overflow-y-auto p-2">
-          <div className="flex flex-col gap-1">
-            {Children.map(children, (child) => {
+          <div className="flex flex-col">
+            {Children.map(children, (child, index) => {
               if (isValidElement(child)) {
-                return cloneElement(child, { collapsed } as any);
+                return (
+                  <>
+                    {cloneElement(child, { collapsed } as any)}
+                    {index < Children.count(children) - 1 && (
+                      <hr className="border-secondary-100 my-1" role="separator" />
+                    )}
+                  </>
+                );
               }
               return child;
             })}

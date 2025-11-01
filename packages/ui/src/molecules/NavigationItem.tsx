@@ -1,14 +1,14 @@
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import { cloneElement } from "react";
 
 /**
  * Props for the NavigationItem component
  */
 export interface NavigationItemProps extends ComponentPropsWithoutRef<"a"> {
   /**
-   * The Lucide icon component to render
+   * The icon component to render (accepts custom icon components with active prop)
    */
-  icon: LucideIcon;
+  icon: ReactElement<{ active?: boolean }>;
   /**
    * Label text for the navigation item
    */
@@ -30,11 +30,10 @@ export interface NavigationItemProps extends ComponentPropsWithoutRef<"a"> {
  *
  * @example
  * ```tsx
- * import { Home } from "lucide-react";
- * import { NavigationItem } from "@repo/ui";
+ * import { HomeIcon, NavigationItem } from "@repo/ui";
  *
  * <NavigationItem
- *   icon={Home}
+ *   icon={<HomeIcon />}
  *   label="Home"
  *   href="/dashboard"
  *   active={true}
@@ -42,7 +41,7 @@ export interface NavigationItemProps extends ComponentPropsWithoutRef<"a"> {
  * ```
  */
 export function NavigationItem({
-  icon: IconComponent,
+  icon,
   label,
   active = false,
   collapsed = false,
@@ -50,36 +49,14 @@ export function NavigationItem({
   ...props
 }: NavigationItemProps) {
   const baseClasses =
-    "flex items-center gap-3 px-4 py-3 transition-colors rounded-md text-sm font-medium no-underline";
-  const textClasses = active ? "text-secondary-900" : "text-secondary-600 hover:text-secondary-900";
-  const iconClasses = active ? "w-6 h-6 flex-shrink-0" : "w-6 h-6 flex-shrink-0 text-secondary-600";
+    "flex items-center gap-3 px-4 py-3 transition-colors rounded-md text-sm font-normal no-underline";
+  const textClasses = active ? "text-success-600" : "text-secondary-600 hover:text-secondary-900";
 
   return (
     <a className={`${baseClasses} ${textClasses} ${className}`.trim()} {...props}>
-      {active ? (
-        <div className="relative h-6 w-6 flex-shrink-0">
-          <IconComponent
-            className="absolute inset-0 h-6 w-6"
-            style={{
-              stroke: "url(#icon-gradient)",
-              fill: "none",
-            }}
-          />
-          <svg width="0" height="0" className="absolute">
-            <defs>
-              <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#2d5049" />
-                <stop offset="40%" stopColor="#3d6b5e" />
-                <stop offset="70%" stopColor="#4a7c68" />
-                <stop offset="90%" stopColor="#8b7355" />
-                <stop offset="100%" stopColor="#a67c52" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      ) : (
-        <IconComponent className={iconClasses} />
-      )}
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
+        {cloneElement(icon, { active })}
+      </div>
       <span className={collapsed ? "hidden" : ""}>{label}</span>
     </a>
   );

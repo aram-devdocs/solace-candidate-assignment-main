@@ -1,29 +1,28 @@
 "use client";
 
-import type { ReactNode } from "react";
-import {
-  Home,
-  MessageSquare,
-  FileText,
-  Clipboard,
-  Heart,
-  HelpCircle,
-  type LucideIcon,
-} from "lucide-react";
+import type { ReactNode, ReactElement } from "react";
 import { useNavigation, type NavigationItem as NavItem } from "@repo/hooks";
+import { HomeIcon } from "../atoms/HomeIcon";
+import { MessagesIcon } from "../atoms/MessagesIcon";
+import { NotesIcon } from "../atoms/NotesIcon";
+import { FormsIcon } from "../atoms/FormsIcon";
+import { HealthInsuranceIcon } from "../atoms/HealthInsuranceIcon";
+import { HelpIcon } from "../atoms/HelpIcon";
+import { SolaceLogo } from "../atoms/SolaceLogo";
 import { RootLayout } from "../organisms/RootLayout";
 import { NavigationItem } from "../molecules/NavigationItem";
+import { FOOTER_COPYRIGHT_WITH_RIGHTS } from "../constants/footer";
 
 /**
- * Map of icon names to Lucide icon components
+ * Map of icon names to custom icon components
  */
-const ICON_MAP: Record<string, LucideIcon> = {
-  Home,
-  MessageSquare,
-  FileText,
-  Clipboard,
-  Heart,
-  HelpCircle,
+const ICON_MAP: Record<string, ReactElement> = {
+  Home: <HomeIcon />,
+  MessageSquare: <MessagesIcon />,
+  FileText: <NotesIcon />,
+  Clipboard: <FormsIcon />,
+  Heart: <HealthInsuranceIcon />,
+  HelpCircle: <HelpIcon />,
 };
 
 /**
@@ -46,14 +45,6 @@ export interface AppLayoutProps {
    * Logo component or text
    */
   logo?: ReactNode;
-  /**
-   * User initials for avatar
-   */
-  userInitials?: string;
-  /**
-   * User avatar image URL
-   */
-  userAvatarSrc?: string;
   /**
    * Number of unread messages
    */
@@ -106,7 +97,6 @@ export interface AppLayoutProps {
  *   navigationItems={navigationItems}
  *   currentPath={pathname}
  *   logo={<Logo />}
- *   userInitials="AH"
  * >
  *   <YourPageContent />
  * </AppLayout>
@@ -116,23 +106,21 @@ export function AppLayout({
   children,
   navigationItems,
   currentPath,
-  logo = <div className="text-xl font-bold text-white">Solace</div>,
-  userInitials,
-  userAvatarSrc,
+  logo = <SolaceLogo width={86} height={24} />,
   messageCount,
   notificationCount,
   onMessagesClick,
   onNotificationsClick,
   onProfileClick,
   footerLinks,
-  footerCopyright = "© 2024 Solace Health. All rights reserved.",
+  footerCopyright = FOOTER_COPYRIGHT_WITH_RIGHTS,
 }: AppLayoutProps) {
   const { items } = useNavigation(navigationItems, currentPath);
 
   // Render navigation items with proper icons
   const navigation = items.map((item) => {
-    const IconComponent = ICON_MAP[item.icon];
-    if (!IconComponent) {
+    const iconElement = ICON_MAP[item.icon];
+    if (!iconElement) {
       console.warn(`Icon "${item.icon}" not found in ICON_MAP`);
       return null;
     }
@@ -140,7 +128,7 @@ export function AppLayout({
     return (
       <NavigationItem
         key={item.href}
-        icon={IconComponent}
+        icon={iconElement}
         label={item.label}
         href={item.href}
         active={item.active}
@@ -152,8 +140,6 @@ export function AppLayout({
     <RootLayout
       header={{
         logo,
-        userInitials,
-        userAvatarSrc,
         messageCount,
         notificationCount,
         onMessagesClick,

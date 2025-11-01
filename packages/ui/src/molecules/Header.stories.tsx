@@ -13,32 +13,12 @@ const meta: Meta<typeof Header> = {
 export default meta;
 type Story = StoryObj<typeof Header>;
 
-const SolaceLogo = () => <div className="text-xl font-bold text-white">Solace</div>;
-
 export const Default: Story = {
-  args: {
-    logo: <SolaceLogo />,
-  },
-};
-
-export const WithUserInitials: Story = {
-  args: {
-    logo: <SolaceLogo />,
-    userInitials: "AH",
-  },
-};
-
-export const WithUserAvatar: Story = {
-  args: {
-    logo: <SolaceLogo />,
-    userAvatarSrc: "https://i.pravatar.cc/150?img=3",
-  },
+  args: {},
 };
 
 export const WithNotifications: Story = {
   args: {
-    logo: <SolaceLogo />,
-    userInitials: "AH",
     messageCount: 3,
     notificationCount: 5,
   },
@@ -46,8 +26,6 @@ export const WithNotifications: Story = {
 
 export const WithHighCounts: Story = {
   args: {
-    logo: <SolaceLogo />,
-    userInitials: "JD",
     messageCount: 12,
     notificationCount: 25,
   },
@@ -55,8 +33,6 @@ export const WithHighCounts: Story = {
 
 export const Interactive: Story = {
   args: {
-    logo: <SolaceLogo />,
-    userInitials: "AH",
     messageCount: 2,
     notificationCount: 1,
     onMenuClick: () => alert("Menu clicked"),
@@ -70,8 +46,6 @@ export const FullExample: Story = {
   render: () => (
     <div className="flex h-screen flex-col">
       <Header
-        logo={<SolaceLogo />}
-        userInitials="AH"
         messageCount={3}
         notificationCount={5}
         onMenuClick={() => console.log("Menu")}
@@ -89,21 +63,8 @@ export const FullExample: Story = {
   ),
 };
 
-export const WithLogo: Story = {
-  render: () => (
-    <div className="flex h-screen flex-col">
-      <Header
-        logo={
-          <svg width="86" height="24" viewBox="0 0 86 24" fill="none">
-            <text x="0" y="18" fill="white" fontSize="18" fontWeight="bold">
-              SOLACE
-            </text>
-          </svg>
-        }
-        userInitials="AH"
-        messageCount={1}
-      />
-      <div className="bg-secondary-50 flex-1" />
-    </div>
-  ),
+export const CustomLogo: Story = {
+  args: {
+    logo: <div className="text-xl font-bold text-white">Custom Logo</div>,
+  },
 };

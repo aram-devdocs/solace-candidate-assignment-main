@@ -1,9 +1,9 @@
 "use client";
 
-import { Bell, Menu, MessageSquare, User } from "lucide-react";
+import { Menu } from "lucide-react";
 import type { ReactNode } from "react";
-import { Avatar } from "../atoms/Avatar";
 import { IconButton } from "../atoms/IconButton";
+import { SolaceLogo } from "../atoms/SolaceLogo";
 
 /**
  * Props for the Header component
@@ -30,14 +30,6 @@ export interface HeaderProps {
    */
   onProfileClick?: () => void;
   /**
-   * User avatar image URL
-   */
-  userAvatarSrc?: string;
-  /**
-   * User initials for avatar fallback
-   */
-  userInitials?: string;
-  /**
    * Number of unread messages
    */
   messageCount?: number;
@@ -60,19 +52,16 @@ export interface HeaderProps {
  *   onMessagesClick={() => navigate('/messages')}
  *   onNotificationsClick={() => navigate('/notifications')}
  *   onProfileClick={() => navigate('/profile')}
- *   userInitials="AH"
  *   messageCount={3}
  * />
  * ```
  */
 export function Header({
-  logo,
+  logo = <SolaceLogo width={86} height={24} />,
   onMenuClick,
   onMessagesClick,
   onNotificationsClick,
   onProfileClick,
-  userAvatarSrc,
-  userInitials,
   messageCount,
   notificationCount,
 }: HeaderProps) {
@@ -92,16 +81,31 @@ export function Header({
         </div>
 
         {/* Right: Actions + Profile */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Messages */}
           <div className="relative">
-            <IconButton
-              icon={MessageSquare}
-              variant="primary"
+            <button
               onClick={onMessagesClick}
-              className="hover:bg-primary-800 bg-transparent"
+              className="hover:bg-primary-800 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
               aria-label="Messages"
-            />
+            >
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-2xl text-white"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                <path d="M13 8H7" />
+                <path d="M17 12H7" />
+              </svg>
+            </button>
             {messageCount && messageCount > 0 ? (
               <span className="bg-error-600 absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
                 {messageCount > 9 ? "9+" : messageCount}
@@ -111,13 +115,27 @@ export function Header({
 
           {/* Notifications */}
           <div className="relative">
-            <IconButton
-              icon={Bell}
-              variant="primary"
+            <button
               onClick={onNotificationsClick}
-              className="hover:bg-primary-800 bg-transparent"
+              className="hover:bg-primary-800 flex h-[36px] w-[36px] items-center justify-center rounded-md transition-colors"
               aria-label="Notifications"
-            />
+            >
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-2xl text-white"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              </svg>
+            </button>
             {notificationCount && notificationCount > 0 ? (
               <span className="bg-error-600 absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
                 {notificationCount > 9 ? "9+" : notificationCount}
@@ -128,19 +146,33 @@ export function Header({
           {/* User Profile */}
           <button
             onClick={onProfileClick}
-            className="hover:bg-primary-800 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+            className="bg-primary-600 hover:bg-primary-500 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors"
             aria-label="User profile"
           >
-            {userAvatarSrc || userInitials ? (
-              <Avatar
-                src={userAvatarSrc}
-                initials={userInitials}
-                size="sm"
-                className="border-2 border-white"
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.61523 20.3073C4.61523 17.7583 7.92144 15.6919 11.9999 15.6919C16.0783 15.6919 19.3845 17.7583 19.3845 20.3073"
+                stroke="white"
+                strokeWidth="2.00107"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
               />
-            ) : (
-              <User className="h-6 w-6" />
-            )}
+              <path
+                d="M12.0002 12.9232C14.5492 12.9232 16.6155 10.8568 16.6155 8.30777C16.6155 5.75876 14.5492 3.69238 12.0002 3.69238C9.45114 3.69238 7.38477 5.75876 7.38477 8.30777C7.38477 10.8568 9.45114 12.9232 12.0002 12.9232Z"
+                stroke="white"
+                strokeWidth="2.00107"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
           </button>
         </div>
       </div>

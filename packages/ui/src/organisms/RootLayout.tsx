@@ -48,7 +48,7 @@ export interface RootLayoutProps {
  *
  * @example
  * ```tsx
- * import { RootLayout, NavigationItem } from "@repo/ui";
+ * import { RootLayout, NavigationItem, FOOTER_COPYRIGHT } from "@repo/ui";
  * import { Home, MessageSquare } from "lucide-react";
  *
  * <RootLayout
@@ -64,7 +64,7 @@ export interface RootLayoutProps {
  *     </>
  *   }
  *   footer={{
- *     copyright: "© 2024 Solace Health"
+ *     copyright: FOOTER_COPYRIGHT
  *   }}
  * >
  *   <main>Your page content</main>

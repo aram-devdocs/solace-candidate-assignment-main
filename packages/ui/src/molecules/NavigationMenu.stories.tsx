@@ -1,8 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Home, MessageSquare, FileText, Clipboard, Heart, HelpCircle } from "lucide-react";
 import { useState } from "react";
+import { HomeIcon } from "../atoms/HomeIcon";
+import { MessagesIcon } from "../atoms/MessagesIcon";
+import { NotesIcon } from "../atoms/NotesIcon";
+import { FormsIcon } from "../atoms/FormsIcon";
+import { HealthInsuranceIcon } from "../atoms/HealthInsuranceIcon";
+import { HelpIcon } from "../atoms/HelpIcon";
 import { NavigationItem } from "./NavigationItem";
 import { NavigationMenu } from "./NavigationMenu";
+import { FOOTER_COPYRIGHT } from "../constants/footer";
 
 const meta: Meta<typeof NavigationMenu> = {
   title: "Molecules/NavigationMenu",
@@ -18,12 +24,12 @@ type Story = StoryObj<typeof NavigationMenu>;
 
 const navigationItems = (
   <>
-    <NavigationItem icon={Home} label="Home" href="/" active />
-    <NavigationItem icon={MessageSquare} label="Messages" href="/messages" />
-    <NavigationItem icon={FileText} label="Notes" href="/notes" />
-    <NavigationItem icon={Clipboard} label="Forms" href="/forms" />
-    <NavigationItem icon={Heart} label="Health Insurance" href="/insurance" />
-    <NavigationItem icon={HelpCircle} label="Help" href="/help" />
+    <NavigationItem icon={<HomeIcon />} label="Home" href="/" active />
+    <NavigationItem icon={<MessagesIcon />} label="Messages" href="/messages" />
+    <NavigationItem icon={<NotesIcon />} label="Notes" href="/notes" />
+    <NavigationItem icon={<FormsIcon />} label="Forms" href="/forms" />
+    <NavigationItem icon={<HealthInsuranceIcon />} label="Health Insurance" href="/insurance" />
+    <NavigationItem icon={<HelpIcon />} label="Help" href="/help" />
   </>
 );
 
@@ -80,7 +86,7 @@ export const CustomHeader: Story = {
         onClose={() => {}}
         header={
           <div className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
+            <HomeIcon width={16} height={16} />
             <span className="text-sm font-bold">Dashboard</span>
           </div>
         }
@@ -101,7 +107,7 @@ export const Interactive: Story = {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           header="MENU"
-          footer={<div className="text-secondary-500 text-xs">© 2024 Solace Health</div>}
+          footer={<div className="text-secondary-500 text-xs">{FOOTER_COPYRIGHT}</div>}
         >
           {navigationItems}
         </NavigationMenu>
