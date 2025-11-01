@@ -123,9 +123,14 @@ const config: Config = {
           "0%": { backgroundPosition: "-1000px 0" },
           "100%": { backgroundPosition: "1000px 0" },
         },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         shimmer: "shimmer 2s infinite linear",
+        fadeIn: "fadeIn 0.3s ease-in-out",
       },
     },
   },

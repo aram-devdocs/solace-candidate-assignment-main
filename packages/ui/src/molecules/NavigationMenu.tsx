@@ -72,14 +72,17 @@ export function NavigationMenu({
           top-0
           z-50
           flex h-screen
+          flex-shrink-0
           flex-col
           bg-white
-          transition-all duration-300 md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
+          md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
           ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
           ${collapsed ? "w-20" : "w-64"}
         `.trim()}
         style={{
           boxShadow: isOpen ? "-8px 0 24px -4px rgba(0, 0, 0, 0.15)" : "none",
+          transition: "transform 0.3s ease-in-out, width 0.3s ease-in-out",
+          willChange: "transform, width",
         }}
       >
         {/* Mobile: Close Menu button */}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "../atoms/Text";
+import { SkeletonGreeting } from "../molecules/SkeletonGreeting";
 import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
 import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
 
@@ -22,9 +22,9 @@ export const SkeletonAdvocateListTemplate: React.FC<SkeletonAdvocateListTemplate
 }) => {
   return (
     <main className="p-xl">
-      <Text as="h1" variant="h1">
-        Solace Advocates
-      </Text>
+      <div className="my-2xl">
+        <SkeletonGreeting />
+      </div>
       <div className="my-2xl">
         <SkeletonSearchBar />
       </div>

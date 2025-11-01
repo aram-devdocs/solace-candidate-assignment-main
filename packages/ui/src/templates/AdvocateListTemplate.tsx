@@ -4,6 +4,7 @@ import { Greeting } from "../molecules/Greeting";
 import { SearchBar } from "../molecules/SearchBar";
 import { ErrorState } from "../molecules/ErrorState";
 import { AdvocateTable } from "../organisms/AdvocateTable";
+import { SkeletonGreeting } from "../molecules/SkeletonGreeting";
 import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
 import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
 
@@ -44,7 +45,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   if (isLoading) {
     return (
       <main className="p-xl">
-        <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+        <div className="my-2xl">
+          <SkeletonGreeting />
+        </div>
         <div className="my-2xl">
           <SkeletonSearchBar />
         </div>
@@ -58,7 +61,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   if (error) {
     return (
       <main className="p-xl">
-        <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+        <div className="my-2xl">
+          <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+        </div>
         <ErrorState error={error} />
       </main>
     );
@@ -66,7 +71,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   return (
     <main className="p-xl">
-      <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+      <div className="my-2xl">
+        <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+      </div>
       <div className="my-2xl">
         <SearchBar value={searchTerm} onChange={onSearchChange} onReset={onResetSearch} />
       </div>

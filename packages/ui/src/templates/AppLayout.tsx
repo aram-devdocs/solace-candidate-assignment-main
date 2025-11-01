@@ -73,6 +73,14 @@ export interface AppLayoutProps {
    * Footer copyright text
    */
   footerCopyright?: string;
+  /**
+   * Whether navigation is currently in progress (for loading state)
+   */
+  isNavigating?: boolean;
+  /**
+   * Callback when navigation state should be updated
+   */
+  onNavigationStart?: () => void;
 }
 
 /**
@@ -114,27 +122,40 @@ export function AppLayout({
   onProfileClick,
   footerLinks,
   footerCopyright = FOOTER_COPYRIGHT_WITH_RIGHTS,
+  isNavigating = false,
+  onNavigationStart,
 }: AppLayoutProps) {
   const { items } = useNavigation(navigationItems, currentPath);
 
-  // Render navigation items with proper icons
-  const navigation = items.map((item) => {
-    const iconElement = ICON_MAP[item.icon];
-    if (!iconElement) {
-      console.warn(`Icon "${item.icon}" not found in ICON_MAP`);
-      return null;
+  const handleNavigationClick = (onMenuClose?: () => void) => {
+    if (onMenuClose) {
+      onMenuClose();
     }
+    if (onNavigationStart) {
+      onNavigationStart();
+    }
+  };
 
-    return (
-      <NavigationItem
-        key={item.href}
-        icon={iconElement}
-        label={item.label}
-        href={item.href}
-        active={item.active}
-      />
-    );
-  });
+  // Render navigation items as a function that accepts menu close callback
+  const renderNavigation = (onMenuClose?: () => void) =>
+    items.map((item) => {
+      const iconElement = ICON_MAP[item.icon];
+      if (!iconElement) {
+        console.warn(`Icon "${item.icon}" not found in ICON_MAP`);
+        return null;
+      }
+
+      return (
+        <NavigationItem
+          key={item.href}
+          icon={iconElement}
+          label={item.label}
+          href={item.href}
+          active={item.active}
+          onClick={() => handleNavigationClick(onMenuClose)}
+        />
+      );
+    });
 
   return (
     <RootLayout
@@ -146,12 +167,13 @@ export function AppLayout({
         onNotificationsClick,
         onProfileClick,
       }}
-      navigation={navigation}
+      renderNavigation={renderNavigation}
       navigationHeader="MENU"
       footer={{
         links: footerLinks,
         copyright: footerCopyright,
       }}
+      isNavigating={isNavigating}
     >
       {children}
     </RootLayout>

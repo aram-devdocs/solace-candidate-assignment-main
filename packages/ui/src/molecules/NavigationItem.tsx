@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cloneElement, useState } from "react";
 
 /**
  * Props for the NavigationItem component
  */
-export interface NavigationItemProps extends ComponentPropsWithoutRef<"a"> {
+export interface NavigationItemProps extends Omit<ComponentPropsWithoutRef<"a">, "onClick"> {
   /**
    * The icon component to render (accepts custom icon components with active prop)
    */
@@ -25,6 +26,10 @@ export interface NavigationItemProps extends ComponentPropsWithoutRef<"a"> {
    * @default false
    */
   collapsed?: boolean;
+  /**
+   * Optional click handler for navigation interception
+   */
+  onClick?: () => void;
 }
 
 /**
@@ -48,6 +53,8 @@ export function NavigationItem({
   active = false,
   collapsed = false,
   className = "",
+  onClick,
+  href,
   ...props
 }: NavigationItemProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -56,17 +63,25 @@ export function NavigationItem({
     "flex items-center gap-3 px-4 py-3 transition-colors rounded-md text-sm font-normal no-underline";
   const textClasses = active ? "text-primary-600" : "text-secondary-600 hover:text-secondary-900";
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
-    <a
+    <Link
+      href={href || "#"}
       className={`${baseClasses} ${textClasses} ${className}`.trim()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
       {...props}
     >
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
         {cloneElement(icon, { active: active || isHovered })}
       </div>
       <span className={collapsed ? "hidden" : "whitespace-nowrap"}>{label}</span>
-    </a>
+    </Link>
   );
 }

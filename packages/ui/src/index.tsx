@@ -99,6 +99,9 @@ export { SkeletonTableHeader } from "./molecules/SkeletonTableHeader";
 
 export { SkeletonTableRow } from "./molecules/SkeletonTableRow";
 
+export { SkeletonGreeting } from "./molecules/SkeletonGreeting";
+export type { SkeletonGreetingProps } from "./molecules/SkeletonGreeting";
+
 export { AdvocateTable } from "./organisms/AdvocateTable";
 export type { AdvocateTableProps } from "./organisms/AdvocateTable";
 

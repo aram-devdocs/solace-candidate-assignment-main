@@ -66,10 +66,11 @@ export function CustomIcon({
     <div className={`relative ${className}`} style={{ width, height }}>
       {/* Gradient overlay - behind, slides in when active */}
       <div
-        className="absolute inset-0 transition-all duration-300"
+        className="absolute inset-0 transition-opacity transition-transform duration-300"
         style={{
           opacity: active ? 1 : 0,
-          transform: active ? "translate(0px, 0px)" : "translate(-4px, 0px)",
+          transform: active ? "translate3d(0, 0, 0)" : "translate3d(-4px, 0, 0)",
+          willChange: "transform, opacity",
         }}
       >
         {gradientSvg}

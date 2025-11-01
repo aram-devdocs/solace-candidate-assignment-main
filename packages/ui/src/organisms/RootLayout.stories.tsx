@@ -46,8 +46,7 @@ const InteractiveNavigation = ({ activeRoute, onRouteChange }: InteractiveNaviga
         label={route.label}
         href="#"
         active={activeRoute === route.id}
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
           onRouteChange(route.id);
         }}
       />

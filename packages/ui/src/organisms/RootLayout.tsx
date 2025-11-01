@@ -7,6 +7,7 @@ import { Footer } from "../molecules/Footer";
 import type { HeaderProps } from "../molecules/Header";
 import { Header } from "../molecules/Header";
 import { NavigationMenu } from "../molecules/NavigationMenu";
+import { SkeletonAdvocateListTemplate } from "../templates/SkeletonAdvocateListTemplate";
 
 /**
  * Props for the RootLayout component
@@ -21,9 +22,14 @@ export interface RootLayoutProps {
    */
   header: HeaderProps;
   /**
-   * Navigation items
+   * Navigation items (deprecated - use renderNavigation instead)
    */
   navigation?: ReactNode;
+  /**
+   * Function to render navigation items with menu close callback
+   */
+  // eslint-disable-next-line no-unused-vars
+  renderNavigation?: (onMenuClose: () => void) => ReactNode;
   /**
    * Navigation header content
    */
@@ -41,6 +47,10 @@ export interface RootLayoutProps {
    * @default true
    */
   showNavigation?: boolean;
+  /**
+   * Whether navigation is currently in progress (for loading state)
+   */
+  isNavigating?: boolean;
 }
 
 /**
@@ -75,50 +85,82 @@ export function RootLayout({
   children,
   header,
   navigation,
+  renderNavigation,
   navigationHeader,
   navigationFooter,
   footer,
   showNavigation = true,
+  isNavigating = false,
 }: RootLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
+  const navigationContent = renderNavigation ? renderNavigation(handleMenuClose) : navigation;
 
   return (
     <div className="bg-secondary-50 flex min-h-screen flex-col">
       {/* Header with overlay */}
       <div
-        className={`relative transition-transform duration-300 md:transform-none ${
-          isMenuOpen ? "max-md:-translate-x-64" : ""
-        }`}
+        className={`relative md:transform-none ${isMenuOpen ? "max-md:-translate-x-64" : ""}`}
+        style={{
+          transition: "transform 0.3s ease-in-out",
+        }}
       >
         {/* White overlay on header when menu is open */}
-        {isMenuOpen && <div className="absolute inset-0 z-30 bg-white bg-opacity-40 md:hidden" />}
+        <div
+          className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden"
+          style={{
+            opacity: isMenuOpen ? 0.4 : 0,
+            transition: "opacity 0.3s ease-in-out",
+          }}
+        />
         <Header {...header} onMenuClick={() => setIsMenuOpen(true)} />
       </div>
 
       {/* Main content area with navigation */}
       <div className="relative flex flex-1 overflow-hidden">
         {/* Navigation sidebar */}
-        {showNavigation && navigation && (
+        {showNavigation && navigationContent && (
           <NavigationMenu
             isOpen={isMenuOpen}
-            onClose={() => setIsMenuOpen(false)}
+            onClose={handleMenuClose}
             header={navigationHeader}
             footer={navigationFooter}
             onProfileClick={header.onProfileClick}
           >
-            {navigation}
+            {navigationContent}
           </NavigationMenu>
         )}
 
         {/* Page content with push effect and overlay on mobile */}
         <div
-          className={`relative flex flex-1 flex-col transition-transform duration-300 md:transform-none ${
+          className={`relative flex flex-1 flex-col md:transform-none ${
             isMenuOpen ? "max-md:-translate-x-64" : ""
           }`}
+          style={{
+            transition: "transform 0.3s ease-in-out",
+          }}
         >
           {/* White overlay when menu is open */}
-          {isMenuOpen && <div className="absolute inset-0 z-30 bg-white bg-opacity-40 md:hidden" />}
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <div
+            className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden"
+            style={{
+              opacity: isMenuOpen ? 0.4 : 0,
+              transition: "opacity 0.3s ease-in-out",
+            }}
+          />
+          <main className="flex-1 overflow-y-auto">
+            {isNavigating ? (
+              <div className="animate-fadeIn">
+                <SkeletonAdvocateListTemplate />
+              </div>
+            ) : (
+              children
+            )}
+          </main>
           {/* Footer */}
           {footer && <Footer {...footer} />}
         </div>
