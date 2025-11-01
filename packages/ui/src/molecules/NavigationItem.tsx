@@ -81,7 +81,7 @@ export function NavigationItem({
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
         {cloneElement(icon, { active: active || isHovered })}
       </div>
-      <span className={collapsed ? "hidden" : "whitespace-nowrap"}>{label}</span>
+      <span className={`whitespace-nowrap ${collapsed ? "md:hidden" : ""}`}>{label}</span>
     </Link>
   );
 }
