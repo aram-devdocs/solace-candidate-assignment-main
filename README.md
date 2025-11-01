@@ -18,7 +18,7 @@
 ├── packages/
 │   ├── database/               # Drizzle schema and client
 │   ├── types/                  # Shared TypeScript types
-│   ├── ui/                     # React component library
+│   ├── ui/                     # React component library (Atomic Design + Storybook)
 │   ├── services/               # Business logic
 │   ├── queries/                # Database queries
 │   ├── hooks/                  # React hooks
@@ -27,6 +27,17 @@
 │   └── eslint-config/          # Shared ESLint config
 └── docs/local/                 # Local documentation (gitignored)
 ```
+
+### UI Component Library
+
+The `@repo/ui` package contains a comprehensive design system built with:
+
+- **Atomic Design**: Components organized as atoms, molecules, organisms, and templates
+- **Design Tokens**: Centralized theming via Tailwind CSS configuration
+- **Storybook**: Interactive component documentation and development environment
+- **Type Safety**: Full TypeScript support with exported prop types
+
+All components use thematic Tailwind classes—no inline styles or magic values.
 
 ## Prerequisites
 
@@ -95,6 +106,13 @@ pnpm type-check       # TypeScript type checking
 pnpm test             # Run all tests
 pnpm format           # Format code with Prettier
 pnpm format:check     # Check code formatting
+```
+
+### UI Development
+
+```bash
+pnpm --filter @repo/ui storybook        # Start Storybook dev server
+pnpm --filter @repo/ui build-storybook  # Build Storybook for production
 ```
 
 ### Database Management

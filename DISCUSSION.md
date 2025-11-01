@@ -7,6 +7,7 @@
   - [PR 4 - Initial Migrations, Type Consolidation](#pr-4---initial-migrations-type-consolidation)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
+  - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
 
 # Logs
 
@@ -77,22 +78,34 @@ While this is a feature-low product, it is a great foundation to build on IMO fo
 
 I then went to add some quality of life fixes, resolving the TH/TR HTML hydration bug and adding JSDoc comments to have everything feel production ready. I generated some unit tests using Claude to start hardening the logic we just wrote. These items are fantastic use cases for AI in development, as it lets me focus on system architecture, design patterns and code structure and quality, setting up enforcement boundaries to ensure that the code going into main is the code we would expect of an experienced dev, and letting the AI take isolated low context tasks.
 
-## [PR 4 - Initial Migrations, Type Consolidation]()
+## [PR 4 - Initial Migrations, Type Consolidation](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/17)
 
 Now that we have all the bugs resolved, we can start using real persistent data. For now we are just reading but having it on a db will set the stage for future improvements. Drizzle kit is going to be our cheat code for getting this started. After adding some scripts to the -F database package, we can quickly load the portable postgres server and get to work. We have vercel set up with neon serverless postgres, so we should be able to match that so our code cleanly executes on the cloud as well, validating the architecture.
 
 I generated two migrations with this system, the first to set the initial table, and the second to alter it choosing to make phone a unique constraint as my point of data integrity. Since I am using neon in vercel, I went ahead and changed the docker compose to use the neon proxy for the database, which is a great way to ensure the code I write here works on the cloud just the same. Centralizing the fixtures for testing and mock data with types created directly from drizzle, I set up seeding and migration to happen in the cicd rather than as implicit api endpoints. This was a bad pattern IMO as it requires a second step, and any time we can remove a second step and automate it, we add a testable area of the code that we can rely on.
 
-### Simplified Development Workflow
+## [PR 5 - UI Design System / Storybook](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/18)
 
-After implementing the initial migrations and seeding system, I noticed the developer experience could be improved. The original dev script was a complex 149-line TypeScript file managing Docker lifecycle, database health checks, and migration orchestration. While robust, it added unnecessary complexity for what should be a simple workflow.
+The current UI is pretty bland, and looking at app.solace.health, I can get a feeling of what the theme should look like. I am strongly opinionated on Storybook as a tool, but either way the current implementation was not scalable, as none of the components can be reused in any future work.
 
-I simplified this down to inline Docker commands in the package.json scripts:
+This one is just some grunt work to get the to refactor the UI, but its an important step in turning a proof of concept into a real product. while doing this, I got the tailwind bug fixed in app so that it renders correctly. this cleaned up some, but we will still need to revisit this later for refinement. But for now, we have clean seperation of concerns, and now our page.tsx file reads like this:
 
-- `pnpm -F database dev` now runs: docker compose up → migrate → seed → stream logs
-- Database containers persist after Ctrl+C for fast restarts
-- Removed verbose PostgreSQL DEBUG logs (removed `-d 1` flag)
-- Suppressed neon-proxy INFO logs (added `RUST_LOG=warn`)
-- Deleted the legacy `/api/seed` endpoint (seeding happens automatically on first run)
+```tsx
+export default function Home() {
+  const { searchTerm, filteredAdvocates, isLoading, error, handleSearchChange, handleResetSearch } =
+    useAdvocateSearch();
 
-The result is a cleaner developer experience that follows standard Docker Compose patterns while maintaining the same functionality. All scripts for dev, seed, and migration are consolidated in the database package to keep database concerns in one place.
+  return (
+    <AdvocateListTemplate
+      advocates={filteredAdvocates}
+      searchTerm={searchTerm}
+      onSearchChange={handleSearchChange}
+      onResetSearch={handleResetSearch}
+      isLoading={isLoading}
+      error={error}
+    />
+  );
+}
+```
+
+This makes a huge difference in readability and scaling, and allows us to target small chunks of the workspace at a time for refinement, without worrying about breaking the entire system.

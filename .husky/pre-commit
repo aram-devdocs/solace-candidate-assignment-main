@@ -15,6 +15,10 @@ pnpm type-check
 echo "Running tests..."
 pnpm -F web test run
 
+# Build Storybook to verify component integrity
+echo "Building Storybook..."
+pnpm --filter @repo/ui build-storybook
+
 # Run build across all packages
 echo "Building all packages..."
 pnpm build
