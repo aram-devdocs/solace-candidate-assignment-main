@@ -120,6 +120,42 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+  storybook:
+    runs-on: ubuntu-latest
+    name: Build Storybook
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm --filter @repo/ui build-storybook
+
   build:
     runs-on: ubuntu-latest
     name: Build
@@ -160,7 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Database Migration
     if: github.ref == 'refs/heads/main'
-    needs: [lint, type-check, test, build]
+    needs: [lint, type-check, test, storybook, build]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

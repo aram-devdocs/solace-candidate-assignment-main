@@ -18,6 +18,70 @@ Turborepo monorepo with pnpm workspaces. Apps contain Next.js implementation. Pa
 - Orchestrates packages
 - Pages read like pseudocode
 
+## UI Component Library (@repo/ui)
+
+### Atomic Design Principles
+
+All UI components follow atomic design methodology with strict hierarchy:
+
+**Atoms:** Basic building blocks (Input, Button, Text, TableCell)
+
+- Single responsibility
+- No dependencies on other components
+- Fully themed with design tokens
+
+**Molecules:** Simple component combinations (SearchBar, TableHeader, TableRow, LoadingState, ErrorState)
+
+- Compose atoms together
+- Handle simple interactions
+- Reusable patterns
+
+**Organisms:** Complex component assemblies (AdvocateTable)
+
+- Compose molecules and atoms
+- Handle complex interactions
+- Feature-complete sections
+
+**Templates:** Page-level layouts (AdvocateListTemplate)
+
+- Compose organisms, molecules, and atoms
+- Define page structure
+- Handle page-level state
+
+### Design Tokens
+
+All components use thematic Tailwind classes from a centralized design system:
+
+- Colors: primary, secondary, error, success variants
+- Spacing: xs, sm, md, lg, xl, 2xl, 3xl
+- Typography: text sizes with line heights
+- Borders: widths and radius values
+
+Design tokens are defined in packages/ui/tailwind.config.ts and shared across all apps.
+
+### Storybook Documentation
+
+Every component must have an accompanying .stories.tsx file co-located with the component:
+
+- Stories demonstrate all component variants
+- Stories show different states (loading, error, success)
+- Stories include interactive examples where applicable
+- Run Storybook locally: pnpm --filter @repo/ui storybook
+
+### Component Creation Guidelines
+
+When creating new UI components:
+
+1. Determine atomic level (atom, molecule, organism, or template)
+2. Use design tokens only, no magic values or inline styles
+3. Create TypeScript interfaces for all props
+4. Add JSDoc comments for public APIs
+5. Create comprehensive Storybook stories
+6. Export component and types from packages/ui/src/index.tsx
+7. Verify type-check, lint, and build pass
+
+NEVER use raw HTML, inline styles, or magic values. All styling must come from thematic Tailwind classes using design tokens.
+
 ### Data Flow
 
 ```
