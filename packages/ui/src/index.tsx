@@ -60,6 +60,18 @@ export { EveningIllustration } from "./atoms/EveningIllustration";
 export { SkeletonLine } from "./atoms/SkeletonLine";
 export type { SkeletonLineProps } from "./atoms/SkeletonLine";
 
+export { Select } from "./atoms/Select";
+export type { SelectProps, SelectOption } from "./atoms/Select";
+
+export { MultiSelect } from "./atoms/MultiSelect";
+export type { MultiSelectProps, MultiSelectOption } from "./atoms/MultiSelect";
+
+export { RangeInput } from "./atoms/RangeInput";
+export type { RangeInputProps } from "./atoms/RangeInput";
+
+export { FilterChip } from "./atoms/FilterChip";
+export type { FilterChipProps } from "./atoms/FilterChip";
+
 export { SearchBar } from "./molecules/SearchBar";
 export type { SearchBarProps } from "./molecules/SearchBar";
 
@@ -102,6 +114,24 @@ export { SkeletonTableRow } from "./molecules/SkeletonTableRow";
 export { SkeletonGreeting } from "./molecules/SkeletonGreeting";
 export type { SkeletonGreetingProps } from "./molecules/SkeletonGreeting";
 
+export { Pagination } from "./molecules/Pagination";
+export type { PaginationProps } from "./molecules/Pagination";
+
+export { PageSizeSelector } from "./molecules/PageSizeSelector";
+export type { PageSizeSelectorProps } from "./molecules/PageSizeSelector";
+
+export { SortControl } from "./molecules/SortControl";
+export type { SortControlProps } from "./molecules/SortControl";
+
+export { SpecialtyBadge } from "./molecules/SpecialtyBadge";
+export type { SpecialtyBadgeProps } from "./molecules/SpecialtyBadge";
+
+export { CityBadge } from "./molecules/CityBadge";
+export type { CityBadgeProps } from "./molecules/CityBadge";
+
+export { DegreeBadge } from "./molecules/DegreeBadge";
+export type { DegreeBadgeProps } from "./molecules/DegreeBadge";
+
 export { AdvocateTable } from "./organisms/AdvocateTable";
 export type { AdvocateTableProps } from "./organisms/AdvocateTable";
 
@@ -110,6 +140,12 @@ export type { RootLayoutProps } from "./organisms/RootLayout";
 
 export { SkeletonAdvocateTable } from "./organisms/SkeletonAdvocateTable";
 export type { SkeletonAdvocateTableProps } from "./organisms/SkeletonAdvocateTable";
+
+export { FilterPanel } from "./organisms/FilterPanel";
+export type { FilterPanelProps } from "./organisms/FilterPanel";
+
+export { ActiveFiltersBar } from "./organisms/ActiveFiltersBar";
+export type { ActiveFiltersBarProps, ActiveFilter } from "./organisms/ActiveFiltersBar";
 
 export { AdvocateListTemplate } from "./templates/AdvocateListTemplate";
 export type { AdvocateListTemplateProps } from "./templates/AdvocateListTemplate";
@@ -121,6 +157,15 @@ export { SkeletonAdvocateListTemplate } from "./templates/SkeletonAdvocateListTe
 export type { SkeletonAdvocateListTemplateProps } from "./templates/SkeletonAdvocateListTemplate";
 
 export { COMPANY_NAME, FOOTER_COPYRIGHT, FOOTER_COPYRIGHT_WITH_RIGHTS } from "./constants/footer";
+
+export {
+  MAX_DROPDOWN_HEIGHT,
+  FILTER_PANEL_WIDTH_MOBILE,
+  FILTER_PANEL_WIDTH_TABLET,
+  FILTER_PANEL_WIDTH_DESKTOP,
+  MAX_VISIBLE_PAGE_NUMBERS,
+  DEFAULT_TABLE_PAGE_SIZE,
+} from "./constants/layout";
 
 export { BREAKPOINTS, getDeviceSize, type DeviceSize } from "@repo/utils";
 

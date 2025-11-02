@@ -1,4 +1,15 @@
 {
   "root": true,
-  "extends": ["@repo/eslint-config/library.js"]
+  "extends": ["@repo/eslint-config/library.js"],
+  "overrides": [
+    {
+      "files": ["src/use-url-state.ts", "src/use-device-size.ts"],
+      "env": {
+        "browser": true
+      },
+      "rules": {
+        "no-unused-vars": ["error", { "args": "none" }]
+      }
+    }
+  ]
 }

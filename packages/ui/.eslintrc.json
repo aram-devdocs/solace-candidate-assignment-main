@@ -3,5 +3,6 @@
   "extends": ["@repo/eslint-config/react.js"],
   "env": {
     "browser": true
-  }
+  },
+  "ignorePatterns": ["**/*.stories.tsx"]
 }

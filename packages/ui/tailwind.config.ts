@@ -23,12 +23,12 @@ const config: Config = {
       },
       colors: {
         primary: {
-          50: "#f0fdf9",
-          100: "#ccfbef",
+          50: "#e8f3f1",
+          100: "#d1e7e3",
           150: "#B0C8BF",
-          200: "#99f6e0",
-          300: "#5fe9d0",
-          400: "#2dd4bf",
+          200: "#a8c5bf",
+          300: "#7fa79d",
+          400: "#5a8b7e",
           500: "#14b8a6",
           600: "#275E50",
           700: "#1D4239",
@@ -112,6 +112,7 @@ const config: Config = {
         "icon-lg": "2.5rem",
         header: "4rem",
         "section-min": "25rem",
+        70: "17.5rem",
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1rem" }],
@@ -154,10 +155,15 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        slideInRight: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
       },
       animation: {
         shimmer: "shimmer 2s infinite linear",
         fadeIn: "fadeIn 0.3s ease-in-out",
+        slideInRight: "slideInRight 0.3s ease-out",
       },
     },
   },

@@ -40,18 +40,18 @@ export interface FooterProps {
 export function Footer({ links, copyright, children }: FooterProps) {
   return (
     <footer className="border-secondary-200 w-full border-t bg-white">
-      <div className="px-4 py-6 md:px-6">
+      <div className="px-4 py-3 md:px-6">
         {/* Custom content */}
         {children}
 
         {/* Links */}
         {links && links.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-4">
+          <div className="mb-2 flex flex-wrap gap-3">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-secondary-600 hover:text-primary-700 text-sm transition-colors"
+                className="text-secondary-600 hover:text-primary-700 text-xs transition-colors"
               >
                 {link.label}
               </a>
@@ -60,7 +60,7 @@ export function Footer({ links, copyright, children }: FooterProps) {
         )}
 
         {/* Copyright */}
-        {copyright && <div className="text-secondary-500 text-sm">{copyright}</div>}
+        {copyright && <div className="text-secondary-500 text-xs">{copyright}</div>}
       </div>
     </footer>
   );

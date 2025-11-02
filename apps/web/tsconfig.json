@@ -5,7 +5,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/database": ["../../packages/database/src"],
-      "@repo/types": ["../../packages/types/src"]
+      "@repo/types": ["../../packages/types/src"],
+      "@repo/queries": ["../../packages/queries/src"],
+      "@repo/utils": ["../../packages/utils/src"],
+      "@repo/hooks": ["../../packages/hooks/src"],
+      "@repo/ui": ["../../packages/ui/src"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
