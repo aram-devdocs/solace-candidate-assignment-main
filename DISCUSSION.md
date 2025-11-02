@@ -137,6 +137,6 @@ Filtering, pagination, and sorting. Every table has them, but the way that they 
 
 Some enhancements I made here are having the chips on the table be clickable and auto filtering, adding ui elements that guide instead of dictate. The table itself is now more robust, with a focus on letting the user guide the data they see without overwhelming them with options.
 
-## [PR 9 - Abstract into Service layer]()
+## [PR 9 - Abstract into Service layer](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/23)
 
 Simple refactoring. Prevent cross dependncies by combining database queries in a service layer for the back end, no functional changes now but prepares codebase for scale. Queries dont call each other, they combine results in a service.
