@@ -19,6 +19,7 @@ Check out the actual [app](https://solace.aramhammoudeh.com/) and [api documenta
   - [PR 12 - React Query integration](#pr-12---react-query-integration)
   - [PR 13 - Harden Search Functionality](#pr-13---harden-search-functionality)
   - [PR 14 - UI Cleanup](#pr-14---ui-cleanup)
+  - [PR 15 - UI Filler app.solace.health](#pr-15---ui-filler-appsolacehealth)
   - [TLDR;](#tldr)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
@@ -193,7 +194,7 @@ TLDR; We are now using a hybrid approach to caching and pagination, where we use
 
 Numerous UI bugs have been found while working on the previous harden search functionality, such as mobile view of the down chevron, the filter badges not seeming like they worked correctly, and other misc refactors to improve responsiveness and accessibility.
 
-## [PR 15 - UI Filler app.solace.health]()
+## [PR 15 - UI Filler app.solace.health](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/34)
 
 Now that we have finished everything important and have a bit of time to spare, lets add some filler UI. nothing feature full, just some of the views on account menu, notification sidebar, the messages, notes, forms, health insurance and help pages, just to add a bit of color to the app. Make you really feel like you are using the real app.
 
