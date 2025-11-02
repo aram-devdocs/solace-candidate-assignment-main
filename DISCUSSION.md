@@ -147,4 +147,6 @@ Some enhancements I made here are having the chips on the table be clickable and
 
 Simple refactoring. Prevent cross dependncies by combining database queries in a service layer for the back end, no functional changes now but prepares codebase for scale. Queries dont call each other, they combine results in a service.
 
-## [PR 10 - Toasts, Error states, and UX Refinement]()
+## [PR 10 - Toasts, Error states, and UX Refinement](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/25)
+
+Added toasts and containers to the UI package and error handling to the web app in general to protect agaisnt network errors and other unexpected behavior. This is just a hardening stage where we ensure that the app is robust enough to stand up to unexpected edge cases.
