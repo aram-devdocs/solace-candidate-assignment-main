@@ -33,6 +33,14 @@ export interface NavigationMenuProps {
    * Callback when profile is clicked (mobile menu only)
    */
   onProfileClick?: () => void;
+  /**
+   * Profile dropdown content to display below avatar on mobile
+   */
+  profileDropdown?: ReactNode;
+  /**
+   * Ref for the profile dropdown container (for click-outside detection)
+   */
+  profileDropdownRef?: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -58,6 +66,8 @@ export function NavigationMenu({
   header = "MENU",
   footer,
   onProfileClick,
+  profileDropdown,
+  profileDropdownRef,
 }: NavigationMenuProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -140,40 +150,43 @@ export function NavigationMenu({
             })}
 
             {/* Mobile: Profile avatar as navigation row (no divider, no text) */}
-            <button
-              onClick={onProfileClick}
-              className="flex items-center gap-3 rounded-md px-4 py-3 transition-colors md:hidden"
-              aria-label="User profile"
-            >
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                <div className="bg-primary-600 hover:bg-primary-700 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4.61523 20.3073C4.61523 17.7583 7.92144 15.6919 11.9999 15.6919C16.0783 15.6919 19.3845 17.7583 19.3845 20.3073"
-                      stroke="white"
-                      strokeWidth="2.00107"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+            <div ref={profileDropdownRef} className="relative md:hidden">
+              <button
+                onClick={onProfileClick}
+                className="flex w-full items-center gap-3 rounded-md px-4 py-3 transition-colors"
+                aria-label="User profile"
+              >
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
+                  <div className="bg-primary-600 hover:bg-primary-700 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
                       fill="none"
-                    />
-                    <path
-                      d="M12.0002 12.9232C14.5492 12.9232 16.6155 10.8568 16.6155 8.30777C16.6155 5.75876 14.5492 3.69238 12.0002 3.69238C9.45114 3.69238 7.38477 5.75876 7.38477 8.30777C7.38477 10.8568 9.45114 12.9232 12.0002 12.9232Z"
-                      stroke="white"
-                      strokeWidth="2.00107"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                    />
-                  </svg>
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.61523 20.3073C4.61523 17.7583 7.92144 15.6919 11.9999 15.6919C16.0783 15.6919 19.3845 17.7583 19.3845 20.3073"
+                        stroke="white"
+                        strokeWidth="2.00107"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                      />
+                      <path
+                        d="M12.0002 12.9232C14.5492 12.9232 16.6155 10.8568 16.6155 8.30777C16.6155 5.75876 14.5492 3.69238 12.0002 3.69238C9.45114 3.69238 7.38477 5.75876 7.38477 8.30777C7.38477 10.8568 9.45114 12.9232 12.0002 12.9232Z"
+                        stroke="white"
+                        strokeWidth="2.00107"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-            </button>
+              </button>
+              {profileDropdown}
+            </div>
           </div>
         </nav>
 

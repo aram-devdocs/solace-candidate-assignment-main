@@ -187,7 +187,16 @@ export function RootLayout({
             onClose={handleMenuClose}
             header={navigationHeader}
             footer={navigationFooter}
-            onProfileClick={header.onProfileClick}
+            onProfileClick={handleProfileClick}
+            profileDropdownRef={profileDropdown.dropdownRef}
+            profileDropdown={
+              <ProfileDropdown
+                isOpen={profileDropdown.isOpen}
+                onClose={profileDropdown.close}
+                onAccountClick={handleAccountClick}
+                onLogoutClick={handleLogoutClick}
+              />
+            }
           >
             {navigationContent}
           </NavigationMenu>
