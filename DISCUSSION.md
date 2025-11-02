@@ -131,8 +131,8 @@ Noticible changes here are tab navigation and focus states, static screen reader
 
 For more in depth projects I would build custom scripts to test for things like responsiveness, theme consistency, but that is beyond the scope of this project. Instead, we will rely on manual testing (bad practice but timeboxing is imporant) and then add es-lint rules for accessibility for now. This ensures that bad code wont break the app in terms of usability. This caught a few bad practices I have made so far, so that makes up the rest of the file changes here.
 
-## [PR 8 - Advocate Table Hardening]()
+## [PR 8 - Advocate Table Hardening](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/22)
 
 Filtering, pagination, and sorting. Every table has them, but the way that they are implemented can make our break a view. I opt for minimlism, taking inspiration from the marketing page for solace.health, and adding non invaisive ui to handle these operations. We keep it front end only for now as the data set is low, but server side pagination will be a great step forward for scalability. If the project were to stay a NextJS app, server side loading would be great but since the backend is moving to NestJS, we will focus on seperate client side and server side optimizatios in preperation for the larger data sets we will face for scale testing. Shared hooks that rely on generics will take all of the leg work out of adding future tables, and customizable views can be built using the new UI components we have created.
 
-Some enhancements I made here are having the chips on the table be clickable and auto filtering, adding intuitive ui, and filtering by area code. The table itself is now more robust, with a focus on letting the user guide the data they see without overwhelming them with options.
+Some enhancements I made here are having the chips on the table be clickable and auto filtering, adding ui elements that guide instead of dictate. The table itself is now more robust, with a focus on letting the user guide the data they see without overwhelming them with options.
