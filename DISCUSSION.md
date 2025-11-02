@@ -13,6 +13,9 @@
   - [PR 10 - Toasts, Error states, and UX Refinement](#pr-10---toasts-error-states-and-ux-refinement)
   - [PR 11 - Bug fix: Incorrect padding on slim devices](#pr-11---bug-fix-incorrect-padding-on-slim-devices)
   - [PR 12 - React Query integration](#pr-12---react-query-integration)
+  - [PR 13 - Harden Search Functionality](#pr-13---harden-search-functionality)
+  - [PR 14 - UI Cleanup](#pr-14---ui-cleanup)
+  
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
@@ -181,6 +184,6 @@ To make things easier to test at scale, we use the faker.js package in database 
 
 TLDR; We are now using a hybrid approach to caching and pagination, where we use the client to filter and sort the data, and the server to provide the data. This is a more robust approach to scaling, and is a great foundation for future features. I was able to test at 100,000 advocates with no issues, and the app still feels snappy and responsive. I spent way more time than I needed to refining this, but scaling is cool so why not.
 
-## [PR 14 - UI Cleanup]()
+## [PR 14 - UI Cleanup](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/33)
 
 Numerous UI bugs have been found while working on the previous harden search functionality, such as mobile view of the down chevron, the filter badges not seeming like they worked correctly, and other misc refactors to improve responsiveness and accessibility.
