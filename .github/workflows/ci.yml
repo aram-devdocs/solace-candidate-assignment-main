@@ -237,4 +237,5 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: production
+          SEED_COUNT: ${{ vars.SEED_COUNT }}
         run: pnpm --filter @repo/database db:seed

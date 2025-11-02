@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@repo/cache": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/hooks": "workspace:*",
     "@repo/queries": "workspace:*",

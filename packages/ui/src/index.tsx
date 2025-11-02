@@ -38,6 +38,9 @@ export type { AvatarProps } from "./atoms/Avatar";
 export { Badge } from "./atoms/Badge";
 export type { BadgeProps } from "./atoms/Badge";
 
+export { StatusBadge } from "./atoms/StatusBadge";
+export type { StatusBadgeProps } from "./atoms/StatusBadge";
+
 export { IconButton } from "./atoms/IconButton";
 export type { IconButtonProps } from "./atoms/IconButton";
 

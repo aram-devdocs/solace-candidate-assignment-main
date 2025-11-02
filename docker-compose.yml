@@ -15,6 +15,20 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 30mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
   neon-proxy:
     image: ghcr.io/timowilhelm/local-neon-http-proxy:main
     environment:
@@ -28,3 +42,4 @@ services:
 
 volumes:
   db_data:
+  redis_data:

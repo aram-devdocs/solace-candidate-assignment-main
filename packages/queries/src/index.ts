@@ -18,6 +18,5 @@ export * from "./advocates";
 export * from "./client";
 export * from "./hooks/use-advocates";
 export * from "./hooks/use-advocate-filter-options";
-export * from "./hooks/use-prefetch-advocates";
 export * from "./provider";
 export * from "./query-keys";

@@ -1,5 +1,5 @@
 import { type InferSelectModel, type InferInsertModel } from "drizzle-orm";
-import { advocates } from "@repo/database";
+import { advocates, cities, degrees, specialties, advocateSpecialties } from "@repo/database";
 
 /**
  * Type representing a complete Advocate record from the database.
@@ -13,45 +13,117 @@ export type Advocate = InferSelectModel<typeof advocates>;
  */
 export type NewAdvocate = InferInsertModel<typeof advocates>;
 
+/**
+ * Type representing a City record.
+ */
+export type City = InferSelectModel<typeof cities>;
+
+/**
+ * Type representing data required to insert a new City.
+ */
+export type NewCity = InferInsertModel<typeof cities>;
+
+/**
+ * Type representing a Degree record.
+ */
+export type Degree = InferSelectModel<typeof degrees>;
+
+/**
+ * Type representing data required to insert a new Degree.
+ */
+export type NewDegree = InferInsertModel<typeof degrees>;
+
+/**
+ * Type representing a Specialty record.
+ */
+export type Specialty = InferSelectModel<typeof specialties>;
+
+/**
+ * Type representing data required to insert a new Specialty.
+ */
+export type NewSpecialty = InferInsertModel<typeof specialties>;
+
+/**
+ * Type representing an Advocate-Specialty relationship record.
+ */
+export type AdvocateSpecialty = InferSelectModel<typeof advocateSpecialties>;
+
+/**
+ * Type representing data required to insert a new Advocate-Specialty relationship.
+ */
+export type NewAdvocateSpecialty = InferInsertModel<typeof advocateSpecialties>;
+
+/**
+ * Type representing an Advocate with all related data joined.
+ * Used for API responses that include city, degree, and specialties.
+ */
+export type AdvocateWithRelations = Advocate & {
+  city: City;
+  degree: Degree;
+  advocateSpecialties: Array<{
+    specialty: Specialty;
+  }>;
+};
+
 export * from "./result";
 export * from "./errors";
 
 /**
- * Valid degree types for healthcare advocates.
+ * Pagination parameters for list queries.
  */
-export type Degree = "MD" | "PhD" | "MSW";
+export interface PaginationParams {
+  page: number;
+  pageSize: number;
+}
 
 /**
- * Available specialty areas for healthcare advocates.
+ * Pagination metadata returned with paginated responses.
  */
-export type Specialty =
-  | "Bipolar disorder counseling"
-  | "LGBTQ Counseling"
-  | "PTSD"
-  | "Anxiety/Depression"
-  | "Chronic pain management"
-  | "Weight loss coaching"
-  | "Diabetic nutrition counseling"
-  | "Relationship issues"
-  | "Life coaching"
-  | "Career coaching"
-  | "ADHD"
-  | "OCD"
-  | "Eating disorders"
-  | "Sleep issues"
-  | "Stress management"
-  | "Grief counseling"
-  | "Addiction counseling"
-  | "Family therapy"
-  | "Cognitive behavioral therapy"
-  | "Dialectical behavior therapy"
-  | "Mindfulness training"
-  | "Trauma counseling"
-  | "Autism spectrum support"
-  | "Learning disabilities"
-  | "Geriatric care"
-  | "Pediatric care"
-  | "Women's health"
-  | "Men's health"
-  | "Psychological evaluations"
-  | "Neuropsychological testing";
+export interface PaginationMetadata {
+  currentPage: number;
+  pageSize: number;
+  totalRecords: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
+/**
+ * Filter criteria for querying advocates.
+ */
+export interface AdvocateFilters {
+  search?: string;
+  cityIds?: number[];
+  degreeIds?: number[];
+  specialtyIds?: number[];
+  areaCodes?: string[];
+  minExperience?: number;
+  maxExperience?: number;
+  isActive?: boolean;
+}
+
+/**
+ * Sort configuration for advocate queries.
+ */
+export interface AdvocateSortConfig {
+  column: "firstName" | "lastName" | "city" | "degree" | "yearsOfExperience" | "createdAt";
+  direction: "asc" | "desc";
+}
+
+/**
+ * Paginated response wrapper.
+ */
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: PaginationMetadata;
+}
+
+/**
+ * Filter options available for advocates.
+ * Used to populate filter dropdowns in the UI.
+ */
+export interface AdvocateFilterOptions {
+  cities: Array<{ id: number; name: string; count: number }>;
+  degrees: Array<{ id: number; code: string; name: string; count: number }>;
+  specialties: Array<{ id: number; name: string; count: number }>;
+}

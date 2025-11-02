@@ -97,7 +97,7 @@ describe("useAdvocates", () => {
     const networkError = new Error("Network error");
     vi.mocked(global.fetch).mockRejectedValue(networkError);
 
-    const { result } = renderHook(() => useAdvocates({ retry: false }), {
+    const { result } = renderHook(() => useAdvocates({}, { retry: false }), {
       wrapper: createWrapper(),
     });
 
@@ -118,7 +118,7 @@ describe("useAdvocates", () => {
       statusText: "Internal Server Error",
     } as Response);
 
-    const { result } = renderHook(() => useAdvocates({ retry: false }), {
+    const { result } = renderHook(() => useAdvocates({}, { retry: false }), {
       wrapper: createWrapper(),
     });
 

@@ -115,3 +115,40 @@ export function useUrlNumberState(
 
   return [numValue, setValue];
 }
+
+/**
+ * Hook for syncing numeric array state with URL query parameters
+ * Uses comma-separated values in URL
+ *
+ * @param key - Query parameter key
+ * @param defaultValue - Default array if not in URL
+ * @returns Tuple of [values, setValues]
+ *
+ * @example
+ * const [cityIds, setCityIds] = useUrlNumberArrayState("cities", []);
+ * // URL: ?cities=1,5,12
+ * // cityIds === [1, 5, 12]
+ */
+export function useUrlNumberArrayState(
+  key: string,
+  defaultValue: number[]
+): [number[], (arg: number[]) => void] {
+  const [urlValue, setUrlValue] = useUrlState(key, defaultValue.join(","));
+
+  const valuesList = urlValue
+    ? urlValue
+        .split(",")
+        .filter(Boolean)
+        .map((v) => parseInt(v, 10))
+        .filter((n) => !isNaN(n))
+    : defaultValue;
+
+  const setValues = useCallback(
+    (newValues: number[]) => {
+      setUrlValue(newValues.join(","));
+    },
+    [setUrlValue]
+  );
+
+  return [valuesList, setValues];
+}

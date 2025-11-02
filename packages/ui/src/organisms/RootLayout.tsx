@@ -121,7 +121,7 @@ export function RootLayout({
       </div>
 
       {/* Main content area with navigation */}
-      <div className="relative flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-y-auto overflow-x-hidden">
         {/* Navigation sidebar */}
         {showNavigation && navigationContent && (
           <NavigationMenu
@@ -137,7 +137,7 @@ export function RootLayout({
 
         {/* Page content with push effect and overlay on mobile */}
         <div
-          className={`relative flex flex-1 flex-col md:transform-none ${
+          className={`relative flex w-full flex-1 flex-col md:transform-none ${
             isMenuOpen ? "max-md:-translate-x-64" : ""
           }`}
           style={{
@@ -152,7 +152,7 @@ export function RootLayout({
               transition: "opacity 0.3s ease-in-out",
             }}
           />
-          <main className="flex-1 overflow-y-auto">
+          <main className="w-full flex-1 overflow-y-auto overflow-x-hidden">
             {isNavigating ? (
               <div className="animate-fadeIn">
                 <SkeletonAdvocateListTemplate />

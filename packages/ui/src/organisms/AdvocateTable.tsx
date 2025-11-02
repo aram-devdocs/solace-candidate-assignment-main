@@ -1,5 +1,5 @@
 import React from "react";
-import type { Advocate } from "@repo/types";
+import type { AdvocateWithRelations } from "@repo/types";
 import { TableRow, type TableCellData } from "../molecules/TableRow";
 import { SortControl } from "../molecules/SortControl";
 import { SpecialtyBadge } from "../molecules/SpecialtyBadge";
@@ -19,7 +19,11 @@ import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
 import { formatPhoneNumber, extractAreaCode } from "@repo/utils";
 
 export interface AdvocateTableProps {
-  advocates: Advocate[];
+  advocates: AdvocateWithRelations[];
+  /**
+   * Loading state for the table
+   */
+  isLoading?: boolean;
   /**
    * Current device size (from useDeviceSize hook in parent)
    */
@@ -88,7 +92,7 @@ export interface AdvocateTableProps {
  * Helper function to get cell value with proper formatting
  */
 function getCellValue(
-  advocate: Advocate,
+  advocate: AdvocateWithRelations,
   key: AdvocateColumnKey,
   onSpecialtyClick?: (specialty: string) => void, // eslint-disable-line no-unused-vars
   onCityClick?: (city: string) => void, // eslint-disable-line no-unused-vars
@@ -98,10 +102,10 @@ function getCellValue(
   if (key === "specialties") {
     return (
       <div className="gap-xs flex flex-wrap">
-        {advocate.specialties.map((s, i) => (
+        {advocate.advocateSpecialties.map((as, i) => (
           <SpecialtyBadge
             key={i}
-            specialty={s}
+            specialty={as.specialty.name}
             onClick={onSpecialtyClick}
             clickable={!!onSpecialtyClick}
           />
@@ -111,18 +115,22 @@ function getCellValue(
   }
 
   if (key === "city") {
-    return <CityBadge city={advocate.city} onClick={onCityClick} clickable={!!onCityClick} />;
+    return <CityBadge city={advocate.city.name} onClick={onCityClick} clickable={!!onCityClick} />;
   }
 
   if (key === "degree") {
     return (
-      <DegreeBadge degree={advocate.degree} onClick={onDegreeClick} clickable={!!onDegreeClick} />
+      <DegreeBadge
+        degree={advocate.degree.code}
+        onClick={onDegreeClick}
+        clickable={!!onDegreeClick}
+      />
     );
   }
 
   if (key === "phoneNumber") {
-    const areaCode = extractAreaCode(advocate.phoneNumber);
     const formattedNumber = formatPhoneNumber(advocate.phoneNumber);
+    const areaCode = extractAreaCode(advocate.phoneNumber);
 
     return (
       <PhoneNumberDisplay
@@ -161,6 +169,7 @@ function getCellValue(
  */
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
+  isLoading = false,
   deviceSize,
   expandedRows = new Set(),
   onToggleRow,
@@ -184,7 +193,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
     "city",
     "degree",
     "yearsOfExperience",
-    "phoneNumber",
   ];
 
   return (
@@ -202,9 +210,9 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 w-full overflow-x-auto rounded-lg border">
+      <div className="border-secondary-200 scrollbar-hide max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
-          <thead className="bg-secondary-50 border-secondary-300 border-b-2">
+          <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>
               {visibleColumns.map((key, index) => {
                 const isSortable = sortableColumns.includes(key as SortableColumn);
@@ -241,7 +249,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                   colSpan={visibleColumns.length + (!isDesktop ? 1 : 0)}
                   className="p-lg text-secondary-500 text-center"
                 >
-                  No advocates found
+                  {isLoading ? "Loading..." : "No advocates found"}
                 </td>
               </tr>
             ) : (
@@ -291,7 +299,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       </div>
 
       {/* Pagination */}
-      {pagination && advocates.length > 0 && (
+      {pagination && pagination.totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination
             currentPage={pagination.currentPage}

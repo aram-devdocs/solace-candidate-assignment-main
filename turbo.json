@@ -1,7 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["DATABASE_URL", "NODE_ENV"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "NODE_ENV",
+    "NEXT_PUBLIC_MAX_INITIAL_FETCH",
+    "MAX_CLIENT_CACHE",
+    "BACKGROUND_BATCH_SIZE",
+    "REDIS_URL",
+    "KV_URL",
+    "SEED_COUNT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

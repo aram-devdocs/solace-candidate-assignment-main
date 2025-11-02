@@ -1,71 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import type { Advocate } from "@repo/types";
-import { useAdvocates, useAdvocateFilterOptions, usePrefetchAdvocates } from "@repo/queries";
-import {
-  useDeviceSize,
-  useExpandableRows,
-  useAdvocateFilters,
-  useTableSorting,
-  useUrlNumberState,
-  useToast,
-  useDebouncedValue,
-} from "@repo/hooks";
-import { filterAdvocates, sortAdvocates, paginate, getPageNumbers } from "@repo/utils";
-import type { SortableColumn } from "@repo/utils";
+import { useDeviceSize, useExpandableRows, useAdvocateTable } from "@repo/hooks";
 import { AdvocateListTemplate } from "@repo/ui";
-import type { ActiveFilter } from "@repo/ui";
+import type { SortableColumn } from "@repo/utils";
 
 export const dynamic = "force-dynamic";
 
 export default function Home() {
   const deviceSize = useDeviceSize();
-  const { showToast } = useToast();
-  const hasShownInitialToast = useRef(false);
-
-  const { data: response, isLoading, error: queryError } = useAdvocates();
-  const { data: filterOptions } = useAdvocateFilterOptions();
-
-  const allAdvocates: Advocate[] = useMemo(
-    () => (response?.success ? response.data : []),
-    [response]
-  );
-
-  const error = queryError
-    ? queryError instanceof Error
-      ? queryError.message
-      : "Failed to fetch advocates"
-    : response?.success === false
-      ? response.error.message
-      : null;
-
-  useEffect(() => {
-    if (response?.success && !hasShownInitialToast.current) {
-      hasShownInitialToast.current = true;
-      const count = response.data.length;
-      showToast({
-        variant: "success",
-        message: "Advocates loaded successfully",
-        description: `Found ${count} advocate${count !== 1 ? "s" : ""}`,
-        duration: 3000,
-      });
-    }
-  }, [response, showToast]);
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        variant: "error",
-        message: "Failed to load advocates",
-        description: error,
-        duration: 5000,
-      });
-    }
-  }, [error, showToast]);
 
   const {
-    filterCriteria,
+    advocates,
+    isLoading,
+    isBackgroundFetching,
+    error,
     searchTerm,
     setSearchTerm,
     selectedDegrees,
@@ -74,218 +22,130 @@ export default function Home() {
     setSelectedCities,
     selectedSpecialties,
     setSelectedSpecialties,
-    selectedAreaCodes,
-    setSelectedAreaCodes,
     minExperience,
     setMinExperience,
     maxExperience,
     setMaxExperience,
-    clearAllFilters,
+    sortConfig,
+    handleSort,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalRecords,
+    loadedRecords,
+    visiblePageNumbers,
+    hasPrevious,
+    hasNext,
+    activeFilters,
     removeFilter,
+    clearAllFilters,
+    filterOptions,
     addSpecialtyFilter,
     addCityFilter,
     addDegreeFilter,
-    addAreaCodeFilter,
-  } = useAdvocateFilters(allAdvocates);
-
-  const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
-
-  const debouncedFilterCriteria = useMemo(
-    () => ({
-      ...filterCriteria,
-      search: debouncedSearchTerm,
-    }),
-    [filterCriteria, debouncedSearchTerm]
-  );
-
-  const { sortConfig, handleSort } = useTableSorting<SortableColumn>();
-
-  const [currentPage, setCurrentPage] = useUrlNumberState("page", 1);
-  const [pageSize, setPageSize] = useUrlNumberState("pageSize", 25);
-
-  const filteredAdvocates = useMemo(() => {
-    return filterAdvocates(allAdvocates, debouncedFilterCriteria);
-  }, [allAdvocates, debouncedFilterCriteria]);
-
-  const sortedAdvocates = useMemo(() => {
-    return sortAdvocates(filteredAdvocates, sortConfig.column, sortConfig.direction);
-  }, [filteredAdvocates, sortConfig]);
-
-  const paginationInfo = useMemo(() => {
-    const totalPages = Math.ceil(sortedAdvocates.length / pageSize);
-    const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
-
-    return {
-      currentPage: safePage,
-      totalPages: totalPages || 1,
-      hasPrevious: safePage > 1,
-      hasNext: safePage < totalPages,
-    };
-  }, [currentPage, pageSize, sortedAdvocates.length]);
-
-  const visiblePageNumbers = useMemo(
-    () => getPageNumbers(paginationInfo.currentPage, paginationInfo.totalPages),
-    [paginationInfo.currentPage, paginationInfo.totalPages]
-  );
-
-  const paginatedAdvocates = useMemo(
-    () => paginate(sortedAdvocates, paginationInfo.currentPage, pageSize).data,
-    [sortedAdvocates, paginationInfo.currentPage, pageSize]
-  );
-
-  const { expandedRows, toggleRow } = useExpandableRows(paginatedAdvocates.length);
-
-  usePrefetchAdvocates({
-    enabled: paginationInfo.hasNext,
-    data: sortedAdvocates,
-    nextPage: paginationInfo.currentPage + 1,
-    pageSize,
-  });
-
-  const activeFilters: ActiveFilter[] = useMemo(() => {
-    const filters: ActiveFilter[] = [];
-
-    selectedDegrees.forEach((degree) => {
-      filters.push({ type: "degree", label: degree, value: degree });
-    });
-
-    selectedCities.forEach((city) => {
-      filters.push({ type: "city", label: city, value: city });
-    });
-
-    selectedSpecialties.forEach((specialty) => {
-      filters.push({ type: "specialty", label: specialty, value: specialty });
-    });
-
-    selectedAreaCodes.forEach((areaCode) => {
-      filters.push({ type: "areaCode", label: `(${areaCode})`, value: areaCode });
-    });
-
-    if (minExperience > 0 || maxExperience > 0) {
-      const label =
-        minExperience > 0 && maxExperience > 0
-          ? `${minExperience}-${maxExperience} years`
-          : minExperience > 0
-            ? `${minExperience}+ years`
-            : `Up to ${maxExperience} years`;
-      filters.push({ type: "experience", label });
-    }
-
-    return filters;
-  }, [
-    selectedDegrees,
-    selectedCities,
-    selectedSpecialties,
     selectedAreaCodes,
-    minExperience,
-    maxExperience,
-  ]);
+    setSelectedAreaCodes,
+    addAreaCodeFilter,
+  } = useAdvocateTable();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleResetSearch = (): void => {
-    setSearchTerm("");
-    setCurrentPage(1);
-  };
+  const { expandedRows, toggleRow } = useExpandableRows(advocates.length);
 
   return (
     <AdvocateListTemplate
-      advocates={paginatedAdvocates}
+      advocates={advocates}
       searchTerm={searchTerm}
-      onSearchChange={handleSearchChange}
-      onResetSearch={handleResetSearch}
+      onSearchChange={(e) => setSearchTerm(e.target.value)}
+      onResetSearch={() => setSearchTerm("")}
       isLoading={isLoading}
-      error={error || undefined}
+      isBackgroundFetching={isBackgroundFetching}
+      error={error}
+      totalRecords={totalRecords}
+      loadedRecords={loadedRecords}
       deviceSize={deviceSize}
       expandedRows={expandedRows}
       onToggleRow={toggleRow}
       filters={{
-        availableDegrees: filterOptions?.degrees || [],
-        selectedDegrees,
-        onDegreesChange: (degrees) => {
-          setSelectedDegrees(degrees);
-          setCurrentPage(1);
+        availableDegrees: filterOptions.degrees.map((d) => d.code),
+        selectedDegrees: selectedDegrees.map((id) => {
+          const degree = filterOptions.degrees.find((d) => d.id === id);
+          return degree?.code || "";
+        }),
+        onDegreesChange: (codes) => {
+          const ids = codes
+            .map((code) => filterOptions.degrees.find((d) => d.code === code)?.id)
+            .filter((id): id is number => id !== undefined);
+          setSelectedDegrees(ids);
         },
-        availableCities: filterOptions?.cities || [],
-        selectedCities,
-        onCitiesChange: (cities) => {
-          setSelectedCities(cities);
-          setCurrentPage(1);
+        availableCities: filterOptions.cities.map((c) => c.name),
+        selectedCities: selectedCities.map((id) => {
+          const city = filterOptions.cities.find((c) => c.id === id);
+          return city?.name || "";
+        }),
+        onCitiesChange: (names) => {
+          const ids = names
+            .map((name) => filterOptions.cities.find((c) => c.name === name)?.id)
+            .filter((id): id is number => id !== undefined);
+          setSelectedCities(ids);
         },
-        availableSpecialties: filterOptions?.specialties || [],
-        selectedSpecialties,
-        onSpecialtiesChange: (specialties) => {
-          setSelectedSpecialties(specialties);
-          setCurrentPage(1);
+        availableSpecialties: filterOptions.specialties.map((s) => s.name),
+        selectedSpecialties: selectedSpecialties.map((id) => {
+          const specialty = filterOptions.specialties.find((s) => s.id === id);
+          return specialty?.name || "";
+        }),
+        onSpecialtiesChange: (names) => {
+          const ids = names
+            .map((name) => filterOptions.specialties.find((s) => s.name === name)?.id)
+            .filter((id): id is number => id !== undefined);
+          setSelectedSpecialties(ids);
         },
-        availableAreaCodes: filterOptions?.areaCodes || [],
+        availableAreaCodes: [],
         selectedAreaCodes,
-        onAreaCodesChange: (areaCodes) => {
-          setSelectedAreaCodes(areaCodes);
-          setCurrentPage(1);
-        },
+        onAreaCodesChange: setSelectedAreaCodes,
         minExperience,
         maxExperience,
-        onMinExperienceChange: (value: number | "") => {
-          setMinExperience(value === "" ? 0 : value);
-          setCurrentPage(1);
-        },
-        onMaxExperienceChange: (value: number | "") => {
-          setMaxExperience(value === "" ? 0 : value);
-          setCurrentPage(1);
-        },
+        onMinExperienceChange: setMinExperience,
+        onMaxExperienceChange: setMaxExperience,
         activeFilters,
-        onRemoveFilter: (type, value) => {
-          removeFilter(type, value);
-          setCurrentPage(1);
+        onRemoveFilter: removeFilter,
+        onClearAll: clearAllFilters,
+        onSpecialtyClick: (name) => {
+          const specialty = filterOptions.specialties.find((s) => s.name === name);
+          if (specialty) addSpecialtyFilter(specialty.id);
         },
-        onClearAll: () => {
-          clearAllFilters();
-          setCurrentPage(1);
+        onCityClick: (name) => {
+          const city = filterOptions.cities.find((c) => c.name === name);
+          if (city) addCityFilter(city.id);
         },
-        onSpecialtyClick: (specialty) => {
-          addSpecialtyFilter(specialty);
-          setCurrentPage(1);
-        },
-        onCityClick: (city) => {
-          addCityFilter(city);
-          setCurrentPage(1);
-        },
-        onDegreeClick: (degree) => {
-          addDegreeFilter(degree);
-          setCurrentPage(1);
+        onDegreeClick: (code) => {
+          const degree = filterOptions.degrees.find((d) => d.code === code);
+          if (degree) addDegreeFilter(degree.id);
         },
         onAreaCodeClick: (areaCode) => {
           addAreaCodeFilter(areaCode);
-          setCurrentPage(1);
         },
       }}
       sort={{
-        column: sortConfig.column,
+        column: sortConfig.column as SortableColumn,
         direction: sortConfig.direction,
-        onSort: handleSort,
+        onSort: (column: SortableColumn) => handleSort(column || "firstName"),
       }}
       pagination={{
-        currentPage: paginationInfo.currentPage,
-        totalPages: paginationInfo.totalPages,
+        currentPage,
+        totalPages,
         visiblePages: visiblePageNumbers,
-        hasPrevious: paginationInfo.hasPrevious,
-        hasNext: paginationInfo.hasNext,
+        hasPrevious,
+        hasNext,
         onPageChange: setCurrentPage,
         onFirstPage: () => setCurrentPage(1),
-        onLastPage: () => setCurrentPage(paginationInfo.totalPages),
+        onLastPage: () => setCurrentPage(totalPages),
       }}
       pageSize={{
         current: pageSize,
         options: [10, 25, 50, 100],
-        totalItems: sortedAdvocates.length,
-        onPageSizeChange: (newSize) => {
-          setPageSize(newSize);
-          setCurrentPage(1);
-        },
+        totalItems: totalRecords,
+        onPageSizeChange: setPageSize,
       }}
     />
   );

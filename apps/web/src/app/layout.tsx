@@ -12,6 +12,11 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "Solace Candidate Assignment",
   description: "Show us what you got",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+  },
 };
 
 export default function RootLayout({

@@ -1,103 +1,70 @@
-import type { Advocate } from "@repo/types";
-import { useAdvocates, type UseAdvocatesOptions } from "./use-advocates";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import type { AdvocateFilterOptions } from "@repo/types";
+import { fetchAdvocateFilterOptions } from "../advocates";
+import { queryKeys } from "../query-keys";
+import type { ApiResponse } from "../client";
 
 /**
- * Filter options derived from advocate data.
+ * Options for the useAdvocateFilterOptions hook.
  */
-export interface AdvocateFilterOptions {
-  degrees: string[];
-  cities: string[];
-  specialties: string[];
-  areaCodes: string[];
-}
-
-/**
- * Extract unique degrees from advocates list.
- */
-function getUniqueDegrees(advocates: Advocate[]): string[] {
-  return Array.from(new Set(advocates.map((a) => a.degree))).sort();
-}
-
-/**
- * Extract unique cities from advocates list.
- */
-function getUniqueCities(advocates: Advocate[]): string[] {
-  return Array.from(new Set(advocates.map((a) => a.city))).sort();
-}
-
-/**
- * Extract unique specialties from advocates list.
- */
-function getUniqueSpecialties(advocates: Advocate[]): string[] {
-  const allSpecialties = advocates.flatMap((a) => a.specialties);
-  return Array.from(new Set(allSpecialties)).sort();
-}
-
-/**
- * Extract unique area codes from advocates list.
- */
-function getUniqueAreaCodes(advocates: Advocate[]): string[] {
-  const areaCodes = advocates.map((a) => {
-    const phoneStr = a.phoneNumber.toString();
-    return phoneStr.slice(0, 3);
-  });
-  return Array.from(new Set(areaCodes)).sort();
-}
+export type UseAdvocateFilterOptionsOptions<TData = ApiResponse<AdvocateFilterOptions>> = Omit<
+  UseQueryOptions<ApiResponse<AdvocateFilterOptions>, Error, TData>,
+  "queryKey" | "queryFn"
+>;
 
 /**
  * React Query hook for fetching advocate filter options.
  *
- * This hook uses a select transform to extract only filter options from the advocates data,
- * providing significant performance benefits:
- * - Separate caching with longer stale time (filter options change rarely)
- * - Computed only when advocate data changes (not on every render)
- * - Structural sharing prevents unnecessary re-renders
- * - Reduces memory footprint by caching only the derived data needed
+ * Returns available cities, degrees, and specialties with counts for populating
+ * filter dropdown menus. This data is heavily cached (1 hour) as it changes infrequently.
  *
- * Perfect for large datasets where filter options should be computed once and cached.
+ * Features:
+ * - Returns only options with active advocates
+ * - Includes counts for each option
+ * - Long cache time (1 hour) for performance
+ * - Separate cache from main advocates data
  *
- * @param options - Optional React Query configuration
- * @returns Query result with filter options, loading state, and error handling
+ * @param options - React Query options
+ * @returns Query result with filter options
  *
  * @example
- * function FilterPanel() {
- *   const { data: options, isLoading } = useAdvocateFilterOptions();
+ * function FilterDropdowns() {
+ *   const { data, isLoading } = useAdvocateFilterOptions();
  *
  *   if (isLoading) return <div>Loading filters...</div>;
- *   if (!options) return null;
+ *   if (!data?.success) return null;
  *
  *   return (
  *     <div>
- *       <Select options={options.degrees} label="Degree" />
- *       <Select options={options.cities} label="City" />
- *       <Select options={options.specialties} label="Specialty" />
- *       <Select options={options.areaCodes} label="Area Code" />
+ *       <CitySelect options={data.data.cities} />
+ *       <DegreeSelect options={data.data.degrees} />
+ *       <SpecialtySelect options={data.data.specialties} />
  *     </div>
  *   );
  * }
+ *
+ * @example
+ * // Extract just city names for autocomplete
+ * function CityAutocomplete() {
+ *   const { data: cityNames } = useAdvocateFilterOptions({
+ *     select: (response) => response.success
+ *       ? response.data.cities.map(c => c.name)
+ *       : []
+ *   });
+ *
+ *   return <Autocomplete options={cityNames} />;
+ * }
  */
-export function useAdvocateFilterOptions(
-  options?: Omit<UseAdvocatesOptions<AdvocateFilterOptions>, "select">
+export function useAdvocateFilterOptions<TData = ApiResponse<AdvocateFilterOptions>>(
+  options?: UseAdvocateFilterOptionsOptions<TData>
 ) {
-  return useAdvocates({
-    select: (response) => {
-      if (!response.success) {
-        return {
-          degrees: [],
-          cities: [],
-          specialties: [],
-          areaCodes: [],
-        };
-      }
-
-      return {
-        degrees: getUniqueDegrees(response.data),
-        cities: getUniqueCities(response.data),
-        specialties: getUniqueSpecialties(response.data),
-        areaCodes: getUniqueAreaCodes(response.data),
-      };
-    },
-    staleTime: 1000 * 60 * 60,
+  return useQuery({
+    queryKey: queryKeys.advocates.filterOptions(),
+    queryFn: fetchAdvocateFilterOptions,
+    staleTime: 1000 * 60 * 60, // 1 hour - data changes infrequently
+    gcTime: 1000 * 60 * 120, // 2 hours
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     ...options,
   });
 }

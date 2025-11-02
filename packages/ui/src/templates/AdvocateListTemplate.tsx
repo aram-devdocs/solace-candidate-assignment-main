@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Filter as FilterIcon } from "lucide-react";
-import type { Advocate } from "@repo/types";
+import type { AdvocateWithRelations } from "@repo/types";
 import { Greeting } from "../molecules/Greeting";
 import { SearchBar } from "../molecules/SearchBar";
 import { ErrorState } from "../molecules/ErrorState";
@@ -13,16 +13,21 @@ import { SkeletonGreeting } from "../molecules/SkeletonGreeting";
 import { SkeletonSearchBar } from "../molecules/SkeletonSearchBar";
 import { SkeletonAdvocateTable } from "../organisms/SkeletonAdvocateTable";
 import { IconButton } from "../atoms/IconButton";
+import { StatusBadge } from "../atoms/StatusBadge";
 import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
 import type { ActiveFilter } from "../organisms/ActiveFiltersBar";
 
 export interface AdvocateListTemplateProps {
-  advocates: Advocate[];
+  advocates: AdvocateWithRelations[];
   searchTerm: string;
   onSearchChange: React.ChangeEventHandler<HTMLInputElement>;
   onResetSearch: () => void;
   isLoading?: boolean;
+  isFetching?: boolean;
+  isBackgroundFetching?: boolean;
   error?: string;
+  totalRecords?: number;
+  loadedRecords?: number;
   /**
    * Current device size (from useDeviceSize hook in parent)
    */
@@ -123,7 +128,10 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   onSearchChange,
   onResetSearch,
   isLoading = false,
+  isBackgroundFetching = false,
   error,
+  totalRecords,
+  loadedRecords,
   deviceSize,
   expandedRows,
   onToggleRow,
@@ -146,7 +154,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (isLoading) {
     return (
-      <main className={paddingClasses}>
+      <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
         <div className={spacingClasses}>
           <SkeletonGreeting />
         </div>
@@ -162,7 +170,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (error) {
     return (
-      <main className={paddingClasses}>
+      <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
         <div className={spacingClasses}>
           <Greeting userName="Aram" timePeriod={getTimePeriod()} />
         </div>
@@ -172,7 +180,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   }
 
   return (
-    <main className={paddingClasses}>
+    <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
       <div className={spacingClasses}>
         <Greeting userName="Aram" timePeriod={getTimePeriod()} />
       </div>
@@ -203,6 +211,20 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
             onRemoveFilter={filters.onRemoveFilter}
             onClearAll={filters.onClearAll}
             resultCount={advocates.length}
+          />
+        </div>
+      )}
+
+      {/* Status Badge */}
+      {totalRecords !== undefined && (
+        <div className={spacingClasses}>
+          <StatusBadge
+            displayedCount={advocates.length}
+            totalCount={totalRecords}
+            loadedCount={loadedRecords}
+            itemLabel="advocates"
+            isFiltered={filters ? filters.activeFilters.length > 0 : false}
+            isBackgroundFetching={isBackgroundFetching}
           />
         </div>
       )}
