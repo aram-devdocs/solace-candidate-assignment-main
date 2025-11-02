@@ -154,7 +154,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (isLoading) {
     return (
-      <main className={paddingClasses}>
+      <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
         <div className={spacingClasses}>
           <SkeletonGreeting />
         </div>
@@ -170,7 +170,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (error) {
     return (
-      <main className={paddingClasses}>
+      <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
         <div className={spacingClasses}>
           <Greeting userName="Aram" timePeriod={getTimePeriod()} />
         </div>
@@ -180,7 +180,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   }
 
   return (
-    <main className={paddingClasses}>
+    <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
       <div className={spacingClasses}>
         <Greeting userName="Aram" timePeriod={getTimePeriod()} />
       </div>

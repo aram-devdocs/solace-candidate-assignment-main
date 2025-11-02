@@ -104,6 +104,39 @@ export async function getAdvocateById(
 }
 
 /**
+ * Loads specialties for given advocate IDs in a single query
+ */
+async function loadAdvocateSpecialties(
+  advocateIds: number[]
+): Promise<Record<number, Array<{ specialty: typeof specialties.$inferSelect }>>> {
+  if (advocateIds.length === 0) {
+    return {};
+  }
+
+  const specialtyRecords = await db
+    .select({
+      advocateId: advocateSpecialties.advocateId,
+      specialty: specialties,
+    })
+    .from(advocateSpecialties)
+    .leftJoin(specialties, eq(advocateSpecialties.specialtyId, specialties.id))
+    .where(inArray(advocateSpecialties.advocateId, advocateIds));
+
+  return specialtyRecords.reduce(
+    (acc, record) => {
+      if (!acc[record.advocateId]) {
+        acc[record.advocateId] = [];
+      }
+      if (record.specialty) {
+        acc[record.advocateId].push({ specialty: record.specialty });
+      }
+      return acc;
+    },
+    {} as Record<number, Array<{ specialty: typeof specialties.$inferSelect }>>
+  );
+}
+
+/**
  * Builds WHERE clause conditions from filter criteria.
  */
 function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefined {
@@ -145,14 +178,40 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     );
   }
 
-  // Text search on advocates table fields only
+  // Area code filter - match first 3 characters of phone number
+  if (filters.areaCodes && filters.areaCodes.length > 0) {
+    conditions.push(
+      sql`SUBSTRING(${advocates.phoneNumber}, 1, 3) IN (${sql.join(
+        filters.areaCodes.map((code) => sql`${code}`),
+        sql`, `
+      )})`
+    );
+  }
+
+  // Text search across all relevant fields including specialties
   if (filters.search && filters.search.trim()) {
     const searchTerm = `%${filters.search.trim()}%`;
     conditions.push(
       or(
         ilike(advocates.firstName, searchTerm),
         ilike(advocates.lastName, searchTerm),
-        ilike(advocates.phoneNumber, searchTerm)
+        ilike(advocates.phoneNumber, searchTerm),
+        sql`EXISTS (
+          SELECT 1 FROM ${cities}
+          WHERE ${cities.id} = ${advocates.cityId}
+          AND ${ilike(cities.name, searchTerm)}
+        )`,
+        sql`EXISTS (
+          SELECT 1 FROM ${degrees}
+          WHERE ${degrees.id} = ${advocates.degreeId}
+          AND ${ilike(degrees.code, searchTerm)}
+        )`,
+        sql`EXISTS (
+          SELECT 1 FROM ${advocateSpecialties}
+          JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+          WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+          AND ${ilike(specialties.name, searchTerm)}
+        )`
       )!
     );
   }
@@ -242,35 +301,8 @@ export async function getAdvocatesPaginated(
       .limit(pageSize)
       .offset(offset);
 
-    // Get advocate IDs for specialty lookup
     const advocateIds = advocateResults.map((r) => r.advocate.id);
-
-    // Fetch all specialties for these advocates in one query
-    const specialtyRecords =
-      advocateIds.length > 0
-        ? await db
-            .select({
-              advocateId: advocateSpecialties.advocateId,
-              specialty: specialties,
-            })
-            .from(advocateSpecialties)
-            .leftJoin(specialties, eq(advocateSpecialties.specialtyId, specialties.id))
-            .where(inArray(advocateSpecialties.advocateId, advocateIds))
-        : [];
-
-    // Group specialties by advocate ID
-    const specialtiesByAdvocate = specialtyRecords.reduce(
-      (acc, record) => {
-        if (!acc[record.advocateId]) {
-          acc[record.advocateId] = [];
-        }
-        if (record.specialty) {
-          acc[record.advocateId].push({ specialty: record.specialty });
-        }
-        return acc;
-      },
-      {} as Record<number, Array<{ specialty: typeof specialties.$inferSelect }>>
-    );
+    const specialtiesByAdvocate = await loadAdvocateSpecialties(advocateIds);
 
     // Combine data
     const advocatesWithRelations: AdvocateWithRelations[] = advocateResults.map((result) => ({
@@ -377,32 +409,8 @@ export async function searchAdvocates(
       .limit(pageSize)
       .offset(offset);
 
-    // Get specialties
     const advocateIds = advocateResults.map((r) => r.advocate.id);
-    const specialtyRecords =
-      advocateIds.length > 0
-        ? await db
-            .select({
-              advocateId: advocateSpecialties.advocateId,
-              specialty: specialties,
-            })
-            .from(advocateSpecialties)
-            .leftJoin(specialties, eq(advocateSpecialties.specialtyId, specialties.id))
-            .where(inArray(advocateSpecialties.advocateId, advocateIds))
-        : [];
-
-    const specialtiesByAdvocate = specialtyRecords.reduce(
-      (acc, record) => {
-        if (!acc[record.advocateId]) {
-          acc[record.advocateId] = [];
-        }
-        if (record.specialty) {
-          acc[record.advocateId].push({ specialty: record.specialty });
-        }
-        return acc;
-      },
-      {} as Record<number, Array<{ specialty: typeof specialties.$inferSelect }>>
-    );
+    const specialtiesByAdvocate = await loadAdvocateSpecialties(advocateIds);
 
     const advocatesWithRelations: AdvocateWithRelations[] = advocateResults.map((result) => ({
       ...result.advocate,

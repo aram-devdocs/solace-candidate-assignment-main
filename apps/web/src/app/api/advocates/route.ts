@@ -1,4 +1,4 @@
-import { getAdvocatesPaginated, searchAdvocates } from "@repo/services";
+import { getAdvocatesPaginated } from "@repo/services";
 import { isAppError, type AdvocateFilters, type AdvocateSortConfig } from "@repo/types";
 import { API_LIMITS, FILTER_LIMITS } from "@repo/utils";
 import { NextRequest } from "next/server";
@@ -21,8 +21,6 @@ function parseQueryParams(searchParams: URLSearchParams): {
   pageSize: number;
   filters?: AdvocateFilters;
   sort?: AdvocateSortConfig;
-  useSearch: boolean;
-  searchTerm?: string;
 } {
   // Pagination validation
   const pageStr = searchParams.get("page") || "1";
@@ -47,9 +45,8 @@ function parseQueryParams(searchParams: URLSearchParams): {
     );
   }
 
-  // Search
+  // Search (included in filters)
   const searchTerm = searchParams.get("search") || undefined;
-  const useSearch = !!searchTerm?.trim();
 
   // Filter ID validation
   const validateIdArray = (paramName: string, values: string[]): number[] => {
@@ -71,6 +68,12 @@ function parseQueryParams(searchParams: URLSearchParams): {
   const cityIds = validateIdArray("cityIds", searchParams.getAll("cityIds"));
   const degreeIds = validateIdArray("degreeIds", searchParams.getAll("degreeIds"));
   const specialtyIds = validateIdArray("specialtyIds", searchParams.getAll("specialtyIds"));
+
+  // Area codes validation
+  const areaCodes = searchParams.getAll("areaCodes");
+  if (areaCodes.length > FILTER_LIMITS.MAX_ARRAY_LENGTH) {
+    throw new Error(`Too many areaCodes: maximum ${FILTER_LIMITS.MAX_ARRAY_LENGTH} allowed`);
+  }
 
   // Experience validation
   const minExperienceStr = searchParams.get("minExperience");
@@ -114,6 +117,7 @@ function parseQueryParams(searchParams: URLSearchParams): {
     cityIds: cityIds.length > 0 ? cityIds : undefined,
     degreeIds: degreeIds.length > 0 ? degreeIds : undefined,
     specialtyIds: specialtyIds.length > 0 ? specialtyIds : undefined,
+    areaCodes: areaCodes.length > 0 ? areaCodes : undefined,
     minExperience,
     maxExperience,
   };
@@ -158,8 +162,6 @@ function parseQueryParams(searchParams: URLSearchParams): {
     pageSize,
     filters: Object.keys(filters).length > 0 ? filters : undefined,
     sort,
-    useSearch,
-    searchTerm,
   };
 }
 
@@ -174,6 +176,7 @@ function parseQueryParams(searchParams: URLSearchParams): {
  * - cityIds[]: Array of city IDs to filter by
  * - degreeIds[]: Array of degree IDs to filter by
  * - specialtyIds[]: Array of specialty IDs to filter by
+ * - areaCodes[]: Array of area codes to filter by (e.g., "555", "202")
  * - minExperience: Minimum years of experience
  * - maxExperience: Maximum years of experience
  * - sortColumn: Column to sort by
@@ -223,13 +226,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { page, pageSize, filters, sort, useSearch, searchTerm } = parsedParams;
+    const { page, pageSize, filters, sort } = parsedParams;
 
-    // Use full-text search if search term provided, otherwise use filtered pagination
-    const result =
-      useSearch && searchTerm
-        ? await searchAdvocates(searchTerm, page, pageSize)
-        : await getAdvocatesPaginated(page, pageSize, filters, sort);
+    // Use getAdvocatesPaginated for all requests (handles search via filters.search)
+    const result = await getAdvocatesPaginated(page, pageSize, filters, sort);
 
     if (result.success) {
       return Response.json({

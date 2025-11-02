@@ -46,6 +46,9 @@ function buildQueryString(params: FetchAdvocatesParams): string {
         searchParams.append("specialtyIds", id.toString())
       );
     }
+    if (params.filters.areaCodes) {
+      params.filters.areaCodes.forEach((code) => searchParams.append("areaCodes", code));
+    }
     if (params.filters.minExperience !== undefined) {
       searchParams.append("minExperience", params.filters.minExperience.toString());
     }

@@ -18,6 +18,12 @@ export const CacheTTL = {
  *
  * @param key - Cache key
  * @returns Parsed JSON value or null if not found/expired/unavailable
+ *
+ * @example
+ * const advocate = await getCached<AdvocateWithRelations>("advocates:v1:detail:123");
+ * if (advocate) {
+ *   console.log(advocate.firstName);
+ * }
  */
 export async function getCached<T>(key: string): Promise<T | null> {
   try {
@@ -46,6 +52,9 @@ export async function getCached<T>(key: string): Promise<T | null> {
  * @param value - Value to cache (will be JSON stringified)
  * @param ttlSeconds - Time to live in seconds
  * @returns True if successful, false otherwise
+ *
+ * @example
+ * await setCache("advocates:v1:detail:123", advocate, CacheTTL.ADVOCATE_DETAIL);
  */
 export async function setCache<T>(key: string, value: T, ttlSeconds: number): Promise<boolean> {
   try {
@@ -89,6 +98,10 @@ export async function deleteCache(key: string): Promise<number> {
  *
  * @param pattern - Redis key pattern (e.g., "advocates:v1:*")
  * @returns Number of keys deleted
+ *
+ * @example
+ * await invalidatePattern("advocates:v1:*"); // Clear all advocate caches
+ * await invalidatePattern("advocates:v1:paginated:*"); // Clear only paginated results
  */
 export async function invalidatePattern(pattern: string): Promise<number> {
   try {

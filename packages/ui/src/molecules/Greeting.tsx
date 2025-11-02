@@ -51,7 +51,7 @@ export const Greeting: React.FC<GreetingProps> = ({ userName, timePeriod, classN
 
   return (
     <div
-      className={`bg-greeting-background border-secondary-200 flex flex-col items-center justify-between overflow-hidden rounded-lg border shadow-md md:flex-row ${className}`}
+      className={`bg-greeting-background border-secondary-200 flex w-full max-w-full flex-col items-center justify-between overflow-hidden rounded-lg border shadow-md md:flex-row ${className}`}
     >
       {/* PNG for mobile - centered above text */}
       <img

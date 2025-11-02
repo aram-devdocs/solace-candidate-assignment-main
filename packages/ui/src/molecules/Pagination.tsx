@@ -43,9 +43,9 @@ export interface PaginationProps {
 /**
  * Pagination component for navigating through pages
  * Responsive: Shows different controls based on device size
- * Mobile: Prev/Next only
- * Tablet: Prev/Next + limited page numbers
- * Desktop: Full controls with first/last buttons
+ * Mobile: First/Prev/Next/Last icons (when totalPages > 5), page indicator
+ * Tablet: First/Prev/Next/Last icons (when totalPages > 5) + limited page numbers
+ * Desktop: First/Prev/Next/Last with text labels (when totalPages > 5) + full page numbers
  *
  * @param currentPage - Current page number
  * @param totalPages - Total number of pages
@@ -85,7 +85,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   const activePageClasses = `${buttonBaseClasses} bg-primary-700 text-white`;
   const navButtonClasses = `${buttonBaseClasses} border border-secondary-400 hover:bg-secondary-100 flex items-center gap-xs`;
 
-  const showFirstLast = deviceSize === "desktop" && totalPages > 5;
+  const showFirstLast = totalPages > 5;
 
   return (
     <div className="gap-sm flex flex-wrap items-center justify-center">

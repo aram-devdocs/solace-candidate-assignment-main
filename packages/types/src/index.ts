@@ -96,6 +96,7 @@ export interface AdvocateFilters {
   cityIds?: number[];
   degreeIds?: number[];
   specialtyIds?: number[];
+  areaCodes?: string[];
   minExperience?: number;
   maxExperience?: number;
   isActive?: boolean;

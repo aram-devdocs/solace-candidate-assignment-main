@@ -178,3 +178,5 @@ At this point, everything works. With a few thousand rows, I am able to search a
 4. Once we did all that, we just update queries to use the new layer and pagination, and everything just clicks together.
 
 To make things easier to test at scale, we use the faker.js package in database to auto scale up and down using env variables, and setting the docker compose settings to match the resources of our free tier on vercel storage.
+
+TLDR; We are now using a hybrid approach to caching and pagination, where we use the client to filter and sort the data, and the server to provide the data. This is a more robust approach to scaling, and is a great foundation for future features. I was able to test at 100,000 advocates with no issues, and the app still feels snappy and responsive. I spent way more time than I needed to refining this, but scaling is cool so why not.

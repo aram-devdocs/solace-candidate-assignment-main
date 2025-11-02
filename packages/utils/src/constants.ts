@@ -66,3 +66,15 @@ export const API_LIMITS = {
   /** Default page size when not specified */
   DEFAULT_PAGE_SIZE: 25,
 } as const;
+
+/**
+ * Client-side caching strategy configuration
+ */
+export const CACHE_STRATEGY = {
+  /** Maximum records to fetch on initial page load */
+  INITIAL_FETCH_SIZE: 500,
+  /** Maximum records to cache client-side (prevents memory issues) */
+  MAX_CACHED_RECORDS: 2000,
+  /** Background fetch batch size for progressive loading */
+  BATCH_SIZE: 100,
+} as const;

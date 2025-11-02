@@ -4,7 +4,7 @@ import { db } from "../client";
 import { advocates, cities, degrees, specialties, advocateSpecialties } from "../schema";
 import { asc, inArray, sql } from "drizzle-orm";
 import {
-  generateAdvocates,
+  generateAdvocate,
   CITY_DATA,
   DEGREE_DATA,
   SPECIALTY_DATA,
@@ -108,50 +108,75 @@ async function seedLookupTables(): Promise<{
 }
 
 /**
- * Insert a single advocate and their specialty relationships
+ * Insert advocates in batches for better performance
  */
-async function insertAdvocate(
-  advocateData: GeneratedAdvocate,
+async function insertAdvocatesBatch(
+  advocatesData: GeneratedAdvocate[],
   citiesMap: Map<string, number>,
   degreesMap: Map<string, number>,
-  specialtiesMap: Map<string, number>
+  specialtiesMap: Map<string, number>,
+  batchSize: number = 500
 ): Promise<void> {
-  const cityId = citiesMap.get(advocateData.city);
-  const degreeId = degreesMap.get(advocateData.degree);
+  for (let i = 0; i < advocatesData.length; i += batchSize) {
+    const batch = advocatesData.slice(i, i + batchSize);
 
-  if (!cityId || !degreeId) {
-    console.error(
-      `Missing lookup data for advocate: ${advocateData.firstName} ${advocateData.lastName}`
-    );
-    return;
-  }
+    // Prepare advocate records
+    const advocateRecords = batch
+      .map((advocateData) => {
+        const cityId = citiesMap.get(advocateData.city);
+        const degreeId = degreesMap.get(advocateData.degree);
 
-  // Insert advocate
-  const result = await db
-    .insert(advocates)
-    .values({
-      firstName: advocateData.firstName,
-      lastName: advocateData.lastName,
-      cityId,
-      degreeId,
-      yearsOfExperience: advocateData.yearsOfExperience,
-      phoneNumber: advocateData.phoneNumber,
-    })
-    .returning({ id: advocates.id });
+        if (!cityId || !degreeId) {
+          console.error(
+            `Missing lookup data for advocate: ${advocateData.firstName} ${advocateData.lastName}`
+          );
+          return null;
+        }
 
-  const advocateId = result[0].id;
+        return {
+          firstName: advocateData.firstName,
+          lastName: advocateData.lastName,
+          cityId,
+          degreeId,
+          yearsOfExperience: advocateData.yearsOfExperience,
+          phoneNumber: advocateData.phoneNumber,
+        };
+      })
+      .filter((record): record is NonNullable<typeof record> => record !== null);
 
-  // Insert advocate-specialty relationships
-  for (const specialtyName of advocateData.specialties) {
-    const specialtyId = specialtiesMap.get(specialtyName);
-    if (specialtyId) {
-      await db
-        .insert(advocateSpecialties)
-        .values({
-          advocateId,
-          specialtyId,
-        })
-        .onConflictDoNothing();
+    // Batch insert advocates
+    const insertedAdvocates = await db
+      .insert(advocates)
+      .values(advocateRecords)
+      .returning({ id: advocates.id, phoneNumber: advocates.phoneNumber });
+
+    // Create a map of phoneNumber -> id for specialty relationships
+    const phoneToIdMap = new Map(insertedAdvocates.map((a) => [a.phoneNumber, a.id]));
+
+    // Prepare specialty relationships
+    const specialtyRelationships: Array<{ advocateId: number; specialtyId: number }> = [];
+
+    for (const advocateData of batch) {
+      const advocateId = phoneToIdMap.get(advocateData.phoneNumber);
+      if (!advocateId) continue;
+
+      for (const specialtyName of advocateData.specialties) {
+        const specialtyId = specialtiesMap.get(specialtyName);
+        if (specialtyId) {
+          specialtyRelationships.push({ advocateId, specialtyId });
+        }
+      }
+    }
+
+    // Batch insert specialty relationships
+    if (specialtyRelationships.length > 0) {
+      await db.insert(advocateSpecialties).values(specialtyRelationships).onConflictDoNothing();
+    }
+
+    // Progress update
+    const processed = Math.min(i + batchSize, advocatesData.length);
+    if (processed % 5000 === 0 || processed === advocatesData.length) {
+      console.log(`Inserted ${processed}/${advocatesData.length} advocates...`);
     }
   }
 }
@@ -199,11 +224,26 @@ async function reconcileAdvocates(
     const countToAdd = targetCount - currentCount;
     console.log(`Adding ${countToAdd} new advocates...`);
 
-    const newAdvocates = generateAdvocates(countToAdd);
+    // Query existing phone numbers to avoid duplicates
+    const existingPhones = await db.select({ phoneNumber: advocates.phoneNumber }).from(advocates);
+    const phoneNumberSet = new Set(existingPhones.map((p) => p.phoneNumber));
+    console.log(`Found ${phoneNumberSet.size} existing phone numbers`);
 
-    for (const advocateData of newAdvocates) {
-      await insertAdvocate(advocateData, citiesMap, degreesMap, specialtiesMap);
+    // Generate new advocates with awareness of existing phone numbers
+    const newAdvocates: GeneratedAdvocate[] = [];
+    for (let i = 0; i < countToAdd; i++) {
+      const advocate = generateAdvocate(phoneNumberSet);
+      phoneNumberSet.add(advocate.phoneNumber);
+      newAdvocates.push(advocate);
+
+      // Progress indicator for large batches
+      if ((i + 1) % 1000 === 0) {
+        console.log(`Generated ${i + 1}/${countToAdd} advocates...`);
+      }
     }
+
+    console.log(`Inserting ${countToAdd} advocates into database...`);
+    await insertAdvocatesBatch(newAdvocates, citiesMap, degreesMap, specialtiesMap);
 
     console.log(`✓ Successfully added ${countToAdd} advocates`);
   } else {
