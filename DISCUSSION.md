@@ -11,6 +11,8 @@
   - [PR 8 - Advocate Table Hardening](#pr-8---advocate-table-hardening)
   - [PR 9 - Abstract into Service layer](#pr-9---abstract-into-service-layer)
   - [PR 10 - Toasts, Error states, and UX Refinement](#pr-10---toasts-error-states-and-ux-refinement)
+  - [PR 11 - Bug fix: Incorrect padding on slim devices](#pr-11---bug-fix-incorrect-padding-on-slim-devices)
+  - [PR 12 - React Query integration](#pr-12---react-query-integration)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
@@ -157,7 +159,7 @@ Sent this out to do some testing on a bunch of devices, and got back fairly cons
 
 The culprit ends up being tokens not fitting the right screen size, so a few quick css changes is the solution.
 
-## [PR 12 - React Query integration]()
+## [PR 12 - React Query integration](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/30)
 
 Right now we are using fetch directly, which is fine for a small project and data set, but will not scale well on its own without a bunch of custom code. React Query is a community trusted tool that I have used on a ton of projects for stuff like this, as it simplifies cache handling on the front end and normalizes API usage for react. You lose out on a frame agnostic approach, but if all front ends are using React / React Native, then they can all use this. LTS for something like this would be tieing in an RPC layer for the back end, or something like TS-Rest to create contract first APIs, but that is beyond the scope of this project. Because of our layered architecture, we set it up to be an easy add for future developers.
 
