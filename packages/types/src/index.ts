@@ -13,6 +13,9 @@ export type Advocate = InferSelectModel<typeof advocates>;
  */
 export type NewAdvocate = InferInsertModel<typeof advocates>;
 
+export * from "./result";
+export * from "./errors";
+
 /**
  * Valid degree types for healthcare advocates.
  */

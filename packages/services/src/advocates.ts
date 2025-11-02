@@ -1,22 +1,28 @@
 import { db, advocates } from "@repo/database";
 import { eq } from "drizzle-orm";
-import type { Advocate } from "@repo/types";
+import type { Advocate, Result } from "@repo/types";
+import { success, failure, DatabaseError, NotFoundError, toAppError } from "@repo/types";
 
 /**
  * Retrieves all advocates from the database.
  *
- * @returns Promise resolving to array of all advocates
- * @throws Error if database query fails
+ * @returns Promise resolving to Result containing array of advocates or error
  *
  * @example
- * const advocates = await getAllAdvocates();
+ * const result = await getAllAdvocates();
+ * if (result.success) {
+ *   console.log(result.data);
+ * } else {
+ *   console.error(result.error.message);
+ * }
  */
-export async function getAllAdvocates(): Promise<Advocate[]> {
+export async function getAllAdvocates(): Promise<Result<Advocate[], DatabaseError>> {
   try {
-    return await db.select().from(advocates);
+    const data = await db.select().from(advocates);
+    return success(data);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    throw new Error(`Failed to retrieve advocates: ${errorMessage}`);
+    const appError = toAppError(error);
+    return failure(new DatabaseError("Failed to retrieve advocates", appError.message));
   }
 }
 
@@ -24,21 +30,29 @@ export async function getAllAdvocates(): Promise<Advocate[]> {
  * Retrieves a single advocate by ID.
  *
  * @param id - Advocate ID
- * @returns Promise resolving to advocate or null if not found
- * @throws Error if database query fails
+ * @returns Promise resolving to Result containing advocate or error
  *
  * @example
- * const advocate = await getAdvocateById(123);
- * if (advocate) {
- *   console.log(advocate.firstName);
+ * const result = await getAdvocateById(123);
+ * if (result.success) {
+ *   console.log(result.data.firstName);
+ * } else {
+ *   console.error(result.error.message);
  * }
  */
-export async function getAdvocateById(id: number): Promise<Advocate | null> {
+export async function getAdvocateById(
+  id: number
+): Promise<Result<Advocate, DatabaseError | NotFoundError>> {
   try {
     const results = await db.select().from(advocates).where(eq(advocates.id, id));
-    return results[0] || null;
+
+    if (!results[0]) {
+      return failure(new NotFoundError("Advocate", id));
+    }
+
+    return success(results[0]);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    throw new Error(`Failed to retrieve advocate ${id}: ${errorMessage}`);
+    const appError = toAppError(error);
+    return failure(new DatabaseError(`Failed to retrieve advocate ${id}`, appError.message));
   }
 }

@@ -43,7 +43,7 @@ export const SpecialtyBadge: React.FC<SpecialtyBadgeProps> = ({
   className = "",
 }) => {
   const baseClasses =
-    "inline-flex items-center justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-50 text-primary-700 border-primary-200";
+    "inline-flex items-center justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-50 text-primary-700 border-primary-200 whitespace-nowrap";
   const clickableClasses = clickable
     ? "cursor-pointer hover:bg-primary-100 hover:border-primary-300 transition-colors"
     : "";

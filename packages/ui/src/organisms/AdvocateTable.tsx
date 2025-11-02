@@ -5,7 +5,7 @@ import { SortControl } from "../molecules/SortControl";
 import { SpecialtyBadge } from "../molecules/SpecialtyBadge";
 import { CityBadge } from "../molecules/CityBadge";
 import { DegreeBadge } from "../molecules/DegreeBadge";
-import { AreaCodeBadge } from "../molecules/AreaCodeBadge";
+import { PhoneNumberDisplay } from "../molecules/PhoneNumberDisplay";
 import { Pagination } from "../molecules/Pagination";
 import { PageSizeSelector } from "../molecules/PageSizeSelector";
 import { TableCell } from "../atoms/TableCell";
@@ -123,17 +123,14 @@ function getCellValue(
   if (key === "phoneNumber") {
     const areaCode = extractAreaCode(advocate.phoneNumber);
     const formattedNumber = formatPhoneNumber(advocate.phoneNumber);
-    const restOfNumber = formattedNumber.substring(5); // Skip "(555) " to get "123-4567"
 
     return (
-      <div className="gap-xs flex items-center">
-        <AreaCodeBadge
-          areaCode={areaCode}
-          onClick={onAreaCodeClick}
-          clickable={!!onAreaCodeClick}
-        />
-        <span className="text-secondary-900">{restOfNumber}</span>
-      </div>
+      <PhoneNumberDisplay
+        phoneNumber={formattedNumber}
+        areaCode={areaCode}
+        onAreaCodeClick={onAreaCodeClick}
+        clickable={!!onAreaCodeClick}
+      />
     );
   }
 
