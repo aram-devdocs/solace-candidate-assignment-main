@@ -180,3 +180,7 @@ At this point, everything works. With a few thousand rows, I am able to search a
 To make things easier to test at scale, we use the faker.js package in database to auto scale up and down using env variables, and setting the docker compose settings to match the resources of our free tier on vercel storage.
 
 TLDR; We are now using a hybrid approach to caching and pagination, where we use the client to filter and sort the data, and the server to provide the data. This is a more robust approach to scaling, and is a great foundation for future features. I was able to test at 100,000 advocates with no issues, and the app still feels snappy and responsive. I spent way more time than I needed to refining this, but scaling is cool so why not.
+
+## [PR 14 - UI Cleanup]()
+
+Numerous UI bugs have been found while working on the previous harden search functionality, such as mobile view of the down chevron, the filter badges not seeming like they worked correctly, and other misc refactors to improve responsiveness and accessibility.

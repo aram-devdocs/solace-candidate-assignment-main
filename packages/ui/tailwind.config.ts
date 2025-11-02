@@ -159,11 +159,27 @@ const config: Config = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        badgePulse: {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.05)", opacity: "0.95" },
+        },
+        badgeGlow: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(20, 184, 166, 0)" },
+          "50%": { boxShadow: "0 0 8px 2px rgba(20, 184, 166, 0.3)" },
+        },
+        badgeNudge: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "25%": { transform: "translateY(-2px)" },
+          "75%": { transform: "translateY(2px)" },
+        },
       },
       animation: {
         shimmer: "shimmer 2s infinite linear",
         fadeIn: "fadeIn 0.3s ease-in-out",
         slideInRight: "slideInRight 0.3s ease-out",
+        badgePulse: "badgePulse 2s ease-in-out 3",
+        badgeGlow: "badgeGlow 2s ease-in-out 3",
+        badgeNudge: "badgeNudge 0.6s ease-in-out 2",
       },
     },
   },

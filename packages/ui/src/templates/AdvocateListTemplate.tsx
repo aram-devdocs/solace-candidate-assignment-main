@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Filter as FilterIcon } from "lucide-react";
 import type { AdvocateWithRelations } from "@repo/types";
 import { Greeting } from "../molecules/Greeting";
+import { TemplateHeader } from "../molecules/TemplateHeader";
 import { SearchBar } from "../molecules/SearchBar";
 import { ErrorState } from "../molecules/ErrorState";
 import { AdvocateTable } from "../organisms/AdvocateTable";
@@ -70,6 +71,10 @@ export interface AdvocateListTemplateProps {
     onCityClick?: (cityId: number) => void; // eslint-disable-line no-unused-vars
     onDegreeClick?: (degreeId: number) => void; // eslint-disable-line no-unused-vars
     onAreaCodeClick?: (areaCode: string) => void; // eslint-disable-line no-unused-vars
+    activeSpecialtyIds?: number[];
+    activeCityIds?: number[];
+    activeDegreeIds?: number[];
+    activeAreaCodes?: string[];
   };
   /**
    * Sort configuration
@@ -187,6 +192,14 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
         <Greeting userName="Aram" timePeriod={timePeriod} />
       </div>
 
+      {/* Template Header */}
+      <div className={spacingClasses}>
+        <TemplateHeader
+          title="Advocate Directory"
+          subtitle="Browse and connect with health advocates"
+        />
+      </div>
+
       {/* Search Bar with Filter Button */}
       <div className={spacingClasses}>
         <div className="gap-sm flex items-center">
@@ -247,6 +260,10 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           onCityClick={filters?.onCityClick}
           onDegreeClick={filters?.onDegreeClick}
           onAreaCodeClick={filters?.onAreaCodeClick}
+          activeSpecialtyIds={filters?.activeSpecialtyIds}
+          activeCityIds={filters?.activeCityIds}
+          activeDegreeIds={filters?.activeDegreeIds}
+          activeAreaCodes={filters?.activeAreaCodes}
         />
       </div>
 

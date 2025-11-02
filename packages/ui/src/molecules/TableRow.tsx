@@ -42,7 +42,10 @@ export const TableRow: React.FC<TableRowProps> = ({
 
   return (
     <>
-      <tr className="border-secondary-200 hover:bg-primary-50 border-b transition-colors">
+      <tr
+        className={`border-secondary-200 hover:bg-primary-50 border-b transition-colors ${hasExpandableContent && onToggleExpand ? "cursor-pointer" : ""}`}
+        onClick={hasExpandableContent && onToggleExpand ? onToggleExpand : undefined}
+      >
         {cells.map((cell, index) => {
           const isCellObject = typeof cell === "object" && cell !== null && "content" in cell;
           const content = isCellObject ? cell.content : cell;
@@ -55,9 +58,8 @@ export const TableRow: React.FC<TableRowProps> = ({
           );
         })}
         {hasExpandableContent && onToggleExpand && (
-          <TableCell className="xl:hidden">
+          <TableCell className="!px-xs !py-xs sticky right-0 xl:hidden">
             <button
-              onClick={onToggleExpand}
               aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
               aria-expanded={isExpanded}
               className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"

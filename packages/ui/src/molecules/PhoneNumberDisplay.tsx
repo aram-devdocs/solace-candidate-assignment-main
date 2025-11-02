@@ -17,6 +17,10 @@ export interface PhoneNumberDisplayProps {
    * Whether the area code is clickable
    */
   clickable?: boolean;
+  /**
+   * Whether this area code is currently an active filter
+   */
+  isActiveAreaCode?: boolean;
 }
 
 /**
@@ -38,6 +42,7 @@ export function PhoneNumberDisplay({
   areaCode,
   onAreaCodeClick,
   clickable = false,
+  isActiveAreaCode = false,
 }: PhoneNumberDisplayProps) {
   const handleAreaCodeClick = (e: React.MouseEvent) => {
     if (clickable && onAreaCodeClick) {
@@ -49,14 +54,19 @@ export function PhoneNumberDisplay({
   const areaCodeWithParens = `(${areaCode})`;
   const restOfNumber = phoneNumber.substring(areaCodeWithParens.length).trim();
 
+  const areaCodeClasses = isActiveAreaCode
+    ? "text-white bg-primary-600 hover:bg-primary-700 decoration-white"
+    : "text-primary-700 hover:text-primary-900 hover:bg-primary-50 decoration-primary-400";
+
   return (
     <div className="bg-secondary-50 text-secondary-900 border-secondary-200 px-sm py-xs inline-flex items-center whitespace-nowrap rounded-full border text-sm">
       {clickable && onAreaCodeClick ? (
         <button
           type="button"
           onClick={handleAreaCodeClick}
-          className="text-primary-700 hover:text-primary-900 hover:bg-primary-50 decoration-primary-400 focus:ring-primary-500 px-xs -mx-xs cursor-pointer rounded font-semibold underline decoration-dotted underline-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1"
+          className={`${areaCodeClasses} focus:ring-primary-500 px-xs -mx-xs cursor-pointer rounded font-semibold underline decoration-dotted underline-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1`}
           aria-label={`Filter by area code ${areaCode}`}
+          aria-pressed={isActiveAreaCode}
         >
           {areaCodeWithParens}
         </button>
