@@ -4,9 +4,15 @@ import { Pool, neonConfig } from "@neondatabase/serverless";
 import { resolve } from "path";
 
 // Set WebSocket constructor only for Node.js environments
-// Migration scripts always run in Node.js (local dev and CI/CD), so this will always execute
+// Serverless environments (Vercel, Cloudflare Workers) have native WebSocket support
 // eslint-disable-next-line turbo/no-undeclared-env-vars
-if (typeof process !== "undefined" && process.versions?.node) {
+const isVercel = process.env.VERCEL === "1";
+// eslint-disable-next-line turbo/no-undeclared-env-vars
+const isServerless = process.env.AWS_LAMBDA_FUNCTION_NAME || isVercel;
+
+if (typeof process !== "undefined" && process.versions?.node && !isServerless) {
+  // Only import ws in Node.js runtime, not in serverless/edge environments
+  // This prevents "Cannot find module 'ws'" errors in Vercel deployments
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   neonConfig.webSocketConstructor = require("ws");
 }
