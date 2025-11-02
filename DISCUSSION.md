@@ -164,3 +164,15 @@ The culprit ends up being tokens not fitting the right screen size, so a few qui
 Right now we are using fetch directly, which is fine for a small project and data set, but will not scale well on its own without a bunch of custom code. React Query is a community trusted tool that I have used on a ton of projects for stuff like this, as it simplifies cache handling on the front end and normalizes API usage for react. You lose out on a frame agnostic approach, but if all front ends are using React / React Native, then they can all use this. LTS for something like this would be tieing in an RPC layer for the back end, or something like TS-Rest to create contract first APIs, but that is beyond the scope of this project. Because of our layered architecture, we set it up to be an easy add for future developers.
 
 The second part of the commit I expand using prefetching and filter options for the advocate. We are going to expand on the codebase to include a filter option on the back end, so we can selectively search and filter the data set as needed. Next pull request will handle that.
+
+## [PR 13 - Harden Search Functionality]()
+
+At this point, everything works. With a few thousand rows, I am able to search and filter the data set quickly. But, it has some key flaws. Every time a user calls the table, we fetch the entire data set. Even if we just fetched the entire data set, if the react-query cache is stale, it calls it again. This is a huge waste of resources, will cause increasingly expensive dev ops bills, and is not scalable. The solution comes in a mumber of parts.
+
+1. Migration to turn the advocates table into a series of lookup and reference tables, so that we can start creating relationships to optimize how we filter and search the data set. Adding some indexes and constraints to the table to help with performance gets us running a lot faster, but we are still calling the same amount of data each time.
+
+2. Redis, a tool already implemented in the app.solace.health, we can use the same methodology here. Preheating data as we search, query, and filter is all the faster with the assistance of a cache layer, so this was a no brainer. While an empty redis db does us no good, as we start navigating and searching we can get ahead of the next page here at the bare minimum, and it sets us up for better predictive search behaviors. Not suitable for MVP, but reach goals for this would be using geolocation, client information, and other data to predict what the user is likely to search for next, and loading that into the cache so we have quick options to get to.
+
+3. Service layer optimizations, combining all of these steps. It is exactly why we created this layer in the first place, as we can now combine the database and cache packages here to create a more robust and scalable solution.
+
+4. Once we did all that, we just update queries to use the new layer and pagination, and everything just clicks together.

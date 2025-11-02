@@ -9,5 +9,6 @@ export * from "./area-code";
 export * from "./breakpoints";
 export * from "./filter";
 export * from "./format";
-export * from "./sort";
 export * from "./pagination";
+export * from "./sort";
+export * from "./sort-types";

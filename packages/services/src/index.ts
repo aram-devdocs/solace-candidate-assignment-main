@@ -5,4 +5,11 @@
  * Provides abstraction between API routes and data access layer.
  */
 
-export { getAllAdvocates, getAdvocateById } from "./advocates";
+export {
+  getAllAdvocates,
+  getAdvocateById,
+  getAdvocatesPaginated,
+  searchAdvocates,
+  getAdvocateFilterOptions,
+  invalidateAdvocateCaches,
+} from "./advocates";

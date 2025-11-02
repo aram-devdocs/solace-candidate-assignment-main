@@ -1,13 +1,14 @@
-import type { Advocate } from "@repo/types";
-
 /**
  * Column identifiers for the Advocate table
- * Typed from the Advocate interface for type safety
  */
-export type AdvocateColumnKey = keyof Pick<
-  Advocate,
-  "firstName" | "lastName" | "city" | "degree" | "specialties" | "yearsOfExperience" | "phoneNumber"
->;
+export type AdvocateColumnKey =
+  | "firstName"
+  | "lastName"
+  | "city"
+  | "degree"
+  | "specialties"
+  | "yearsOfExperience"
+  | "phoneNumber";
 
 /**
  * Column visibility configuration for different device sizes

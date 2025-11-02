@@ -1,173 +1,132 @@
-import type { Advocate } from "@repo/types";
+/**
+ * Client-side filtering utilities for advocates
+ * Used when data is already cached to provide instant filtering without API calls
+ */
+
+import type { AdvocateWithRelations } from "@repo/types";
 import { extractAreaCode } from "./area-code";
 
 /**
- * Criteria for filtering advocates
+ * Filters advocates by search term (case-insensitive, searches first and last name)
  */
-export interface AdvocateFilterCriteria {
-  /**
-   * Search term to filter across all text fields
-   */
-  searchTerm?: string;
-  /**
-   * Filter by degree (MD, PhD, MSW)
-   */
-  degrees?: string[];
-  /**
-   * Filter by city
-   */
-  cities?: string[];
-  /**
-   * Filter by specialties (any match)
-   */
-  specialties?: string[];
-  /**
-   * Minimum years of experience (inclusive)
-   */
-  minExperience?: number;
-  /**
-   * Maximum years of experience (inclusive)
-   */
-  maxExperience?: number;
-  /**
-   * Filter by area code (first 3 digits of phone number)
-   */
-  areaCodes?: string[];
-}
+export function filterBySearch(
+  advocates: AdvocateWithRelations[],
+  searchTerm: string
+): AdvocateWithRelations[] {
+  if (!searchTerm.trim()) return advocates;
 
-/**
- * Filters advocates based on search term across multiple fields.
- *
- * Performs case-insensitive search across:
- * - First Name
- * - Last Name
- * - City
- * - Degree
- * - Specialties (array)
- * - Phone Number
- *
- * @param advocates - Array of advocates to filter
- * @param searchTerm - Search term to filter by
- * @returns Filtered array of advocates matching the search term
- *
- * @example
- * const results = filterAdvocatesBySearch(advocates, "john");
- * // Returns advocates with "John" in firstName, regardless of case
- */
-export function filterAdvocatesBySearch(advocates: Advocate[], searchTerm: string): Advocate[] {
-  if (!searchTerm || searchTerm.trim() === "") {
-    return advocates;
-  }
-
-  const normalizedSearchTerm = searchTerm.toLowerCase().trim();
-
+  const normalizedSearch = searchTerm.toLowerCase().trim();
   return advocates.filter((advocate) => {
-    return (
-      advocate.firstName.toLowerCase().includes(normalizedSearchTerm) ||
-      advocate.lastName.toLowerCase().includes(normalizedSearchTerm) ||
-      advocate.city.toLowerCase().includes(normalizedSearchTerm) ||
-      advocate.degree.toLowerCase().includes(normalizedSearchTerm) ||
-      advocate.specialties.some((specialty: string) =>
-        specialty.toLowerCase().includes(normalizedSearchTerm)
-      ) ||
-      advocate.phoneNumber.toString().includes(normalizedSearchTerm)
-    );
+    const firstName = advocate.firstName.toLowerCase();
+    const lastName = advocate.lastName.toLowerCase();
+    return firstName.includes(normalizedSearch) || lastName.includes(normalizedSearch);
   });
 }
 
 /**
- * Filters advocates based on comprehensive criteria including search, degrees, cities,
- * specialties, and years of experience range.
- *
- * @param advocates - Array of advocates to filter
- * @param criteria - Filter criteria object
- * @returns Filtered array of advocates matching all criteria
- *
- * @example
- * const results = filterAdvocates(advocates, {
- *   searchTerm: "john",
- *   degrees: ["MD", "PhD"],
- *   specialties: ["PTSD", "Anxiety/Depression"],
- *   minExperience: 5,
- *   maxExperience: 15
- * });
+ * Filters advocates by selected city IDs
  */
-export function filterAdvocates(
-  advocates: Advocate[],
-  criteria: AdvocateFilterCriteria
-): Advocate[] {
+export function filterByCities(
+  advocates: AdvocateWithRelations[],
+  cityIds: number[]
+): AdvocateWithRelations[] {
+  if (cityIds.length === 0) return advocates;
+  return advocates.filter((advocate) => cityIds.includes(advocate.cityId));
+}
+
+/**
+ * Filters advocates by selected degree IDs
+ */
+export function filterByDegrees(
+  advocates: AdvocateWithRelations[],
+  degreeIds: number[]
+): AdvocateWithRelations[] {
+  if (degreeIds.length === 0) return advocates;
+  return advocates.filter((advocate) => degreeIds.includes(advocate.degreeId));
+}
+
+/**
+ * Filters advocates by selected specialty IDs
+ */
+export function filterBySpecialties(
+  advocates: AdvocateWithRelations[],
+  specialtyIds: number[]
+): AdvocateWithRelations[] {
+  if (specialtyIds.length === 0) return advocates;
+  return advocates.filter((advocate) =>
+    advocate.advocateSpecialties.some((as) => specialtyIds.includes(as.specialty.id))
+  );
+}
+
+/**
+ * Filters advocates by area codes
+ */
+export function filterByAreaCodes(
+  advocates: AdvocateWithRelations[],
+  areaCodes: string[]
+): AdvocateWithRelations[] {
+  if (areaCodes.length === 0) return advocates;
+  return advocates.filter((advocate) => {
+    const areaCode = extractAreaCode(advocate.phoneNumber);
+    return areaCodes.includes(areaCode);
+  });
+}
+
+/**
+ * Filters advocates by years of experience range
+ */
+export function filterByExperience(
+  advocates: AdvocateWithRelations[],
+  minExperience?: number,
+  maxExperience?: number
+): AdvocateWithRelations[] {
+  return advocates.filter((advocate) => {
+    const meetsMin = minExperience === undefined || advocate.yearsOfExperience >= minExperience;
+    const meetsMax = maxExperience === undefined || advocate.yearsOfExperience <= maxExperience;
+    return meetsMin && meetsMax;
+  });
+}
+
+/**
+ * Applies all filters to a list of advocates
+ */
+export function applyAllFilters(
+  advocates: AdvocateWithRelations[],
+  filters: {
+    searchTerm?: string;
+    cityIds?: number[];
+    degreeIds?: number[];
+    specialtyIds?: number[];
+    areaCodes?: string[];
+    minExperience?: number;
+    maxExperience?: number;
+  }
+): AdvocateWithRelations[] {
   let filtered = advocates;
 
-  if (criteria.searchTerm && criteria.searchTerm.trim() !== "") {
-    filtered = filterAdvocatesBySearch(filtered, criteria.searchTerm);
+  if (filters.searchTerm) {
+    filtered = filterBySearch(filtered, filters.searchTerm);
   }
 
-  if (criteria.degrees && criteria.degrees.length > 0) {
-    filtered = filtered.filter((advocate) => criteria.degrees!.includes(advocate.degree));
+  if (filters.cityIds && filters.cityIds.length > 0) {
+    filtered = filterByCities(filtered, filters.cityIds);
   }
 
-  if (criteria.cities && criteria.cities.length > 0) {
-    filtered = filtered.filter((advocate) => criteria.cities!.includes(advocate.city));
+  if (filters.degreeIds && filters.degreeIds.length > 0) {
+    filtered = filterByDegrees(filtered, filters.degreeIds);
   }
 
-  if (criteria.specialties && criteria.specialties.length > 0) {
-    filtered = filtered.filter((advocate) =>
-      advocate.specialties.some((specialty: string) => criteria.specialties!.includes(specialty))
-    );
+  if (filters.specialtyIds && filters.specialtyIds.length > 0) {
+    filtered = filterBySpecialties(filtered, filters.specialtyIds);
   }
 
-  if (criteria.minExperience !== undefined) {
-    filtered = filtered.filter((advocate) => advocate.yearsOfExperience >= criteria.minExperience!);
+  if (filters.areaCodes && filters.areaCodes.length > 0) {
+    filtered = filterByAreaCodes(filtered, filters.areaCodes);
   }
 
-  if (criteria.maxExperience !== undefined) {
-    filtered = filtered.filter((advocate) => advocate.yearsOfExperience <= criteria.maxExperience!);
-  }
-
-  if (criteria.areaCodes && criteria.areaCodes.length > 0) {
-    filtered = filtered.filter((advocate) => {
-      const areaCode = extractAreaCode(advocate.phoneNumber);
-      return criteria.areaCodes!.includes(areaCode);
-    });
+  if (filters.minExperience !== undefined || filters.maxExperience !== undefined) {
+    filtered = filterByExperience(filtered, filters.minExperience, filters.maxExperience);
   }
 
   return filtered;
-}
-
-/**
- * Get unique cities from advocates array for filter options
- *
- * @param advocates - Array of advocates
- * @returns Sorted array of unique city names
- */
-export function getUniqueCities(advocates: Advocate[]): string[] {
-  const cities = new Set(advocates.map((a) => a.city));
-  return Array.from(cities).sort();
-}
-
-/**
- * Get unique degrees from advocates array for filter options
- *
- * @param advocates - Array of advocates
- * @returns Sorted array of unique degree types
- */
-export function getUniqueDegrees(advocates: Advocate[]): string[] {
-  const degrees = new Set(advocates.map((a) => a.degree));
-  return Array.from(degrees).sort();
-}
-
-/**
- * Get unique specialties from advocates array for filter options
- *
- * @param advocates - Array of advocates
- * @returns Sorted array of unique specialty names
- */
-export function getUniqueSpecialties(advocates: Advocate[]): string[] {
-  const specialties = new Set<string>();
-  advocates.forEach((advocate) => {
-    advocate.specialties.forEach((specialty: string) => {
-      specialties.add(specialty);
-    });
-  });
-  return Array.from(specialties).sort();
 }

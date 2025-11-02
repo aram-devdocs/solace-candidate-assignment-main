@@ -1,41 +1,69 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { fetchAdvocates } from "../advocates";
+import { fetchAdvocatesPaginated } from "../advocates";
 import { createMockAdvocates } from "@repo/database/testing";
 
 const mockAdvocates = createMockAdvocates(2);
 
-describe("fetchAdvocates", () => {
+describe("fetchAdvocatesPaginated", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     global.fetch = vi.fn();
   });
 
   it("should fetch advocates successfully and return success response", async () => {
+    const mockPaginatedResponse = {
+      success: true,
+      data: mockAdvocates,
+      pagination: {
+        currentPage: 1,
+        pageSize: 25,
+        totalRecords: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
+      },
+    };
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true, data: mockAdvocates }),
+      json: async () => mockPaginatedResponse,
     } as Response);
 
-    const result = await fetchAdvocates();
+    const result = await fetchAdvocatesPaginated();
 
-    expect(result).toEqual({ success: true, data: mockAdvocates });
+    expect(result).toEqual(mockPaginatedResponse);
     expect(global.fetch).toHaveBeenCalledWith("/api/advocates", {
       headers: { "Content-Type": "application/json" },
     });
   });
 
   it("should return API response with data array", async () => {
+    const mockPaginatedResponse = {
+      success: true,
+      data: mockAdvocates,
+      pagination: {
+        currentPage: 1,
+        pageSize: 25,
+        totalRecords: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
+      },
+    };
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true, data: mockAdvocates }),
+      json: async () => mockPaginatedResponse,
     } as Response);
 
-    const result = await fetchAdvocates();
+    const result = await fetchAdvocatesPaginated();
 
     expect(result.success).toBe(true);
     if (result.success) {
       expect(Array.isArray(result.data)).toBe(true);
       expect(result.data).toHaveLength(2);
+      expect(result.pagination).toBeDefined();
+      expect(result.pagination?.totalRecords).toBe(2);
     }
   });
 
@@ -54,7 +82,7 @@ describe("fetchAdvocates", () => {
       json: async () => errorResponse,
     } as Response);
 
-    const result = await fetchAdvocates();
+    const result = await fetchAdvocatesPaginated();
 
     expect(result).toEqual(errorResponse);
     expect(result.success).toBe(false);
@@ -71,7 +99,7 @@ describe("fetchAdvocates", () => {
       statusText: "Not Found",
     } as Response);
 
-    await expect(fetchAdvocates()).rejects.toThrow("API request failed: 404 Not Found");
+    await expect(fetchAdvocatesPaginated()).rejects.toThrow("API request failed: 404 Not Found");
   });
 
   it("should include status code in error message", async () => {
@@ -81,36 +109,65 @@ describe("fetchAdvocates", () => {
       statusText: "Internal Server Error",
     } as Response);
 
-    await expect(fetchAdvocates()).rejects.toThrow("API request failed: 500 Internal Server Error");
+    await expect(fetchAdvocatesPaginated()).rejects.toThrow(
+      "API request failed: 500 Internal Server Error"
+    );
   });
 
   it("should return properly typed Advocate array in success response", async () => {
+    const mockPaginatedResponse = {
+      success: true,
+      data: mockAdvocates,
+      pagination: {
+        currentPage: 1,
+        pageSize: 25,
+        totalRecords: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
+      },
+    };
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true, data: mockAdvocates }),
+      json: async () => mockPaginatedResponse,
     } as Response);
 
-    const result = await fetchAdvocates();
+    const result = await fetchAdvocatesPaginated();
 
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data).toBeDefined();
+      expect(result.data[0]).toHaveProperty("id");
       expect(result.data[0]).toHaveProperty("firstName");
       expect(result.data[0]).toHaveProperty("lastName");
-      expect(result.data[0]).toHaveProperty("city");
-      expect(result.data[0]).toHaveProperty("degree");
-      expect(result.data[0]).toHaveProperty("specialties");
+      expect(result.data[0]).toHaveProperty("cityId");
+      expect(result.data[0]).toHaveProperty("degreeId");
       expect(result.data[0]).toHaveProperty("phoneNumber");
+      expect(result.data[0]).toHaveProperty("yearsOfExperience");
     }
   });
 
   it("should handle empty data array in success response", async () => {
+    const mockPaginatedResponse = {
+      success: true,
+      data: [],
+      pagination: {
+        currentPage: 1,
+        pageSize: 25,
+        totalRecords: 0,
+        totalPages: 0,
+        hasNext: false,
+        hasPrevious: false,
+      },
+    };
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true, data: [] }),
+      json: async () => mockPaginatedResponse,
     } as Response);
 
-    const result = await fetchAdvocates();
+    const result = await fetchAdvocatesPaginated();
 
     expect(result.success).toBe(true);
     if (result.success) {
@@ -123,7 +180,7 @@ describe("fetchAdvocates", () => {
     const networkError = new Error("Network error");
     vi.mocked(global.fetch).mockRejectedValue(networkError);
 
-    await expect(fetchAdvocates()).rejects.toThrow("Network error");
+    await expect(fetchAdvocatesPaginated()).rejects.toThrow("Network error");
   });
 
   it("should throw error when response JSON is invalid", async () => {
@@ -132,6 +189,6 @@ describe("fetchAdvocates", () => {
       json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
     } as unknown as Response);
 
-    await expect(fetchAdvocates()).rejects.toThrow("Invalid JSON");
+    await expect(fetchAdvocatesPaginated()).rejects.toThrow("Invalid JSON");
   });
 });

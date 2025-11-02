@@ -1,30 +1,13 @@
-/**
- * Filter parameters for advocate queries.
- */
-export interface AdvocateFilters {
-  search?: string;
-  degrees?: string[];
-  cities?: string[];
-  specialties?: string[];
-  areaCodes?: string[];
-  minExperience?: number;
-  maxExperience?: number;
-}
-
-/**
- * Sort parameters for advocate queries.
- */
-export interface AdvocateSort {
-  column?: string;
-  direction?: "asc" | "desc";
-}
+import type { AdvocateFilters, AdvocateSortConfig } from "@repo/types";
 
 /**
  * Pagination parameters for advocate queries.
  */
-export interface AdvocatePagination {
+export interface AdvocatePaginationParams {
   page?: number;
   pageSize?: number;
+  filters?: AdvocateFilters;
+  sort?: AdvocateSortConfig;
 }
 
 /**
@@ -65,9 +48,9 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.advocates.all, "detail", id] as const,
     filtered: (filters?: AdvocateFilters) =>
       [...queryKeys.advocates.all, "filtered", filters] as const,
-    sorted: (sort?: AdvocateSort) => [...queryKeys.advocates.all, "sorted", sort] as const,
-    paginated: (pagination?: AdvocatePagination) =>
-      [...queryKeys.advocates.all, "paginated", pagination] as const,
+    sorted: (sort?: AdvocateSortConfig) => [...queryKeys.advocates.all, "sorted", sort] as const,
+    paginated: (params?: AdvocatePaginationParams) =>
+      [...queryKeys.advocates.all, "paginated", params] as const,
     filterOptions: () => [...queryKeys.advocates.all, "filterOptions"] as const,
   },
 } as const;

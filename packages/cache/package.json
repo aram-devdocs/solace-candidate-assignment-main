@@ -1,5 +1,5 @@
 {
-  "name": "@repo/services",
+  "name": "@repo/cache",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -10,14 +10,12 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@repo/cache": "workspace:*",
-    "@repo/database": "workspace:*",
-    "@repo/types": "workspace:*",
-    "drizzle-orm": "^0.32.1"
+    "ioredis": "^5.4.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.14.10",
     "typescript": "^5.5.4",
     "vitest": "^1.5.0"
   }

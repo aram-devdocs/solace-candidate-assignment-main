@@ -5,17 +5,17 @@
 /**
  * Formats a phone number into US standard display format
  *
- * @param phoneNumber - The phone number as a number (e.g., 1234567890)
+ * @param phoneNumber - The phone number as a string (e.g., "1234567890")
  * @returns Formatted phone number string (e.g., "(123) 456-7890")
  *
  * @example
  * ```ts
- * formatPhoneNumber(1234567890) // "(123) 456-7890"
- * formatPhoneNumber(5551234567) // "(555) 123-4567"
+ * formatPhoneNumber("1234567890") // "(123) 456-7890"
+ * formatPhoneNumber("5551234567") // "(555) 123-4567"
  * ```
  */
-export function formatPhoneNumber(phoneNumber: number): string {
-  const phoneStr = phoneNumber.toString();
+export function formatPhoneNumber(phoneNumber: string): string {
+  const phoneStr = phoneNumber;
 
   // Handle invalid phone number lengths
   if (phoneStr.length !== 10) {

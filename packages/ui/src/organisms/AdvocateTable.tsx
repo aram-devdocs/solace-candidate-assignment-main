@@ -1,5 +1,5 @@
 import React from "react";
-import type { Advocate } from "@repo/types";
+import type { AdvocateWithRelations } from "@repo/types";
 import { TableRow, type TableCellData } from "../molecules/TableRow";
 import { SortControl } from "../molecules/SortControl";
 import { SpecialtyBadge } from "../molecules/SpecialtyBadge";
@@ -19,7 +19,7 @@ import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
 import { formatPhoneNumber, extractAreaCode } from "@repo/utils";
 
 export interface AdvocateTableProps {
-  advocates: Advocate[];
+  advocates: AdvocateWithRelations[];
   /**
    * Current device size (from useDeviceSize hook in parent)
    */
@@ -88,7 +88,7 @@ export interface AdvocateTableProps {
  * Helper function to get cell value with proper formatting
  */
 function getCellValue(
-  advocate: Advocate,
+  advocate: AdvocateWithRelations,
   key: AdvocateColumnKey,
   onSpecialtyClick?: (specialty: string) => void, // eslint-disable-line no-unused-vars
   onCityClick?: (city: string) => void, // eslint-disable-line no-unused-vars
@@ -98,10 +98,10 @@ function getCellValue(
   if (key === "specialties") {
     return (
       <div className="gap-xs flex flex-wrap">
-        {advocate.specialties.map((s, i) => (
+        {advocate.advocateSpecialties.map((as, i) => (
           <SpecialtyBadge
             key={i}
-            specialty={s}
+            specialty={as.specialty.name}
             onClick={onSpecialtyClick}
             clickable={!!onSpecialtyClick}
           />
@@ -111,18 +111,22 @@ function getCellValue(
   }
 
   if (key === "city") {
-    return <CityBadge city={advocate.city} onClick={onCityClick} clickable={!!onCityClick} />;
+    return <CityBadge city={advocate.city.name} onClick={onCityClick} clickable={!!onCityClick} />;
   }
 
   if (key === "degree") {
     return (
-      <DegreeBadge degree={advocate.degree} onClick={onDegreeClick} clickable={!!onDegreeClick} />
+      <DegreeBadge
+        degree={advocate.degree.code}
+        onClick={onDegreeClick}
+        clickable={!!onDegreeClick}
+      />
     );
   }
 
   if (key === "phoneNumber") {
-    const areaCode = extractAreaCode(advocate.phoneNumber);
     const formattedNumber = formatPhoneNumber(advocate.phoneNumber);
+    const areaCode = extractAreaCode(advocate.phoneNumber);
 
     return (
       <PhoneNumberDisplay
@@ -184,7 +188,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
     "city",
     "degree",
     "yearsOfExperience",
-    "phoneNumber",
   ];
 
   return (

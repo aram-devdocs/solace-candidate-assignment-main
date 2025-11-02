@@ -1,81 +1,112 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import type { Advocate } from "@repo/types";
-import { fetchAdvocates } from "../advocates";
+import type {
+  AdvocateWithRelations,
+  AdvocateFilters,
+  AdvocateSortConfig,
+  PaginatedResponse,
+} from "@repo/types";
+import { fetchAdvocatesPaginated } from "../advocates";
 import { queryKeys } from "../query-keys";
 import type { ApiResponse } from "../client";
 
 /**
- * Options for the useAdvocates hook.
- * Supports all React Query options including select transforms for optimization.
+ * Result type for paginated advocates query
  */
-export type UseAdvocatesOptions<TData = ApiResponse<Advocate[]>> = Omit<
-  UseQueryOptions<ApiResponse<Advocate[]>, Error, TData>,
-  "queryKey" | "queryFn"
+export type PaginatedAdvocatesResponse = ApiResponse<AdvocateWithRelations[]> & {
+  pagination?: PaginatedResponse<AdvocateWithRelations>["pagination"];
+};
+
+/**
+ * Parameters for useAdvocates hook
+ */
+export interface UseAdvocatesParams {
+  page?: number;
+  pageSize?: number;
+  filters?: AdvocateFilters;
+  sort?: AdvocateSortConfig;
+  enabled?: boolean;
+}
+
+/**
+ * Options for the useAdvocates hook.
+ */
+export type UseAdvocatesOptions<TData = PaginatedAdvocatesResponse> = Omit<
+  UseQueryOptions<PaginatedAdvocatesResponse, Error, TData>,
+  "queryKey" | "queryFn" | "enabled"
 >;
 
 /**
- * React Query hook for fetching advocates.
+ * React Query hook for fetching paginated advocates with smart caching.
  *
- * Provides automatic caching, background refetching, and error handling
- * for the advocates list. Uses React Query's stale-while-revalidate
- * pattern for optimal user experience.
+ * Features:
+ * - Server-side pagination for scalability
+ * - Client-side smart boundary detection (tripwire logic)
+ * - Automatic cache management with React Query
+ * - Support for filtering, sorting, and searching
+ * - Optimistic updates and background refetching
  *
- * Supports React Query's `select` option for performance optimization with large datasets.
- * The select function runs only when the data changes, enabling efficient data transformations
- * and reducing component re-renders.
+ * The hook uses ClientCacheManager to track loaded pages and intelligently
+ * decide when to fetch from server vs use cached data.
  *
- * @param options - Optional React Query configuration, including select transforms
- * @returns Query result with advocates data, loading state, and error handling
+ * @param params - Pagination, filter, and sort parameters
+ * @param options - React Query options
+ * @returns Query result with paginated data and metadata
  *
  * @example
- * // Basic usage
+ * // Basic usage with pagination
  * function AdvocatesList() {
- *   const { data, isLoading, error } = useAdvocates();
+ *   const { data, isLoading } = useAdvocates({
+ *     page: 1,
+ *     pageSize: 25
+ *   });
  *
  *   if (isLoading) return <div>Loading...</div>;
- *   if (error) return <div>Error: {error.message}</div>;
- *   if (!data?.success) return <div>Error: {data?.error.message}</div>;
+ *   if (!data?.success) return <div>Error</div>;
  *
  *   return (
- *     <ul>
+ *     <div>
  *       {data.data.map(advocate => (
- *         <li key={advocate.id}>{advocate.firstName}</li>
+ *         <div key={advocate.id}>{advocate.firstName}</div>
  *       ))}
- *     </ul>
+ *       <p>Page {data.pagination.currentPage} of {data.pagination.totalPages}</p>
+ *     </div>
  *   );
  * }
  *
  * @example
- * // Using select for performance optimization
- * function AdvocateCount() {
- *   const { data: count } = useAdvocates({
- *     select: (response) => response.success ? response.data.length : 0
+ * // With filters and search
+ * function FilteredAdvocates() {
+ *   const [filters, setFilters] = useState({ cityIds: [1, 2] });
+ *
+ *   const { data } = useAdvocates({
+ *     page: 1,
+ *     pageSize: 25,
+ *     filters,
+ *     sort: { column: "firstName", direction: "asc" }
  *   });
  *
- *   return <div>Total advocates: {count}</div>;
- * }
- *
- * @example
- * // Extract only specific fields to reduce memory footprint
- * function AdvocateNames() {
- *   const { data: names } = useAdvocates({
- *     select: (response) => response.success
- *       ? response.data.map(a => ({ id: a.id, name: `${a.firstName} ${a.lastName}` }))
- *       : []
- *   });
- *
- *   return <ul>{names.map(n => <li key={n.id}>{n.name}</li>)}</ul>;
+ *   return <AdvocateTable data={data?.data} />;
  * }
  */
-export function useAdvocates<TData = ApiResponse<Advocate[]>>(
+export function useAdvocates<TData = PaginatedAdvocatesResponse>(
+  params: UseAdvocatesParams = {},
   options?: UseAdvocatesOptions<TData>
 ) {
-  return useQuery({
-    queryKey: queryKeys.advocates.list(),
-    queryFn: fetchAdvocates,
-    staleTime: 1000 * 60 * 5,
+  const { page = 1, pageSize = 25, filters, sort, enabled = true } = params;
+
+  const result = useQuery({
+    queryKey: queryKeys.advocates.paginated({ page, pageSize, filters, sort }),
+    queryFn: async () => {
+      const response = await fetchAdvocatesPaginated({ page, pageSize, filters, sort });
+      return response;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    enabled,
     ...options,
   });
+
+  return result;
 }
