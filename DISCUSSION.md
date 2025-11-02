@@ -165,7 +165,7 @@ Right now we are using fetch directly, which is fine for a small project and dat
 
 The second part of the commit I expand using prefetching and filter options for the advocate. We are going to expand on the codebase to include a filter option on the back end, so we can selectively search and filter the data set as needed. Next pull request will handle that.
 
-## [PR 13 - Harden Search Functionality]()
+## [PR 13 - Harden Search Functionality](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/31)
 
 At this point, everything works. With a few thousand rows, I am able to search and filter the data set quickly. But, it has some key flaws. Every time a user calls the table, we fetch the entire data set. Even if we just fetched the entire data set, if the react-query cache is stale, it calls it again. This is a huge waste of resources, will cause increasingly expensive dev ops bills, and is not scalable. The solution comes in a mumber of parts.
 
