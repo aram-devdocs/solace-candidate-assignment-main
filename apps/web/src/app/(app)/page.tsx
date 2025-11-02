@@ -9,6 +9,7 @@ import {
   useAdvocateFilters,
   useTableSorting,
   useUrlNumberState,
+  useToast,
 } from "@repo/hooks";
 import { filterAdvocates, sortAdvocates, paginate, getPageNumbers } from "@repo/utils";
 import type { SortableColumn } from "@repo/utils";
@@ -23,6 +24,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const deviceSize = useDeviceSize();
+  const { showToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -32,19 +34,32 @@ export default function Home() {
         if (isMounted) {
           setAllAdvocates(data);
           setIsLoading(false);
+          showToast({
+            variant: "success",
+            message: "Advocates loaded successfully",
+            description: `Found ${data.length} advocate${data.length !== 1 ? "s" : ""}`,
+            duration: 3000,
+          });
         }
       })
       .catch((err) => {
         if (isMounted) {
-          setError(err instanceof Error ? err.message : "Failed to fetch advocates");
+          const errorMessage = err instanceof Error ? err.message : "Failed to fetch advocates";
+          setError(errorMessage);
           setIsLoading(false);
+          showToast({
+            variant: "error",
+            message: "Failed to load advocates",
+            description: errorMessage,
+            duration: 5000,
+          });
         }
       });
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [showToast]);
 
   const {
     filterCriteria,

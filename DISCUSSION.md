@@ -5,6 +5,12 @@
   - [PR 2 - Fix Github actions and deployment failures](#pr-2---fix-github-actions-and-deployment-failures)
   - [PR 3 - Fix search functionality](#pr-3---fix-search-functionality)
   - [PR 4 - Initial Migrations, Type Consolidation](#pr-4---initial-migrations-type-consolidation)
+  - [PR 5 - UI Design System / Storybook](#pr-5---ui-design-system--storybook)
+  - [PR 6 - app.solace.health UI](#pr-6---appsolacehealth-ui)
+  - [PR 7 - Responsiveness and Accessibility](#pr-7---responsiveness-and-accessibility)
+  - [PR 8 - Advocate Table Hardening](#pr-8---advocate-table-hardening)
+  - [PR 9 - Abstract into Service layer](#pr-9---abstract-into-service-layer)
+  - [PR 10 - Toasts, Error states, and UX Refinement](#pr-10---toasts-error-states-and-ux-refinement)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
@@ -140,3 +146,5 @@ Some enhancements I made here are having the chips on the table be clickable and
 ## [PR 9 - Abstract into Service layer](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/23)
 
 Simple refactoring. Prevent cross dependncies by combining database queries in a service layer for the back end, no functional changes now but prepares codebase for scale. Queries dont call each other, they combine results in a service.
+
+## [PR 10 - Toasts, Error states, and UX Refinement]()
