@@ -1,8 +1,8 @@
 /**
  * Business Logic Services
  *
- * Business logic layer independent of database and UI concerns.
- * Pure functions that implement business rules and transformations.
+ * Business logic layer that orchestrates database operations.
+ * Provides abstraction between API routes and data access layer.
  */
 
-export const placeholder = "Service functions will be added in follow-up tickets";
+export { getAllAdvocates, getAdvocateById } from "./advocates";

@@ -13,6 +13,7 @@
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/hooks": "workspace:*",
+    "@repo/services": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
     "next": "^14.2.19",

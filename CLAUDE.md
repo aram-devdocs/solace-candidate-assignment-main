@@ -87,14 +87,23 @@ NEVER use raw HTML, inline styles, or magic values. All styling must come from t
 ```
 Database Schema → @repo/types → All Consumers
        ↓
-  @repo/database
+  @repo/database (Data Access Layer)
        ↓
-  @repo/queries
+  @repo/services (Business Logic Layer)
        ↓
    API Routes
        ↓
+  @repo/queries (Client-side API calls)
+       ↓
    UI Pages
 ```
+
+**Layer Responsibilities:**
+
+- **@repo/database**: Pure data access layer with Drizzle ORM, schema definitions, and database client
+- **@repo/services**: Business logic layer that orchestrates database operations, implements validation, and enforces business rules
+- **@repo/queries**: Client-side functions for fetching data from API endpoints
+- **API Routes**: Thin controllers that delegate to service layer
 
 ## Type Safety
 
@@ -287,13 +296,15 @@ Access via process.env. Use NEXT*PUBLIC* prefix for client-side variables in Nex
 ### Adding a New Feature
 
 1. Identify affected packages
-2. Create types if needed
-3. Implement business logic in services
-4. Add database queries
-5. Create UI components
-6. Integrate in app
-7. Write tests
-8. Update documentation
+2. Create types if needed (@repo/types)
+3. Update database schema if needed (@repo/database)
+4. Implement service layer functions (@repo/services)
+5. Update API routes to use services (apps/web/api)
+6. Add client-side query functions if needed (@repo/queries)
+7. Create UI components (@repo/ui)
+8. Integrate in app pages
+9. Write tests for all layers
+10. Update documentation
 
 ### Fixing a Bug
 
