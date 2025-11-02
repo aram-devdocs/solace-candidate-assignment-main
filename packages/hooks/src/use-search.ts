@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo } from "react";
 import type { Advocate } from "@repo/types";
-import { fetchAdvocates } from "@repo/queries";
+import { useAdvocates } from "@repo/queries";
 import { filterAdvocatesBySearch } from "@repo/utils";
 import { useDebouncedValue } from "./use-debounced-value";
 
@@ -8,7 +8,7 @@ import { useDebouncedValue } from "./use-debounced-value";
  * Comprehensive hook for advocate search functionality.
  *
  * Handles all business logic for the advocate search feature:
- * - Fetches advocates from API on mount
+ * - Fetches advocates from API using React Query
  * - Manages search term state
  * - Debounces search input
  * - Filters advocates based on search term
@@ -19,36 +19,24 @@ import { useDebouncedValue } from "./use-debounced-value";
  *
  */
 export function useAdvocateSearch() {
-  const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const debouncedSearchTerm = useDebouncedValue(searchTerm);
 
-  useEffect(() => {
-    let isMounted = true;
+  const { data: response, isLoading, error: queryError } = useAdvocates();
 
-    fetchAdvocates()
-      .then((data) => {
-        if (isMounted) {
-          setAdvocates(data);
-          setIsLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : "Failed to fetch advocates");
-          setIsLoading(false);
-        }
-      });
+  const advocates: Advocate[] = response?.success ? response.data : [];
+  const error = queryError
+    ? queryError instanceof Error
+      ? queryError.message
+      : "Failed to fetch advocates"
+    : response?.success === false
+      ? response.error.message
+      : null;
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const filteredAdvocates = filterAdvocatesBySearch(advocates, debouncedSearchTerm);
+  const filteredAdvocates = useMemo(
+    () => filterAdvocatesBySearch(advocates, debouncedSearchTerm),
+    [advocates, debouncedSearchTerm]
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<React.ElementRef<"input">>) => {
     setSearchTerm(e.target.value);

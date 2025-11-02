@@ -1,33 +1,23 @@
 import type { Advocate } from "@repo/types";
-
-/**
- * API response structure for advocates endpoint.
- */
-interface AdvocatesResponse {
-  data: Advocate[];
-}
+import { apiClient, type ApiResponse } from "./client";
 
 /**
  * Fetches all advocates from the API.
  *
- * Makes a request to the /api/advocates endpoint and returns
- * the advocate data in a type-safe manner.
+ * Makes a request to the /api/advocates endpoint using the centralized
+ * API client and returns the full API response structure.
  *
- * @returns Promise resolving to array of advocates
- * @throws Error if the fetch fails or returns invalid data
+ * @returns Promise resolving to API response with advocates data or error
+ * @throws Error if the network request fails or response cannot be parsed
  *
  * @example
- * const advocates = await fetchAdvocates();
- * advocates.forEach(advocate => console.log(advocate.firstName));
+ * const response = await fetchAdvocates();
+ * if (response.success) {
+ *   response.data.forEach(advocate => console.log(advocate.firstName));
+ * } else {
+ *   console.error(response.error.message);
+ * }
  */
-export async function fetchAdvocates(): Promise<Advocate[]> {
-  const response = await fetch("/api/advocates");
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch advocates: ${response.statusText}`);
-  }
-
-  const jsonResponse: AdvocatesResponse = await response.json();
-
-  return jsonResponse.data;
+export async function fetchAdvocates(): Promise<ApiResponse<Advocate[]>> {
+  return apiClient<Advocate[]>("/api/advocates");
 }

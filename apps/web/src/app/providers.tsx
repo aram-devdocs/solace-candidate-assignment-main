@@ -2,6 +2,7 @@
 
 import { ToastProvider, useToast, ErrorBoundary } from "@repo/hooks";
 import { ToastContainer, ErrorBoundaryFallback } from "@repo/ui";
+import { QueryProvider } from "@repo/queries";
 
 function ToastRenderer() {
   const { toasts } = useToast();
@@ -33,10 +34,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
         }
       }}
     >
-      <ToastProvider maxToasts={5} defaultDuration={5000}>
-        {children}
-        <ToastRenderer />
-      </ToastProvider>
+      <QueryProvider>
+        <ToastProvider maxToasts={5} defaultDuration={5000}>
+          {children}
+          <ToastRenderer />
+        </ToastProvider>
+      </QueryProvider>
     </ErrorBoundary>
   );
 }

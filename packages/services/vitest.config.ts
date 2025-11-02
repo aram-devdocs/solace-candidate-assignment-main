@@ -13,9 +13,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@repo/database/testing": path.resolve(__dirname, "../database/src/__tests__/fixtures"),
-      "@repo/database": path.resolve(__dirname, "../database/src"),
-      "@repo/types": path.resolve(__dirname, "../types/src"),
+      "@repo/database/testing": path.resolve(
+        __dirname,
+        "../database/src/__tests__/fixtures/index.ts"
+      ),
+      "@repo/database": path.resolve(__dirname, "../database/src/index.ts"),
+      "@repo/types": path.resolve(__dirname, "../types/src/index.ts"),
     },
   },
 });
