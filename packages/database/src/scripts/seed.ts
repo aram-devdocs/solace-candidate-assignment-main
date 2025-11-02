@@ -183,11 +183,20 @@ async function insertAdvocatesBatch(
 
 /**
  * Delete advocates and their relationships (cascade handled by DB)
+ * Deletes in batches to avoid query builder stack overflow with large datasets
  */
-async function deleteAdvocates(advocateIds: number[]): Promise<void> {
+async function deleteAdvocates(advocateIds: number[], batchSize: number = 1000): Promise<void> {
   if (advocateIds.length === 0) return;
 
-  await db.delete(advocates).where(inArray(advocates.id, advocateIds));
+  for (let i = 0; i < advocateIds.length; i += batchSize) {
+    const batch = advocateIds.slice(i, i + batchSize);
+    await db.delete(advocates).where(inArray(advocates.id, batch));
+
+    const processed = Math.min(i + batchSize, advocateIds.length);
+    if (processed % 10000 === 0 || processed === advocateIds.length) {
+      console.log(`Deleted ${processed}/${advocateIds.length} advocates...`);
+    }
+  }
 }
 
 /**
