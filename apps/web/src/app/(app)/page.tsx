@@ -122,6 +122,10 @@ export default function Home() {
         onAreaCodeClick: (areaCode) => {
           addAreaCodeFilter(areaCode);
         },
+        activeSpecialtyIds: selectedSpecialties,
+        activeCityIds: selectedCities,
+        activeDegreeIds: selectedDegrees,
+        activeAreaCodes: selectedAreaCodes,
       }}
       sort={{
         column: sortConfig.column as SortableColumn,

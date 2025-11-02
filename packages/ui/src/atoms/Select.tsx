@@ -1,4 +1,5 @@
 import React from "react";
+import { SelectDropdown } from "./SelectDropdown";
 
 export interface SelectOption {
   value: string;
@@ -23,6 +24,10 @@ export interface SelectProps
    * Visual variant of the select
    */
   variant?: "default" | "error";
+  /**
+   * Use custom dropdown for better mobile positioning (default: true)
+   */
+  useCustomDropdown?: boolean;
 }
 
 /**
@@ -44,10 +49,33 @@ export interface SelectProps
  */
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
-    { options, placeholder, onChange, variant = "default", className = "", value, ...props },
+    {
+      options,
+      placeholder,
+      onChange,
+      variant = "default",
+      className = "",
+      value,
+      useCustomDropdown = true,
+      ...props
+    },
     ref
   ) => {
-    const baseClasses = "px-md py-sm rounded-md transition-colors cursor-pointer";
+    if (useCustomDropdown) {
+      return (
+        <SelectDropdown
+          options={options}
+          value={value as string}
+          onChange={onChange || (() => {})}
+          placeholder={placeholder}
+          disabled={props.disabled}
+          className={className}
+          ariaLabel={props["aria-label"]}
+        />
+      );
+    }
+
+    const baseClasses = "relative px-md py-sm rounded-md transition-colors cursor-pointer";
     const variantClasses = {
       default:
         "border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700 bg-white",

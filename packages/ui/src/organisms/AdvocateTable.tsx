@@ -86,6 +86,22 @@ export interface AdvocateTableProps {
    * Optional callback when area code badge is clicked (for filtering)
    */
   onAreaCodeClick?: (areaCode: string) => void; // eslint-disable-line no-unused-vars
+  /**
+   * IDs of currently active specialty filters
+   */
+  activeSpecialtyIds?: number[];
+  /**
+   * IDs of currently active city filters
+   */
+  activeCityIds?: number[];
+  /**
+   * IDs of currently active degree filters
+   */
+  activeDegreeIds?: number[];
+  /**
+   * Currently active area codes
+   */
+  activeAreaCodes?: string[];
 }
 
 /**
@@ -97,7 +113,11 @@ function getCellValue(
   onSpecialtyClick?: (specialtyId: number) => void, // eslint-disable-line no-unused-vars
   onCityClick?: (cityId: number) => void, // eslint-disable-line no-unused-vars
   onDegreeClick?: (degreeId: number) => void, // eslint-disable-line no-unused-vars
-  onAreaCodeClick?: (areaCode: string) => void // eslint-disable-line no-unused-vars
+  onAreaCodeClick?: (areaCode: string) => void, // eslint-disable-line no-unused-vars
+  activeSpecialtyIds?: number[],
+  activeCityIds?: number[],
+  activeDegreeIds?: number[],
+  activeAreaCodes?: string[]
 ): React.ReactNode {
   if (key === "specialties") {
     return (
@@ -109,6 +129,7 @@ function getCellValue(
             specialtyId={as.specialty.id}
             onClick={onSpecialtyClick}
             clickable={!!onSpecialtyClick}
+            isActive={activeSpecialtyIds?.includes(as.specialty.id)}
           />
         ))}
       </div>
@@ -122,6 +143,7 @@ function getCellValue(
         cityId={advocate.city.id}
         onClick={onCityClick}
         clickable={!!onCityClick}
+        isActive={activeCityIds?.includes(advocate.city.id)}
       />
     );
   }
@@ -133,6 +155,7 @@ function getCellValue(
         degreeId={advocate.degree.id}
         onClick={onDegreeClick}
         clickable={!!onDegreeClick}
+        isActive={activeDegreeIds?.includes(advocate.degree.id)}
       />
     );
   }
@@ -147,6 +170,7 @@ function getCellValue(
         areaCode={areaCode}
         onAreaCodeClick={onAreaCodeClick}
         clickable={!!onAreaCodeClick}
+        isActiveAreaCode={activeAreaCodes?.includes(areaCode)}
       />
     );
   }
@@ -191,6 +215,10 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   onCityClick,
   onDegreeClick,
   onAreaCodeClick,
+  activeSpecialtyIds = [],
+  activeCityIds = [],
+  activeDegreeIds = [],
+  activeAreaCodes = [],
 }) => {
   const visibleColumns = ADVOCATE_TABLE_COLUMNS[deviceSize];
   const isDesktop = deviceSize === "desktop";
@@ -228,7 +256,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                 const isActive = sortColumn === key;
 
                 return (
-                  <TableCell key={index} as="th" scope="col">
+                  <TableCell key={index} as="th" scope="col" className="whitespace-nowrap">
                     {isSortable && onSort ? (
                       <SortControl
                         isActive={isActive}
@@ -264,16 +292,18 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
             ) : (
               advocates.map((advocate, index) => {
                 const cells: TableCellData[] = visibleColumns.map((key) => {
-                  const content = getCellValue(
+                  return getCellValue(
                     advocate,
                     key,
                     onSpecialtyClick,
                     onCityClick,
                     onDegreeClick,
-                    onAreaCodeClick
+                    onAreaCodeClick,
+                    activeSpecialtyIds,
+                    activeCityIds,
+                    activeDegreeIds,
+                    activeAreaCodes
                   );
-                  const align = key === "yearsOfExperience" ? ("center" as const) : undefined;
-                  return align ? { content, align } : content;
                 });
 
                 const expandableCells = !isDesktop
@@ -287,7 +317,11 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                           onSpecialtyClick,
                           onCityClick,
                           onDegreeClick,
-                          onAreaCodeClick
+                          onAreaCodeClick,
+                          activeSpecialtyIds,
+                          activeCityIds,
+                          activeDegreeIds,
+                          activeAreaCodes
                         ),
                       }))
                   : undefined;

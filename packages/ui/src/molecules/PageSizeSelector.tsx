@@ -48,7 +48,6 @@ export const PageSizeSelector: React.FC<PageSizeSelectorProps> = ({
   pageSize,
   options,
   onPageSizeChange,
-  totalItems,
   label = "Show",
 }) => {
   const selectOptions: SelectOption[] = options.map((option) => ({
@@ -71,7 +70,6 @@ export const PageSizeSelector: React.FC<PageSizeSelectorProps> = ({
         aria-label="Items per page"
       />
       <span className="text-secondary-700">per page</span>
-      <span className="text-secondary-500 ml-sm">({totalItems} total)</span>
     </div>
   );
 };

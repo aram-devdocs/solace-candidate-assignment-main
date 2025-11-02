@@ -75,6 +75,9 @@ export type { SkeletonLineProps } from "./atoms/SkeletonLine";
 export { Select } from "./atoms/Select";
 export type { SelectProps, SelectOption } from "./atoms/Select";
 
+export { SelectDropdown } from "./atoms/SelectDropdown";
+export type { SelectDropdownProps, SelectDropdownOption } from "./atoms/SelectDropdown";
+
 export { MultiSelect } from "./atoms/MultiSelect";
 export type { MultiSelectProps, MultiSelectOption } from "./atoms/MultiSelect";
 
@@ -119,6 +122,9 @@ export type { FooterProps } from "./molecules/Footer";
 
 export { Greeting } from "./molecules/Greeting";
 export type { GreetingProps } from "./molecules/Greeting";
+
+export { TemplateHeader } from "./molecules/TemplateHeader";
+export type { TemplateHeaderProps } from "./molecules/TemplateHeader";
 
 export { SkeletonSearchBar } from "./molecules/SkeletonSearchBar";
 

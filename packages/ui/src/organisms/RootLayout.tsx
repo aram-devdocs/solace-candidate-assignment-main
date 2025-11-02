@@ -153,13 +153,15 @@ export function RootLayout({
             }}
           />
           <main className="w-full flex-1 overflow-y-auto overflow-x-hidden">
-            {isNavigating ? (
-              <div className="animate-fadeIn">
-                <SkeletonAdvocateListTemplate />
-              </div>
-            ) : (
-              children
-            )}
+            <div className="mx-auto max-w-7xl">
+              {isNavigating ? (
+                <div className="animate-fadeIn">
+                  <SkeletonAdvocateListTemplate />
+                </div>
+              ) : (
+                children
+              )}
+            </div>
           </main>
           {/* Footer */}
           {footer && <Footer {...footer} />}
