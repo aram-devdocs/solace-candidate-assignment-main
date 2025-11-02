@@ -44,6 +44,9 @@ importers:
       '@repo/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
+      '@repo/services':
+        specifier: workspace:*
+        version: link:../../packages/services
       '@repo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -240,9 +243,15 @@ importers:
 
   packages/services:
     dependencies:
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../database
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      drizzle-orm:
+        specifier: ^0.32.1
+        version: 0.32.2(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@18.3.26)(postgres@3.4.7)(react@18.3.1)
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -253,6 +262,9 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+      vitest:
+        specifier: ^1.5.0
+        version: 1.6.1(@types/node@20.19.24)(@vitest/ui@1.6.1)(jsdom@23.2.0)
 
   packages/types:
     dependencies:

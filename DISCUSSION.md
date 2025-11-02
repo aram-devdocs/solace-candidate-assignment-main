@@ -136,3 +136,7 @@ For more in depth projects I would build custom scripts to test for things like 
 Filtering, pagination, and sorting. Every table has them, but the way that they are implemented can make our break a view. I opt for minimlism, taking inspiration from the marketing page for solace.health, and adding non invaisive ui to handle these operations. We keep it front end only for now as the data set is low, but server side pagination will be a great step forward for scalability. If the project were to stay a NextJS app, server side loading would be great but since the backend is moving to NestJS, we will focus on seperate client side and server side optimizatios in preperation for the larger data sets we will face for scale testing. Shared hooks that rely on generics will take all of the leg work out of adding future tables, and customizable views can be built using the new UI components we have created.
 
 Some enhancements I made here are having the chips on the table be clickable and auto filtering, adding ui elements that guide instead of dictate. The table itself is now more robust, with a focus on letting the user guide the data they see without overwhelming them with options.
+
+## [PR 9 - Abstract into Service layer]()
+
+Simple refactoring. Prevent cross dependncies by combining database queries in a service layer for the back end, no functional changes now but prepares codebase for scale. Queries dont call each other, they combine results in a service.

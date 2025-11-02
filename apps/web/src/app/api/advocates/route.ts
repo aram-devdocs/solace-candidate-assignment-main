@@ -1,4 +1,4 @@
-import { db, advocates } from "@repo/database";
+import { getAllAdvocates } from "@repo/services";
 
 /**
  * GET /api/advocates
@@ -6,7 +6,7 @@ import { db, advocates } from "@repo/database";
  */
 export async function GET() {
   try {
-    const data = await db.select().from(advocates);
+    const data = await getAllAdvocates();
     return Response.json({ data });
   } catch (error) {
     console.error("Failed to fetch advocates:", error);
