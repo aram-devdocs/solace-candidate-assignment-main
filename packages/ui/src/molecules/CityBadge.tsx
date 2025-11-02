@@ -6,9 +6,13 @@ export interface CityBadgeProps {
    */
   city: string;
   /**
+   * City ID for filtering
+   */
+  cityId: number;
+  /**
    * Optional click handler for filtering
    */
-  onClick?: (city: string) => void; // eslint-disable-line no-unused-vars
+  onClick?: (cityId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Whether the badge is clickable
    */
@@ -24,6 +28,7 @@ export interface CityBadgeProps {
  * Can be made clickable to add filters automatically
  *
  * @param city - City name to display
+ * @param cityId - City ID for filtering
  * @param onClick - Optional click handler for filtering
  * @param clickable - Whether badge should appear clickable
  *
@@ -31,13 +36,15 @@ export interface CityBadgeProps {
  * ```tsx
  * <CityBadge
  *   city="Boston"
- *   onClick={(city) => addCityFilter(city)}
+ *   cityId={1}
+ *   onClick={(cityId) => addCityFilter(cityId)}
  *   clickable={true}
  * />
  * ```
  */
 export const CityBadge: React.FC<CityBadgeProps> = ({
   city,
+  cityId,
   onClick,
   clickable = false,
   className = "",
@@ -50,14 +57,14 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
 
   const handleClick = (): void => {
     if (clickable && onClick) {
-      onClick(city);
+      onClick(cityId);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (clickable && onClick && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      onClick(city);
+      onClick(cityId);
     }
   };
 

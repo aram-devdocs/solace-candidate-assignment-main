@@ -73,15 +73,15 @@ export interface AdvocateTableProps {
   /**
    * Optional callback when specialty badge is clicked (for filtering)
    */
-  onSpecialtyClick?: (specialty: string) => void; // eslint-disable-line no-unused-vars
+  onSpecialtyClick?: (specialtyId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Optional callback when city badge is clicked (for filtering)
    */
-  onCityClick?: (city: string) => void; // eslint-disable-line no-unused-vars
+  onCityClick?: (cityId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Optional callback when degree badge is clicked (for filtering)
    */
-  onDegreeClick?: (degree: string) => void; // eslint-disable-line no-unused-vars
+  onDegreeClick?: (degreeId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Optional callback when area code badge is clicked (for filtering)
    */
@@ -94,9 +94,9 @@ export interface AdvocateTableProps {
 function getCellValue(
   advocate: AdvocateWithRelations,
   key: AdvocateColumnKey,
-  onSpecialtyClick?: (specialty: string) => void, // eslint-disable-line no-unused-vars
-  onCityClick?: (city: string) => void, // eslint-disable-line no-unused-vars
-  onDegreeClick?: (degree: string) => void, // eslint-disable-line no-unused-vars
+  onSpecialtyClick?: (specialtyId: number) => void, // eslint-disable-line no-unused-vars
+  onCityClick?: (cityId: number) => void, // eslint-disable-line no-unused-vars
+  onDegreeClick?: (degreeId: number) => void, // eslint-disable-line no-unused-vars
   onAreaCodeClick?: (areaCode: string) => void // eslint-disable-line no-unused-vars
 ): React.ReactNode {
   if (key === "specialties") {
@@ -106,6 +106,7 @@ function getCellValue(
           <SpecialtyBadge
             key={i}
             specialty={as.specialty.name}
+            specialtyId={as.specialty.id}
             onClick={onSpecialtyClick}
             clickable={!!onSpecialtyClick}
           />
@@ -115,13 +116,21 @@ function getCellValue(
   }
 
   if (key === "city") {
-    return <CityBadge city={advocate.city.name} onClick={onCityClick} clickable={!!onCityClick} />;
+    return (
+      <CityBadge
+        city={advocate.city.name}
+        cityId={advocate.city.id}
+        onClick={onCityClick}
+        clickable={!!onCityClick}
+      />
+    );
   }
 
   if (key === "degree") {
     return (
       <DegreeBadge
         degree={advocate.degree.code}
+        degreeId={advocate.degree.id}
         onClick={onDegreeClick}
         clickable={!!onDegreeClick}
       />

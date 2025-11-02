@@ -230,8 +230,8 @@ function buildOrderBy(sortConfig?: AdvocateSortConfig): SQL<unknown> {
   const column = {
     firstName: advocates.firstName,
     lastName: advocates.lastName,
-    city: advocates.cityId,
-    degree: advocates.degreeId,
+    city: cities.name,
+    degree: degrees.code,
     yearsOfExperience: advocates.yearsOfExperience,
     createdAt: advocates.createdAt,
   }[sortConfig.column];

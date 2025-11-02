@@ -110,17 +110,14 @@ export default function Home() {
         activeFilters,
         onRemoveFilter: removeFilter,
         onClearAll: clearAllFilters,
-        onSpecialtyClick: (name) => {
-          const specialty = filterOptions.specialties.find((s) => s.name === name);
-          if (specialty) addSpecialtyFilter(specialty.id);
+        onSpecialtyClick: (specialtyId) => {
+          addSpecialtyFilter(specialtyId);
         },
-        onCityClick: (name) => {
-          const city = filterOptions.cities.find((c) => c.name === name);
-          if (city) addCityFilter(city.id);
+        onCityClick: (cityId) => {
+          addCityFilter(cityId);
         },
-        onDegreeClick: (code) => {
-          const degree = filterOptions.degrees.find((d) => d.code === code);
-          if (degree) addDegreeFilter(degree.id);
+        onDegreeClick: (degreeId) => {
+          addDegreeFilter(degreeId);
         },
         onAreaCodeClick: (areaCode) => {
           addAreaCodeFilter(areaCode);

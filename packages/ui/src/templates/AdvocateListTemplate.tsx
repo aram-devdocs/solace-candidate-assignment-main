@@ -66,9 +66,9 @@ export interface AdvocateListTemplateProps {
       value?: string
     ) => void; // eslint-disable-line no-unused-vars
     onClearAll: () => void;
-    onSpecialtyClick?: (specialty: string) => void; // eslint-disable-line no-unused-vars
-    onCityClick?: (city: string) => void; // eslint-disable-line no-unused-vars
-    onDegreeClick?: (degree: string) => void; // eslint-disable-line no-unused-vars
+    onSpecialtyClick?: (specialtyId: number) => void; // eslint-disable-line no-unused-vars
+    onCityClick?: (cityId: number) => void; // eslint-disable-line no-unused-vars
+    onDegreeClick?: (degreeId: number) => void; // eslint-disable-line no-unused-vars
     onAreaCodeClick?: (areaCode: string) => void; // eslint-disable-line no-unused-vars
   };
   /**
@@ -141,13 +141,15 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   pageSize,
 }) => {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  const [timePeriod, setTimePeriod] = useState<"morning" | "afternoon" | "evening">("morning");
 
-  const getTimePeriod = (): "morning" | "afternoon" | "evening" => {
+  // Calculate time period on client only to avoid hydration mismatch
+  React.useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return "morning";
-    if (hour < 18) return "afternoon";
-    return "evening";
-  };
+    if (hour < 12) setTimePeriod("morning");
+    else if (hour < 18) setTimePeriod("afternoon");
+    else setTimePeriod("evening");
+  }, []);
 
   const paddingClasses = "p-sm sm:p-md md:p-lg lg:p-xl";
   const spacingClasses = "my-lg md:my-xl lg:my-2xl";
@@ -172,7 +174,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
     return (
       <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
         <div className={spacingClasses}>
-          <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+          <Greeting userName="Aram" timePeriod={timePeriod} />
         </div>
         <ErrorState error={error} />
       </main>
@@ -182,7 +184,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   return (
     <main className={`${paddingClasses} w-full max-w-full overflow-x-hidden`}>
       <div className={spacingClasses}>
-        <Greeting userName="Aram" timePeriod={getTimePeriod()} />
+        <Greeting userName="Aram" timePeriod={timePeriod} />
       </div>
 
       {/* Search Bar with Filter Button */}

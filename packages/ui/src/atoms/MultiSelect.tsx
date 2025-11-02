@@ -127,17 +127,25 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </span>
         <div className="gap-xs flex items-center">
           {selectedCount > 0 && !disabled && (
-            <button
-              type="button"
+            <div
+              role="button"
+              tabIndex={0}
               onClick={(e) => {
                 e.stopPropagation();
                 handleClearAll();
               }}
-              className="p-xs hover:bg-secondary-200 rounded transition-colors"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleClearAll();
+                }
+              }}
+              className="p-xs hover:bg-secondary-200 cursor-pointer rounded transition-colors"
               aria-label="Clear all selections"
             >
               <X className="h-4 w-4" />
-            </button>
+            </div>
           )}
           <ChevronDown
             className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180 transform" : ""}`}

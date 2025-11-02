@@ -6,9 +6,13 @@ export interface DegreeBadgeProps {
    */
   degree: string;
   /**
+   * Degree ID for filtering
+   */
+  degreeId: number;
+  /**
    * Optional click handler for filtering
    */
-  onClick?: (degree: string) => void; // eslint-disable-line no-unused-vars
+  onClick?: (degreeId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Whether the badge is clickable
    */
@@ -24,6 +28,7 @@ export interface DegreeBadgeProps {
  * Can be made clickable to add filters automatically
  *
  * @param degree - Degree name to display
+ * @param degreeId - Degree ID for filtering
  * @param onClick - Optional click handler for filtering
  * @param clickable - Whether badge should appear clickable
  *
@@ -31,13 +36,15 @@ export interface DegreeBadgeProps {
  * ```tsx
  * <DegreeBadge
  *   degree="MD"
- *   onClick={(degree) => addDegreeFilter(degree)}
+ *   degreeId={1}
+ *   onClick={(degreeId) => addDegreeFilter(degreeId)}
  *   clickable={true}
  * />
  * ```
  */
 export const DegreeBadge: React.FC<DegreeBadgeProps> = ({
   degree,
+  degreeId,
   onClick,
   clickable = false,
   className = "",
@@ -50,14 +57,14 @@ export const DegreeBadge: React.FC<DegreeBadgeProps> = ({
 
   const handleClick = (): void => {
     if (clickable && onClick) {
-      onClick(degree);
+      onClick(degreeId);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (clickable && onClick && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      onClick(degree);
+      onClick(degreeId);
     }
   };
 

@@ -6,9 +6,13 @@ export interface SpecialtyBadgeProps {
    */
   specialty: string;
   /**
+   * Specialty ID for filtering
+   */
+  specialtyId: number;
+  /**
    * Optional click handler for filtering
    */
-  onClick?: (specialty: string) => void; // eslint-disable-line no-unused-vars
+  onClick?: (specialtyId: number) => void; // eslint-disable-line no-unused-vars
   /**
    * Whether the badge is clickable
    */
@@ -24,6 +28,7 @@ export interface SpecialtyBadgeProps {
  * Can be made clickable to add filters automatically
  *
  * @param specialty - Specialty name to display
+ * @param specialtyId - Specialty ID for filtering
  * @param onClick - Optional click handler for filtering
  * @param clickable - Whether badge should appear clickable
  *
@@ -31,13 +36,15 @@ export interface SpecialtyBadgeProps {
  * ```tsx
  * <SpecialtyBadge
  *   specialty="PTSD"
- *   onClick={(specialty) => addSpecialtyFilter(specialty)}
+ *   specialtyId={1}
+ *   onClick={(specialtyId) => addSpecialtyFilter(specialtyId)}
  *   clickable={true}
  * />
  * ```
  */
 export const SpecialtyBadge: React.FC<SpecialtyBadgeProps> = ({
   specialty,
+  specialtyId,
   onClick,
   clickable = false,
   className = "",
@@ -50,14 +57,14 @@ export const SpecialtyBadge: React.FC<SpecialtyBadgeProps> = ({
 
   const handleClick = (): void => {
     if (clickable && onClick) {
-      onClick(specialty);
+      onClick(specialtyId);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (clickable && onClick && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      onClick(specialty);
+      onClick(specialtyId);
     }
   };
 

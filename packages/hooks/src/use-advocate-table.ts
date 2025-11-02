@@ -9,13 +9,7 @@ import {
 } from "./use-url-state";
 import { useDebouncedValue } from "./use-debounced-value";
 import { useToast } from "./use-toast";
-import {
-  getPageNumbers,
-  applyAllFilters,
-  sortAdvocates,
-  TIMEOUTS,
-  CACHE_STRATEGY,
-} from "@repo/utils";
+import { getPageNumbers, applyAllFilters, TIMEOUTS, CACHE_STRATEGY } from "@repo/utils";
 
 export interface ActiveFilter {
   type: "degree" | "city" | "specialty" | "experience" | "areaCode";
@@ -244,6 +238,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     page: hasFilters ? currentPage : serverPageNeeded || 1,
     pageSize: hasFilters ? pageSize : MAX_INITIAL_FETCH,
     filters,
+    sort: sortConfig,
     enabled: hasFilters || serverPageNeeded !== null, // Fetch when filters active OR need specific page
   });
 
@@ -255,6 +250,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const { data: prevBatchResponse } = useAdvocates({
     page: prevBatch || 1,
     pageSize: MAX_INITIAL_FETCH,
+    sort: sortConfig,
     enabled: prevBatch !== null,
   });
 
@@ -264,6 +260,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const { data: nextBatchResponse } = useAdvocates({
     page: nextBatch || 1,
     pageSize: MAX_INITIAL_FETCH,
+    sort: sortConfig,
     enabled: nextBatch !== null,
   });
 
@@ -376,7 +373,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     const cachedArray = Array.from(cachedAdvocatesMap.values());
 
     // Apply all filters client-side
-    let result = applyAllFilters(cachedArray, {
+    const result = applyAllFilters(cachedArray, {
       searchTerm: debouncedSearchTerm,
       cityIds: selectedCities,
       degreeIds: selectedDegrees,
@@ -388,11 +385,8 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
         typeof maxExperience === "number" && maxExperience > 0 ? maxExperience : undefined,
     });
 
-    // Apply sorting client-side
-    if (sortConfig.column !== "createdAt") {
-      result = sortAdvocates(result, sortConfig.column, sortConfig.direction);
-    }
-
+    // Server handles sorting - no client-side sorting needed
+    // The cached data is already in the correct sort order from the server
     return result;
   }, [
     hasFilters,
@@ -486,6 +480,13 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
       });
     }
   }, [error, showToast]);
+
+  // Clear cache when sort changes to fetch data with new sort order
+  useEffect(() => {
+    cachedAdvocatesMap.clear();
+    setLoadedBatches(new Set());
+    setCacheSize(0);
+  }, [sortConfig.column, sortConfig.direction]);
 
   const visiblePageNumbers = useMemo(
     () => getPageNumbers(currentPage, totalPages),
@@ -620,7 +621,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   return {
     advocates,
-    isLoading: isMainLoading && totalCount === 0 && cachedAdvocatesMap.size === 0,
+    isLoading: isMainLoading && totalCount === 0 && cachedAdvocatesMap.size === 0 && !hasFilters,
     isFetching: isMainFetching,
     isBackgroundFetching: isMainFetching || prevBatch !== null || nextBatch !== null,
     error,
