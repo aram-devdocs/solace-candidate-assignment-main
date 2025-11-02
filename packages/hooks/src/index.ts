@@ -10,6 +10,8 @@ export * from "./use-debounced-value";
 export * from "./use-device-size";
 export * from "./use-expandable-rows";
 export * from "./use-navigation";
+export * from "./use-notification-drawer";
+export * from "./use-profile-dropdown";
 export * from "./use-search";
 export * from "./use-toast";
 export * from "./use-url-state";

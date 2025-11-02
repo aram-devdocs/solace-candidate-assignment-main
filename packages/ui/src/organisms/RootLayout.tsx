@@ -2,12 +2,15 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { useNotificationDrawer, useProfileDropdown } from "@repo/hooks";
 import type { FooterProps } from "../molecules/Footer";
 import { Footer } from "../molecules/Footer";
 import type { HeaderProps } from "../molecules/Header";
 import { Header } from "../molecules/Header";
 import { NavigationMenu } from "../molecules/NavigationMenu";
 import { SkeletonAdvocateListTemplate } from "../templates/SkeletonAdvocateListTemplate";
+import { NotificationDrawer } from "./NotificationDrawer";
+import { ProfileDropdown } from "./ProfileDropdown";
 
 /**
  * Props for the RootLayout component
@@ -51,6 +54,10 @@ export interface RootLayoutProps {
    * Whether navigation is currently in progress (for loading state)
    */
   isNavigating?: boolean;
+  /**
+   * Callback to show toast notification (for demo UI actions)
+   */
+  onShowToast?: () => void;
 }
 
 /**
@@ -91,11 +98,43 @@ export function RootLayout({
   footer,
   showNavigation = true,
   isNavigating = false,
+  onShowToast,
 }: RootLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const notificationDrawer = useNotificationDrawer();
+  const profileDropdown = useProfileDropdown();
 
   const handleMenuClose = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleNotificationsClick = () => {
+    notificationDrawer.open();
+    profileDropdown.close();
+  };
+
+  const handleMessagesClick = () => {
+    // Messages navigation handled by Next.js routing
+    // No toast needed - navigates to /messages
+  };
+
+  const handleProfileClick = () => {
+    profileDropdown.toggle();
+    notificationDrawer.close();
+  };
+
+  const handleAccountClick = () => {
+    profileDropdown.close();
+    if (onShowToast) {
+      onShowToast();
+    }
+  };
+
+  const handleLogoutClick = () => {
+    profileDropdown.close();
+    if (onShowToast) {
+      onShowToast();
+    }
   };
 
   const navigationContent = renderNavigation ? renderNavigation(handleMenuClose) : navigation;
@@ -117,8 +156,27 @@ export function RootLayout({
             transition: "opacity 0.3s ease-in-out",
           }}
         />
-        <Header {...header} onMenuClick={() => setIsMenuOpen(true)} />
+        <div className="relative">
+          <Header
+            {...header}
+            onMenuClick={() => setIsMenuOpen(true)}
+            onMessagesClick={handleMessagesClick}
+            onNotificationsClick={handleNotificationsClick}
+            onProfileClick={handleProfileClick}
+          />
+          <div ref={profileDropdown.dropdownRef} className="absolute right-4 top-full md:right-6">
+            <ProfileDropdown
+              isOpen={profileDropdown.isOpen}
+              onClose={profileDropdown.close}
+              onAccountClick={handleAccountClick}
+              onLogoutClick={handleLogoutClick}
+            />
+          </div>
+        </div>
       </div>
+
+      {/* Notification Drawer */}
+      <NotificationDrawer isOpen={notificationDrawer.isOpen} onClose={notificationDrawer.close} />
 
       {/* Main content area with navigation */}
       <div className="relative flex flex-1 overflow-y-auto overflow-x-hidden">

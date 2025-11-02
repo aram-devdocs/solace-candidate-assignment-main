@@ -101,8 +101,8 @@ export function NavigationMenu({
         {/* Desktop: Header with collapse toggle */}
         <div className="hidden p-4 md:flex md:items-center md:justify-between">
           <span
-            className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-semibold transition-opacity ${
-              collapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"
+            className={`text-secondary-600 overflow-hidden whitespace-nowrap text-sm font-semibold transition-[opacity,max-width] duration-300 ease-in-out ${
+              collapsed ? "pointer-events-none max-w-0 opacity-0" : "max-w-full opacity-100"
             }`}
           >
             {header}

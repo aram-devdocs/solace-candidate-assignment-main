@@ -1,3 +1,50 @@
+# Solace Candidate Assignment
+
+> A production-ready advocate management application built with Next.js 14, TypeScript, and PostgreSQL.
+
+## Status & Tech Stack
+
+[![CI/CD](https://github.com/aram-devdocs/solace-candidate-assignment-main/actions/workflows/ci.yml/badge.svg)](https://github.com/aram-devdocs/solace-candidate-assignment-main/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+## Quick Links
+
+[![Live App](https://img.shields.io/badge/🌐_Live_App-solace.aramhammoudeh.com-brightgreen)](https://solace.aramhammoudeh.com/)
+[![API Docs](https://img.shields.io/badge/📖_API_Docs-OpenAPI_3.1-blue)](https://solace.aramhammoudeh.com/api/docs)
+[![Storybook](https://img.shields.io/badge/📚_Storybook-Component_Library-ff4785?logo=storybook&logoColor=white)](https://solace-storybook.aramhammoudeh.com)
+[![Project Board](https://img.shields.io/badge/📋_Project_Board-Kanban-0366d6)](https://github.com/users/aram-devdocs/projects/3/views/1)
+[![Development Log](https://img.shields.io/badge/📝_Development_Log-DISCUSSION.md-yellow)](./DISCUSSION.md)
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+  - [UI Component Library](#ui-component-library)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Available Scripts](#available-scripts)
+  - [Development](#development)
+  - [UI Development](#ui-development)
+  - [Database Management](#database-management)
+  - [Package-Specific Commands](#package-specific-commands)
+- [Development Workflow](#development-workflow)
+  - [Making Schema Changes](#making-schema-changes)
+  - [Creating a New Package](#creating-a-new-package)
+  - [Running Tests](#running-tests)
+- [Pre-commit Hooks](#pre-commit-hooks)
+- [Database Setup Options](#database-setup-options)
+- [Architecture](#architecture)
+  - [Type Safety](#type-safety)
+  - [Data Flow](#data-flow)
+  - [Separation of Concerns](#separation-of-concerns)
+- [CI/CD](#cicd)
+- [Troubleshooting](#troubleshooting)
+
+---
+
 ## Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
