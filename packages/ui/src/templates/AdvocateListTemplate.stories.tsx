@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AdvocateListTemplate } from "./AdvocateListTemplate";
-import type { Advocate } from "@repo/types";
+import type { AdvocateWithRelations } from "@repo/types";
 import { useState } from "react";
 
 const meta = {
@@ -15,39 +15,54 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockAdvocates: Advocate[] = [
+const mockAdvocates: AdvocateWithRelations[] = [
   {
     id: 1,
     firstName: "John",
     lastName: "Doe",
-    city: "New York",
-    degree: "MD" as const,
-    specialties: ["Anxiety/Depression", "PTSD"],
+    cityId: 1,
+    degreeId: 1,
     yearsOfExperience: 10,
-    phoneNumber: 5550001,
-    createdAt: null,
+    phoneNumber: "2125550001",
+    createdAt: new Date(),
+    city: { id: 1, name: "New York" },
+    degree: { id: 1, code: "MD" as const },
+    advocateSpecialties: [
+      { specialty: { id: 1, name: "Anxiety/Depression" } },
+      { specialty: { id: 2, name: "PTSD" } },
+    ],
   },
   {
     id: 2,
     firstName: "Jane",
     lastName: "Smith",
-    city: "Los Angeles",
-    degree: "PhD" as const,
-    specialties: ["LGBTQ Counseling", "Relationship issues"],
+    cityId: 2,
+    degreeId: 2,
     yearsOfExperience: 8,
-    phoneNumber: 5550002,
-    createdAt: null,
+    phoneNumber: "3105550002",
+    createdAt: new Date(),
+    city: { id: 2, name: "Los Angeles" },
+    degree: { id: 2, code: "PhD" as const },
+    advocateSpecialties: [
+      { specialty: { id: 3, name: "LGBTQ Counseling" } },
+      { specialty: { id: 4, name: "Relationship issues" } },
+    ],
   },
   {
     id: 3,
     firstName: "Michael",
     lastName: "Johnson",
-    city: "Chicago",
-    degree: "MSW" as const,
-    specialties: ["Addiction counseling", "Family therapy"],
+    cityId: 3,
+    degreeId: 3,
     yearsOfExperience: 15,
-    phoneNumber: 5550003,
-    createdAt: null,
+    phoneNumber: "3125550003",
+    createdAt: new Date(),
+    city: { id: 3, name: "Chicago" },
+    degree: { id: 3, code: "MSW" as const },
+    advocateSpecialties: [
+      { specialty: { id: 5, name: "Addiction counseling" } },
+      { specialty: { id: 6, name: "Family therapy" } },
+    ],
   },
 ];
 
