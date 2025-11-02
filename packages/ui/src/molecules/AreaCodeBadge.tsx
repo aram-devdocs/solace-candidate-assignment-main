@@ -39,7 +39,7 @@ export const AreaCodeBadge: React.FC<AreaCodeBadgeProps> = ({
   onClick,
 }) => {
   const baseClasses =
-    "inline-flex items-center px-sm py-xs rounded-full text-sm font-medium bg-primary-100 text-primary-800";
+    "inline-flex items-center px-sm py-xs rounded-full text-sm font-medium bg-primary-100 text-primary-800 whitespace-nowrap";
   const clickableClasses = clickable
     ? "cursor-pointer hover:bg-primary-200 hover:text-primary-900 hover:shadow-sm active:bg-primary-300 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
     : "";

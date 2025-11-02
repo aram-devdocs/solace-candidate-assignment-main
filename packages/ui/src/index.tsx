@@ -147,6 +147,9 @@ export type { DegreeBadgeProps } from "./molecules/DegreeBadge";
 export { AreaCodeBadge } from "./molecules/AreaCodeBadge";
 export type { AreaCodeBadgeProps } from "./molecules/AreaCodeBadge";
 
+export { PhoneNumberDisplay } from "./molecules/PhoneNumberDisplay";
+export type { PhoneNumberDisplayProps } from "./molecules/PhoneNumberDisplay";
+
 export { AdvocateTable } from "./organisms/AdvocateTable";
 export type { AdvocateTableProps } from "./organisms/AdvocateTable";
 
