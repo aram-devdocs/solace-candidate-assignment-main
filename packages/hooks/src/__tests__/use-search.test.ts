@@ -2,9 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { useAdvocateSearch } from "../use-search";
 import type { Advocate } from "@repo/types";
+import type { ApiResponse } from "@repo/queries";
+
+const mockUseAdvocates = vi.fn();
 
 vi.mock("@repo/queries", () => ({
-  fetchAdvocates: vi.fn(),
+  useAdvocates: () => mockUseAdvocates(),
 }));
 
 vi.mock("@repo/utils", () => ({
@@ -19,8 +22,6 @@ vi.mock("@repo/utils", () => ({
 vi.mock("./use-debounced-value", () => ({
   useDebouncedValue: vi.fn((value) => value),
 }));
-
-import { fetchAdvocates } from "@repo/queries";
 
 const mockAdvocates: Advocate[] = [
   {
@@ -53,7 +54,11 @@ describe("useAdvocateSearch", () => {
   });
 
   it("should start in loading state", () => {
-    vi.mocked(fetchAdvocates).mockImplementation(() => new Promise(() => {}));
+    mockUseAdvocates.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
 
@@ -63,40 +68,52 @@ describe("useAdvocateSearch", () => {
   });
 
   it("should fetch advocates on mount and set loading to false", async () => {
-    vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: mockAdvocates,
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.filteredAdvocates).toEqual(mockAdvocates);
     expect(result.current.error).toBe(null);
   });
 
   it("should set error state when fetch fails", async () => {
     const errorMessage = "Network error";
-    vi.mocked(fetchAdvocates).mockRejectedValue(new Error(errorMessage));
+    mockUseAdvocates.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: new Error(errorMessage),
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBe(errorMessage);
     expect(result.current.filteredAdvocates).toEqual([]);
   });
 
   it("should update searchTerm when handleSearchChange is called", async () => {
-    vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: mockAdvocates,
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
 
     act(() => {
       result.current.handleSearchChange({
@@ -108,13 +125,18 @@ describe("useAdvocateSearch", () => {
   });
 
   it("should clear searchTerm when handleResetSearch is called", async () => {
-    vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: mockAdvocates,
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
 
     act(() => {
       result.current.handleSearchChange({
@@ -132,13 +154,18 @@ describe("useAdvocateSearch", () => {
   });
 
   it("should filter advocates based on search term", async () => {
-    vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: mockAdvocates,
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
 
     expect(result.current.filteredAdvocates).toHaveLength(2);
 
@@ -153,30 +180,20 @@ describe("useAdvocateSearch", () => {
     });
   });
 
-  it("should cleanup and not update state after unmount", async () => {
-    const slowPromise = new Promise<Advocate[]>((resolve) => {
-      setTimeout(() => resolve(mockAdvocates), 1000);
-    });
-
-    vi.mocked(fetchAdvocates).mockReturnValue(slowPromise);
-
-    const { unmount } = renderHook(() => useAdvocateSearch());
-
-    unmount();
-
-    await new Promise((resolve) => setTimeout(resolve, 1100));
-  });
-
   it("should use filterAdvocatesBySearch to filter results by debouncedSearchTerm", async () => {
     const { filterAdvocatesBySearch: mockFilterAdvocates } = await import("@repo/utils");
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: mockAdvocates,
+    };
 
-    vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
 
     act(() => {
       result.current.handleSearchChange({
@@ -188,35 +205,65 @@ describe("useAdvocateSearch", () => {
   });
 
   it("should handle empty advocates array", async () => {
-    vi.mocked(fetchAdvocates).mockResolvedValue([]);
+    const successResponse: ApiResponse<Advocate[]> = {
+      success: true,
+      data: [],
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: successResponse,
+      isLoading: false,
+      error: null,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
 
     expect(result.current.filteredAdvocates).toEqual([]);
   });
 
   it("should format error message correctly for Error instances", async () => {
     const error = new Error("Test error");
-    vi.mocked(fetchAdvocates).mockRejectedValue(error);
+    mockUseAdvocates.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: error,
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
 
-    await waitFor(() => {
-      expect(result.current.error).toBe("Test error");
-    });
+    expect(result.current.error).toBe("Test error");
   });
 
   it("should provide default error message for non-Error throws", async () => {
-    vi.mocked(fetchAdvocates).mockRejectedValue("string error");
+    mockUseAdvocates.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: "string error",
+    });
 
     const { result } = renderHook(() => useAdvocateSearch());
 
-    await waitFor(() => {
-      expect(result.current.error).toBe("Failed to fetch advocates");
+    expect(result.current.error).toBe("Failed to fetch advocates");
+  });
+
+  it("should handle API error response", async () => {
+    const errorResponse: ApiResponse<Advocate[]> = {
+      success: false,
+      error: {
+        code: "NOT_FOUND",
+        message: "Advocates not found",
+      },
+    };
+
+    mockUseAdvocates.mockReturnValue({
+      data: errorResponse,
+      isLoading: false,
+      error: null,
     });
+
+    const { result } = renderHook(() => useAdvocateSearch());
+
+    expect(result.current.error).toBe("Advocates not found");
+    expect(result.current.filteredAdvocates).toEqual([]);
   });
 });

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { Advocate } from "@repo/types";
-import { fetchAdvocates } from "@repo/queries";
+import { useAdvocates, useAdvocateFilterOptions, usePrefetchAdvocates } from "@repo/queries";
 import {
   useDeviceSize,
   useExpandableRows,
@@ -10,6 +10,7 @@ import {
   useTableSorting,
   useUrlNumberState,
   useToast,
+  useDebouncedValue,
 } from "@repo/hooks";
 import { filterAdvocates, sortAdvocates, paginate, getPageNumbers } from "@repo/utils";
 import type { SortableColumn } from "@repo/utils";
@@ -19,47 +20,49 @@ import type { ActiveFilter } from "@repo/ui";
 export const dynamic = "force-dynamic";
 
 export default function Home() {
-  const [allAdvocates, setAllAdvocates] = useState<Advocate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const deviceSize = useDeviceSize();
   const { showToast } = useToast();
+  const hasShownInitialToast = useRef(false);
+
+  const { data: response, isLoading, error: queryError } = useAdvocates();
+  const { data: filterOptions } = useAdvocateFilterOptions();
+
+  const allAdvocates: Advocate[] = useMemo(
+    () => (response?.success ? response.data : []),
+    [response]
+  );
+
+  const error = queryError
+    ? queryError instanceof Error
+      ? queryError.message
+      : "Failed to fetch advocates"
+    : response?.success === false
+      ? response.error.message
+      : null;
 
   useEffect(() => {
-    let isMounted = true;
-
-    fetchAdvocates()
-      .then((data) => {
-        if (isMounted) {
-          setAllAdvocates(data);
-          setIsLoading(false);
-          showToast({
-            variant: "success",
-            message: "Advocates loaded successfully",
-            description: `Found ${data.length} advocate${data.length !== 1 ? "s" : ""}`,
-            duration: 3000,
-          });
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          const errorMessage = err instanceof Error ? err.message : "Failed to fetch advocates";
-          setError(errorMessage);
-          setIsLoading(false);
-          showToast({
-            variant: "error",
-            message: "Failed to load advocates",
-            description: errorMessage,
-            duration: 5000,
-          });
-        }
+    if (response?.success && !hasShownInitialToast.current) {
+      hasShownInitialToast.current = true;
+      const count = response.data.length;
+      showToast({
+        variant: "success",
+        message: "Advocates loaded successfully",
+        description: `Found ${count} advocate${count !== 1 ? "s" : ""}`,
+        duration: 3000,
       });
+    }
+  }, [response, showToast]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [showToast]);
+  useEffect(() => {
+    if (error) {
+      showToast({
+        variant: "error",
+        message: "Failed to load advocates",
+        description: error,
+        duration: 5000,
+      });
+    }
+  }, [error, showToast]);
 
   const {
     filterCriteria,
@@ -77,10 +80,6 @@ export default function Home() {
     setMinExperience,
     maxExperience,
     setMaxExperience,
-    availableDegrees,
-    availableCities,
-    availableSpecialties,
-    availableAreaCodes,
     clearAllFilters,
     removeFilter,
     addSpecialtyFilter,
@@ -89,18 +88,31 @@ export default function Home() {
     addAreaCodeFilter,
   } = useAdvocateFilters(allAdvocates);
 
+  const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
+
+  const debouncedFilterCriteria = useMemo(
+    () => ({
+      ...filterCriteria,
+      search: debouncedSearchTerm,
+    }),
+    [filterCriteria, debouncedSearchTerm]
+  );
+
   const { sortConfig, handleSort } = useTableSorting<SortableColumn>();
 
   const [currentPage, setCurrentPage] = useUrlNumberState("page", 1);
   const [pageSize, setPageSize] = useUrlNumberState("pageSize", 25);
 
-  const filteredAndSortedAdvocates = useMemo(() => {
-    const filtered = filterAdvocates(allAdvocates, filterCriteria);
-    return sortAdvocates(filtered, sortConfig.column, sortConfig.direction);
-  }, [allAdvocates, filterCriteria, sortConfig]);
+  const filteredAdvocates = useMemo(() => {
+    return filterAdvocates(allAdvocates, debouncedFilterCriteria);
+  }, [allAdvocates, debouncedFilterCriteria]);
+
+  const sortedAdvocates = useMemo(() => {
+    return sortAdvocates(filteredAdvocates, sortConfig.column, sortConfig.direction);
+  }, [filteredAdvocates, sortConfig]);
 
   const paginationInfo = useMemo(() => {
-    const totalPages = Math.ceil(filteredAndSortedAdvocates.length / pageSize);
+    const totalPages = Math.ceil(sortedAdvocates.length / pageSize);
     const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
     return {
@@ -109,7 +121,7 @@ export default function Home() {
       hasPrevious: safePage > 1,
       hasNext: safePage < totalPages,
     };
-  }, [currentPage, pageSize, filteredAndSortedAdvocates.length]);
+  }, [currentPage, pageSize, sortedAdvocates.length]);
 
   const visiblePageNumbers = useMemo(
     () => getPageNumbers(paginationInfo.currentPage, paginationInfo.totalPages),
@@ -117,11 +129,18 @@ export default function Home() {
   );
 
   const paginatedAdvocates = useMemo(
-    () => paginate(filteredAndSortedAdvocates, paginationInfo.currentPage, pageSize).data,
-    [filteredAndSortedAdvocates, paginationInfo.currentPage, pageSize]
+    () => paginate(sortedAdvocates, paginationInfo.currentPage, pageSize).data,
+    [sortedAdvocates, paginationInfo.currentPage, pageSize]
   );
 
   const { expandedRows, toggleRow } = useExpandableRows(paginatedAdvocates.length);
+
+  usePrefetchAdvocates({
+    enabled: paginationInfo.hasNext,
+    data: sortedAdvocates,
+    nextPage: paginationInfo.currentPage + 1,
+    pageSize,
+  });
 
   const activeFilters: ActiveFilter[] = useMemo(() => {
     const filters: ActiveFilter[] = [];
@@ -184,25 +203,25 @@ export default function Home() {
       expandedRows={expandedRows}
       onToggleRow={toggleRow}
       filters={{
-        availableDegrees,
+        availableDegrees: filterOptions?.degrees || [],
         selectedDegrees,
         onDegreesChange: (degrees) => {
           setSelectedDegrees(degrees);
           setCurrentPage(1);
         },
-        availableCities,
+        availableCities: filterOptions?.cities || [],
         selectedCities,
         onCitiesChange: (cities) => {
           setSelectedCities(cities);
           setCurrentPage(1);
         },
-        availableSpecialties,
+        availableSpecialties: filterOptions?.specialties || [],
         selectedSpecialties,
         onSpecialtiesChange: (specialties) => {
           setSelectedSpecialties(specialties);
           setCurrentPage(1);
         },
-        availableAreaCodes,
+        availableAreaCodes: filterOptions?.areaCodes || [],
         selectedAreaCodes,
         onAreaCodesChange: (areaCodes) => {
           setSelectedAreaCodes(areaCodes);
@@ -262,7 +281,7 @@ export default function Home() {
       pageSize={{
         current: pageSize,
         options: [10, 25, 50, 100],
-        totalItems: filteredAndSortedAdvocates.length,
+        totalItems: sortedAdvocates.length,
         onPageSizeChange: (newSize) => {
           setPageSize(newSize);
           setCurrentPage(1);
