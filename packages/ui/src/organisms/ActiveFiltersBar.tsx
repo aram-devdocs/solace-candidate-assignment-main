@@ -6,7 +6,7 @@ export interface ActiveFilter {
   /**
    * Type of filter
    */
-  type: "degree" | "city" | "specialty" | "experience";
+  type: "degree" | "city" | "specialty" | "experience" | "areaCode";
   /**
    * Display label for the filter
    */
@@ -25,7 +25,10 @@ export interface ActiveFiltersBarProps {
   /**
    * Callback to remove a specific filter
    */
-  onRemoveFilter: (type: "degree" | "city" | "specialty" | "experience", value?: string) => void; // eslint-disable-line no-unused-vars
+  onRemoveFilter: (
+    type: "degree" | "city" | "specialty" | "experience" | "areaCode",
+    value?: string
+  ) => void; // eslint-disable-line no-unused-vars
   /**
    * Callback to clear all filters
    */
@@ -84,12 +87,13 @@ export const ActiveFiltersBar: React.FC<ActiveFiltersBarProps> = ({
         {activeFilters.map((filter, index) => {
           const variantMap: Record<
             string,
-            "degree" | "city" | "specialty" | "experience" | "default"
+            "degree" | "city" | "specialty" | "experience" | "areaCode" | "default"
           > = {
             degree: "degree",
             city: "city",
             specialty: "specialty",
             experience: "experience",
+            areaCode: "areaCode",
           };
           const variant = variantMap[filter.type] || "default";
 

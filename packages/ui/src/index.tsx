@@ -132,6 +132,9 @@ export type { CityBadgeProps } from "./molecules/CityBadge";
 export { DegreeBadge } from "./molecules/DegreeBadge";
 export type { DegreeBadgeProps } from "./molecules/DegreeBadge";
 
+export { AreaCodeBadge } from "./molecules/AreaCodeBadge";
+export type { AreaCodeBadgeProps } from "./molecules/AreaCodeBadge";
+
 export { AdvocateTable } from "./organisms/AdvocateTable";
 export type { AdvocateTableProps } from "./organisms/AdvocateTable";
 

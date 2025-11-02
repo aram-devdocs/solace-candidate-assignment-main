@@ -1,7 +1,12 @@
 import { useCallback, useMemo } from "react";
 import type { Advocate } from "@repo/types";
 import { useUrlState, useUrlArrayState, useUrlNumberState } from "./use-url-state";
-import { getUniqueCities, getUniqueDegrees, getUniqueSpecialties } from "@repo/utils";
+import {
+  getUniqueCities,
+  getUniqueDegrees,
+  getUniqueSpecialties,
+  getUniqueAreaCodes,
+} from "@repo/utils";
 import type { AdvocateFilterCriteria } from "@repo/utils";
 
 /**
@@ -13,6 +18,7 @@ import type { AdvocateFilterCriteria } from "@repo/utils";
  * - Cities
  * - Specialties
  * - Years of experience range (min/max)
+ * - Area codes
  *
  * All filter state is persisted in URL query parameters for shareable/bookmarkable views
  *
@@ -33,6 +39,7 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
   const [selectedDegrees, setSelectedDegrees] = useUrlArrayState("degrees", []);
   const [selectedCities, setSelectedCities] = useUrlArrayState("cities", []);
   const [selectedSpecialties, setSelectedSpecialties] = useUrlArrayState("specialties", []);
+  const [selectedAreaCodes, setSelectedAreaCodes] = useUrlArrayState("areaCodes", []);
   const [minExperience, setMinExperience] = useUrlNumberState("minExp", 0);
   const [maxExperience, setMaxExperience] = useUrlNumberState("maxExp", 0);
 
@@ -42,10 +49,19 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
       degrees: selectedDegrees.length > 0 ? selectedDegrees : undefined,
       cities: selectedCities.length > 0 ? selectedCities : undefined,
       specialties: selectedSpecialties.length > 0 ? selectedSpecialties : undefined,
+      areaCodes: selectedAreaCodes.length > 0 ? selectedAreaCodes : undefined,
       minExperience: minExperience > 0 ? minExperience : undefined,
       maxExperience: maxExperience > 0 ? maxExperience : undefined,
     }),
-    [searchTerm, selectedDegrees, selectedCities, selectedSpecialties, minExperience, maxExperience]
+    [
+      searchTerm,
+      selectedDegrees,
+      selectedCities,
+      selectedSpecialties,
+      selectedAreaCodes,
+      minExperience,
+      maxExperience,
+    ]
   );
 
   const availableDegrees = useMemo(() => getUniqueDegrees(allAdvocates), [allAdvocates]);
@@ -54,12 +70,15 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
 
   const availableSpecialties = useMemo(() => getUniqueSpecialties(allAdvocates), [allAdvocates]);
 
+  const availableAreaCodes = useMemo(() => getUniqueAreaCodes(allAdvocates), [allAdvocates]);
+
   const hasActiveFilters = useMemo(() => {
     return (
       searchTerm !== "" ||
       selectedDegrees.length > 0 ||
       selectedCities.length > 0 ||
       selectedSpecialties.length > 0 ||
+      selectedAreaCodes.length > 0 ||
       minExperience > 0 ||
       maxExperience > 0
     );
@@ -68,6 +87,7 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     selectedDegrees,
     selectedCities,
     selectedSpecialties,
+    selectedAreaCodes,
     minExperience,
     maxExperience,
   ]);
@@ -77,6 +97,7 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     setSelectedDegrees([]);
     setSelectedCities([]);
     setSelectedSpecialties([]);
+    setSelectedAreaCodes([]);
     setMinExperience(0);
     setMaxExperience(0);
   }, [
@@ -84,12 +105,13 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     setSelectedDegrees,
     setSelectedCities,
     setSelectedSpecialties,
+    setSelectedAreaCodes,
     setMinExperience,
     setMaxExperience,
   ]);
 
   const removeFilter = useCallback(
-    (type: "degree" | "city" | "specialty" | "experience", value?: string) => {
+    (type: "degree" | "city" | "specialty" | "experience" | "areaCode", value?: string) => {
       switch (type) {
         case "degree":
           if (value) {
@@ -106,6 +128,11 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
             setSelectedSpecialties(selectedSpecialties.filter((s) => s !== value));
           }
           break;
+        case "areaCode":
+          if (value) {
+            setSelectedAreaCodes(selectedAreaCodes.filter((a) => a !== value));
+          }
+          break;
         case "experience":
           setMinExperience(0);
           setMaxExperience(0);
@@ -116,9 +143,11 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
       selectedDegrees,
       selectedCities,
       selectedSpecialties,
+      selectedAreaCodes,
       setSelectedDegrees,
       setSelectedCities,
       setSelectedSpecialties,
+      setSelectedAreaCodes,
       setMinExperience,
       setMaxExperience,
     ]
@@ -151,6 +180,15 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     [selectedDegrees, setSelectedDegrees]
   );
 
+  const addAreaCodeFilter = useCallback(
+    (areaCode: string) => {
+      if (!selectedAreaCodes.includes(areaCode)) {
+        setSelectedAreaCodes([...selectedAreaCodes, areaCode]);
+      }
+    },
+    [selectedAreaCodes, setSelectedAreaCodes]
+  );
+
   return {
     filterCriteria,
     searchTerm,
@@ -161,6 +199,8 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     setSelectedCities,
     selectedSpecialties,
     setSelectedSpecialties,
+    selectedAreaCodes,
+    setSelectedAreaCodes,
     minExperience,
     setMinExperience,
     maxExperience,
@@ -168,11 +208,13 @@ export function useAdvocateFilters(allAdvocates: Advocate[]) {
     availableDegrees,
     availableCities,
     availableSpecialties,
+    availableAreaCodes,
     hasActiveFilters,
     clearAllFilters,
     removeFilter,
     addSpecialtyFilter,
     addCityFilter,
     addDegreeFilter,
+    addAreaCodeFilter,
   };
 }

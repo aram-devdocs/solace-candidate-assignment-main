@@ -7,11 +7,11 @@ import {
   useDeviceSize,
   useExpandableRows,
   useAdvocateFilters,
-  useAdvocateSorting,
-  useAdvocatePagination,
-  DEFAULT_PAGE_SIZES,
+  useTableSorting,
+  useUrlNumberState,
 } from "@repo/hooks";
-import { filterAdvocates, sortAdvocates } from "@repo/utils";
+import { filterAdvocates, sortAdvocates, paginate, getPageNumbers } from "@repo/utils";
+import type { SortableColumn } from "@repo/utils";
 import { AdvocateListTemplate } from "@repo/ui";
 import type { ActiveFilter } from "@repo/ui";
 
@@ -56,6 +56,8 @@ export default function Home() {
     setSelectedCities,
     selectedSpecialties,
     setSelectedSpecialties,
+    selectedAreaCodes,
+    setSelectedAreaCodes,
     minExperience,
     setMinExperience,
     maxExperience,
@@ -63,37 +65,45 @@ export default function Home() {
     availableDegrees,
     availableCities,
     availableSpecialties,
+    availableAreaCodes,
     clearAllFilters,
     removeFilter,
     addSpecialtyFilter,
     addCityFilter,
     addDegreeFilter,
+    addAreaCodeFilter,
   } = useAdvocateFilters(allAdvocates);
 
-  const { sortConfig, handleSort } = useAdvocateSorting();
+  const { sortConfig, handleSort } = useTableSorting<SortableColumn>();
+
+  const [currentPage, setCurrentPage] = useUrlNumberState("page", 1);
+  const [pageSize, setPageSize] = useUrlNumberState("pageSize", 25);
 
   const filteredAndSortedAdvocates = useMemo(() => {
     const filtered = filterAdvocates(allAdvocates, filterCriteria);
     return sortAdvocates(filtered, sortConfig.column, sortConfig.direction);
   }, [allAdvocates, filterCriteria, sortConfig]);
 
-  const {
-    currentPage,
-    totalPages,
-    pageSize,
-    setPageSize,
-    visiblePageNumbers,
-    hasPrevious,
-    hasNext,
-    setPage,
-    goToFirstPage,
-    goToLastPage,
-    paginateData,
-  } = useAdvocatePagination<Advocate>(filteredAndSortedAdvocates.length, 25);
+  const paginationInfo = useMemo(() => {
+    const totalPages = Math.ceil(filteredAndSortedAdvocates.length / pageSize);
+    const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+    return {
+      currentPage: safePage,
+      totalPages: totalPages || 1,
+      hasPrevious: safePage > 1,
+      hasNext: safePage < totalPages,
+    };
+  }, [currentPage, pageSize, filteredAndSortedAdvocates.length]);
+
+  const visiblePageNumbers = useMemo(
+    () => getPageNumbers(paginationInfo.currentPage, paginationInfo.totalPages),
+    [paginationInfo.currentPage, paginationInfo.totalPages]
+  );
 
   const paginatedAdvocates = useMemo(
-    () => paginateData(filteredAndSortedAdvocates).data,
-    [filteredAndSortedAdvocates, paginateData]
+    () => paginate(filteredAndSortedAdvocates, paginationInfo.currentPage, pageSize).data,
+    [filteredAndSortedAdvocates, paginationInfo.currentPage, pageSize]
   );
 
   const { expandedRows, toggleRow } = useExpandableRows(paginatedAdvocates.length);
@@ -113,6 +123,10 @@ export default function Home() {
       filters.push({ type: "specialty", label: specialty, value: specialty });
     });
 
+    selectedAreaCodes.forEach((areaCode) => {
+      filters.push({ type: "areaCode", label: `(${areaCode})`, value: areaCode });
+    });
+
     if (minExperience > 0 || maxExperience > 0) {
       const label =
         minExperience > 0 && maxExperience > 0
@@ -124,16 +138,23 @@ export default function Home() {
     }
 
     return filters;
-  }, [selectedDegrees, selectedCities, selectedSpecialties, minExperience, maxExperience]);
+  }, [
+    selectedDegrees,
+    selectedCities,
+    selectedSpecialties,
+    selectedAreaCodes,
+    minExperience,
+    maxExperience,
+  ]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
-    setPage(1);
+    setCurrentPage(1);
   };
 
   const handleResetSearch = (): void => {
     setSearchTerm("");
-    setPage(1);
+    setCurrentPage(1);
   };
 
   return (
@@ -152,50 +173,60 @@ export default function Home() {
         selectedDegrees,
         onDegreesChange: (degrees) => {
           setSelectedDegrees(degrees);
-          setPage(1);
+          setCurrentPage(1);
         },
         availableCities,
         selectedCities,
         onCitiesChange: (cities) => {
           setSelectedCities(cities);
-          setPage(1);
+          setCurrentPage(1);
         },
         availableSpecialties,
         selectedSpecialties,
         onSpecialtiesChange: (specialties) => {
           setSelectedSpecialties(specialties);
-          setPage(1);
+          setCurrentPage(1);
+        },
+        availableAreaCodes,
+        selectedAreaCodes,
+        onAreaCodesChange: (areaCodes) => {
+          setSelectedAreaCodes(areaCodes);
+          setCurrentPage(1);
         },
         minExperience,
         maxExperience,
         onMinExperienceChange: (value: number | "") => {
           setMinExperience(value === "" ? 0 : value);
-          setPage(1);
+          setCurrentPage(1);
         },
         onMaxExperienceChange: (value: number | "") => {
           setMaxExperience(value === "" ? 0 : value);
-          setPage(1);
+          setCurrentPage(1);
         },
         activeFilters,
         onRemoveFilter: (type, value) => {
           removeFilter(type, value);
-          setPage(1);
+          setCurrentPage(1);
         },
         onClearAll: () => {
           clearAllFilters();
-          setPage(1);
+          setCurrentPage(1);
         },
         onSpecialtyClick: (specialty) => {
           addSpecialtyFilter(specialty);
-          setPage(1);
+          setCurrentPage(1);
         },
         onCityClick: (city) => {
           addCityFilter(city);
-          setPage(1);
+          setCurrentPage(1);
         },
         onDegreeClick: (degree) => {
           addDegreeFilter(degree);
-          setPage(1);
+          setCurrentPage(1);
+        },
+        onAreaCodeClick: (areaCode) => {
+          addAreaCodeFilter(areaCode);
+          setCurrentPage(1);
         },
       }}
       sort={{
@@ -204,20 +235,23 @@ export default function Home() {
         onSort: handleSort,
       }}
       pagination={{
-        currentPage,
-        totalPages,
+        currentPage: paginationInfo.currentPage,
+        totalPages: paginationInfo.totalPages,
         visiblePages: visiblePageNumbers,
-        hasPrevious,
-        hasNext,
-        onPageChange: setPage,
-        onFirstPage: goToFirstPage,
-        onLastPage: goToLastPage,
+        hasPrevious: paginationInfo.hasPrevious,
+        hasNext: paginationInfo.hasNext,
+        onPageChange: setCurrentPage,
+        onFirstPage: () => setCurrentPage(1),
+        onLastPage: () => setCurrentPage(paginationInfo.totalPages),
       }}
       pageSize={{
         current: pageSize,
-        options: DEFAULT_PAGE_SIZES,
+        options: [10, 25, 50, 100],
         totalItems: filteredAndSortedAdvocates.length,
-        onPageSizeChange: setPageSize,
+        onPageSizeChange: (newSize) => {
+          setPageSize(newSize);
+          setCurrentPage(1);
+        },
       }}
     />
   );

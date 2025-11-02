@@ -1,10 +1,11 @@
 import React from "react";
 import type { Advocate } from "@repo/types";
-import { TableRow } from "../molecules/TableRow";
+import { TableRow, type TableCellData } from "../molecules/TableRow";
 import { SortControl } from "../molecules/SortControl";
 import { SpecialtyBadge } from "../molecules/SpecialtyBadge";
 import { CityBadge } from "../molecules/CityBadge";
 import { DegreeBadge } from "../molecules/DegreeBadge";
+import { AreaCodeBadge } from "../molecules/AreaCodeBadge";
 import { Pagination } from "../molecules/Pagination";
 import { PageSizeSelector } from "../molecules/PageSizeSelector";
 import { TableCell } from "../atoms/TableCell";
@@ -15,6 +16,7 @@ import {
 } from "../constants/table";
 import { ARIA_LABELS } from "../constants/accessibility";
 import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
+import { formatPhoneNumber, extractAreaCode } from "@repo/utils";
 
 export interface AdvocateTableProps {
   advocates: Advocate[];
@@ -76,6 +78,10 @@ export interface AdvocateTableProps {
    * Optional callback when degree badge is clicked (for filtering)
    */
   onDegreeClick?: (degree: string) => void; // eslint-disable-line no-unused-vars
+  /**
+   * Optional callback when area code badge is clicked (for filtering)
+   */
+  onAreaCodeClick?: (areaCode: string) => void; // eslint-disable-line no-unused-vars
 }
 
 /**
@@ -86,7 +92,8 @@ function getCellValue(
   key: AdvocateColumnKey,
   onSpecialtyClick?: (specialty: string) => void, // eslint-disable-line no-unused-vars
   onCityClick?: (city: string) => void, // eslint-disable-line no-unused-vars
-  onDegreeClick?: (degree: string) => void // eslint-disable-line no-unused-vars
+  onDegreeClick?: (degree: string) => void, // eslint-disable-line no-unused-vars
+  onAreaCodeClick?: (areaCode: string) => void // eslint-disable-line no-unused-vars
 ): React.ReactNode {
   if (key === "specialties") {
     return (
@@ -113,6 +120,23 @@ function getCellValue(
     );
   }
 
+  if (key === "phoneNumber") {
+    const areaCode = extractAreaCode(advocate.phoneNumber);
+    const formattedNumber = formatPhoneNumber(advocate.phoneNumber);
+    const restOfNumber = formattedNumber.substring(5); // Skip "(555) " to get "123-4567"
+
+    return (
+      <div className="gap-xs flex items-center">
+        <AreaCodeBadge
+          areaCode={areaCode}
+          onClick={onAreaCodeClick}
+          clickable={!!onAreaCodeClick}
+        />
+        <span className="text-secondary-900">{restOfNumber}</span>
+      </div>
+    );
+  }
+
   return advocate[key];
 }
 
@@ -136,6 +160,7 @@ function getCellValue(
  * @param onSpecialtyClick - Callback when specialty badge is clicked
  * @param onCityClick - Callback when city badge is clicked
  * @param onDegreeClick - Callback when degree badge is clicked
+ * @param onAreaCodeClick - Callback when area code badge is clicked
  */
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
@@ -150,6 +175,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   onSpecialtyClick,
   onCityClick,
   onDegreeClick,
+  onAreaCodeClick,
 }) => {
   const visibleColumns = ADVOCATE_TABLE_COLUMNS[deviceSize];
   const isDesktop = deviceSize === "desktop";
@@ -223,9 +249,18 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
               </tr>
             ) : (
               advocates.map((advocate, index) => {
-                const cells = visibleColumns.map((key) =>
-                  getCellValue(advocate, key, onSpecialtyClick, onCityClick, onDegreeClick)
-                );
+                const cells: TableCellData[] = visibleColumns.map((key) => {
+                  const content = getCellValue(
+                    advocate,
+                    key,
+                    onSpecialtyClick,
+                    onCityClick,
+                    onDegreeClick,
+                    onAreaCodeClick
+                  );
+                  const align = key === "yearsOfExperience" ? ("center" as const) : undefined;
+                  return align ? { content, align } : content;
+                });
 
                 const expandableCells = !isDesktop
                   ? allColumns
@@ -237,7 +272,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                           key,
                           onSpecialtyClick,
                           onCityClick,
-                          onDegreeClick
+                          onDegreeClick,
+                          onAreaCodeClick
                         ),
                       }))
                   : undefined;

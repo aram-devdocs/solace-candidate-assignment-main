@@ -1,4 +1,5 @@
 import type { Advocate } from "@repo/types";
+import { extractAreaCode } from "./area-code";
 
 /**
  * Criteria for filtering advocates
@@ -28,6 +29,10 @@ export interface AdvocateFilterCriteria {
    * Maximum years of experience (inclusive)
    */
   maxExperience?: number;
+  /**
+   * Filter by area code (first 3 digits of phone number)
+   */
+  areaCodes?: string[];
 }
 
 /**
@@ -117,6 +122,13 @@ export function filterAdvocates(
 
   if (criteria.maxExperience !== undefined) {
     filtered = filtered.filter((advocate) => advocate.yearsOfExperience <= criteria.maxExperience!);
+  }
+
+  if (criteria.areaCodes && criteria.areaCodes.length > 0) {
+    filtered = filtered.filter((advocate) => {
+      const areaCode = extractAreaCode(advocate.phoneNumber);
+      return criteria.areaCodes!.includes(areaCode);
+    });
   }
 
   return filtered;

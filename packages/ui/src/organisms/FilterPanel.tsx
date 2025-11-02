@@ -62,6 +62,18 @@ export interface FilterPanelProps {
    */
   onSpecialtiesChange: (specialties: string[]) => void; // eslint-disable-line no-unused-vars
   /**
+   * Available area code options
+   */
+  availableAreaCodes: string[];
+  /**
+   * Selected area codes
+   */
+  selectedAreaCodes: string[];
+  /**
+   * Callback for area code selection changes
+   */
+  onAreaCodesChange: (areaCodes: string[]) => void; // eslint-disable-line no-unused-vars
+  /**
    * Minimum years of experience
    */
   minExperience: number | "";
@@ -123,6 +135,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   availableSpecialties,
   selectedSpecialties,
   onSpecialtiesChange,
+  availableAreaCodes,
+  selectedAreaCodes,
+  onAreaCodesChange,
   minExperience,
   maxExperience,
   onMinExperienceChange,
@@ -134,6 +149,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     search: true,
     demographics: true,
     specialties: true,
+    contact: true,
     experience: true,
   });
 
@@ -163,6 +179,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const specialtyOptions: MultiSelectOption[] = availableSpecialties.map((specialty) => ({
     value: specialty,
     label: specialty,
+  }));
+
+  const areaCodeOptions: MultiSelectOption[] = (availableAreaCodes || []).map((code) => ({
+    value: code,
+    label: `(${code})`,
   }));
 
   return (
@@ -303,6 +324,39 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   onChange={onSpecialtiesChange}
                   placeholder="Select specialties"
                   maxHeight={250}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Contact Section */}
+          <div className="border-secondary-200 pb-md border-b">
+            <button
+              type="button"
+              onClick={() => toggleSection("contact")}
+              className="flex w-full items-center justify-between text-left"
+              aria-expanded={openSections.contact}
+            >
+              <h3 className="text-secondary-900 text-sm font-semibold">Contact</h3>
+              {openSections.contact ? (
+                <ChevronUp className="text-secondary-600 h-4 w-4" />
+              ) : (
+                <ChevronDown className="text-secondary-600 h-4 w-4" />
+              )}
+            </button>
+            {openSections.contact && (
+              <div className="mt-sm space-y-sm">
+                <label
+                  htmlFor="filter-areaCode"
+                  className="text-secondary-700 block text-xs font-medium"
+                >
+                  Area Code
+                </label>
+                <MultiSelect
+                  options={areaCodeOptions}
+                  value={selectedAreaCodes}
+                  onChange={onAreaCodesChange}
+                  placeholder="Select area codes"
                 />
               </div>
             )}

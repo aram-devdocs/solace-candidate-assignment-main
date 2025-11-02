@@ -43,7 +43,7 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
   className = "",
 }) => {
   const baseClasses =
-    "inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full border bg-primary-100 text-primary-800 border-primary-250";
+    "inline-flex items-center justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-100 text-primary-800 border-primary-250";
   const clickableClasses = clickable
     ? "cursor-pointer hover:bg-primary-150 hover:border-primary-300 transition-colors"
     : "";

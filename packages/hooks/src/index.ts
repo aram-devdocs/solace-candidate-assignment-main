@@ -14,5 +14,3 @@ export * from "./use-url-state";
 export * from "./use-table-filters";
 export * from "./use-table-sorting";
 export * from "./use-advocate-filters";
-export * from "./use-advocate-sorting";
-export * from "./use-advocate-pagination";

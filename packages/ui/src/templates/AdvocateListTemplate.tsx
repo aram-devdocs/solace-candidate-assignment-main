@@ -48,16 +48,23 @@ export interface AdvocateListTemplateProps {
     availableSpecialties: string[];
     selectedSpecialties: string[];
     onSpecialtiesChange: (specialties: string[]) => void; // eslint-disable-line no-unused-vars
+    availableAreaCodes: string[];
+    selectedAreaCodes: string[];
+    onAreaCodesChange: (areaCodes: string[]) => void; // eslint-disable-line no-unused-vars
     minExperience: number | "";
     maxExperience: number | "";
     onMinExperienceChange: (value: number | "") => void; // eslint-disable-line no-unused-vars
     onMaxExperienceChange: (value: number | "") => void; // eslint-disable-line no-unused-vars
     activeFilters: ActiveFilter[];
-    onRemoveFilter: (type: "degree" | "city" | "specialty" | "experience", value?: string) => void; // eslint-disable-line no-unused-vars
+    onRemoveFilter: (
+      type: "degree" | "city" | "specialty" | "experience" | "areaCode",
+      value?: string
+    ) => void; // eslint-disable-line no-unused-vars
     onClearAll: () => void;
     onSpecialtyClick?: (specialty: string) => void; // eslint-disable-line no-unused-vars
     onCityClick?: (city: string) => void; // eslint-disable-line no-unused-vars
     onDegreeClick?: (degree: string) => void; // eslint-disable-line no-unused-vars
+    onAreaCodeClick?: (areaCode: string) => void; // eslint-disable-line no-unused-vars
   };
   /**
    * Sort configuration
@@ -215,6 +222,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           onSpecialtyClick={filters?.onSpecialtyClick}
           onCityClick={filters?.onCityClick}
           onDegreeClick={filters?.onDegreeClick}
+          onAreaCodeClick={filters?.onAreaCodeClick}
         />
       </div>
 
@@ -239,6 +247,9 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           availableSpecialties={filters.availableSpecialties}
           selectedSpecialties={filters.selectedSpecialties}
           onSpecialtiesChange={filters.onSpecialtiesChange}
+          availableAreaCodes={filters.availableAreaCodes}
+          selectedAreaCodes={filters.selectedAreaCodes}
+          onAreaCodesChange={filters.onAreaCodesChange}
           minExperience={filters.minExperience}
           maxExperience={filters.maxExperience}
           onMinExperienceChange={filters.onMinExperienceChange}

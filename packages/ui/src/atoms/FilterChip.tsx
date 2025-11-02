@@ -16,10 +16,11 @@ export interface FilterChipProps {
    * - city: Light muted blue (for city filters)
    * - specialty: Medium muted teal (for specialty filters)
    * - experience: Neutral gray (for experience filters)
+   * - areaCode: Primary teal (for area code filters)
    * - default: Secondary gray
    * - primary: Muted teal (backward compatibility)
    */
-  variant?: "default" | "primary" | "degree" | "city" | "specialty" | "experience";
+  variant?: "default" | "primary" | "degree" | "city" | "specialty" | "experience" | "areaCode";
   /**
    * Additional className for the chip
    */
@@ -54,8 +55,9 @@ export const FilterChip: React.FC<FilterChipProps> = ({
     primary: "bg-primary-100 text-primary-700 hover:bg-primary-200",
     degree: "bg-primary-50 text-primary-700 hover:bg-primary-100",
     city: "bg-primary-100 text-primary-800 hover:bg-primary-150",
-    specialty: "bg-primary-200 text-primary-800 hover:bg-primary-300",
+    specialty: "bg-primary-50 text-primary-700 hover:bg-primary-100",
     experience: "bg-secondary-100 text-secondary-800 hover:bg-secondary-200",
+    areaCode: "bg-primary-300 text-primary-900 hover:bg-primary-400",
   };
 
   return (
