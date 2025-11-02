@@ -81,6 +81,10 @@ export interface AppLayoutProps {
    * Callback when navigation state should be updated
    */
   onNavigationStart?: () => void;
+  /**
+   * Callback to show toast notification (for demo UI actions)
+   */
+  onShowToast?: () => void;
 }
 
 /**
@@ -124,6 +128,7 @@ export function AppLayout({
   footerCopyright = FOOTER_COPYRIGHT_WITH_RIGHTS,
   isNavigating = false,
   onNavigationStart,
+  onShowToast,
 }: AppLayoutProps) {
   const { items } = useNavigation(navigationItems, currentPath);
 
@@ -174,6 +179,7 @@ export function AppLayout({
         copyright: footerCopyright,
       }}
       isNavigating={isNavigating}
+      onShowToast={onShowToast}
     >
       {children}
     </RootLayout>

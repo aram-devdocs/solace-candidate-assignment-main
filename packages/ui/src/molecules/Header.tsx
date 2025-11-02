@@ -77,7 +77,8 @@ export function Header({
         <div className="flex items-center gap-2">
           {/* Messages */}
           <div className="relative">
-            <button
+            <a
+              href="/messages"
               onClick={onMessagesClick}
               className="hover:bg-primary-600 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
               aria-label="Messages"
@@ -98,7 +99,7 @@ export function Header({
                 <path d="M13 8H7" />
                 <path d="M17 12H7" />
               </svg>
-            </button>
+            </a>
             {messageCount && messageCount > 0 ? (
               <span className="bg-error-600 absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
                 {messageCount > 9 ? "9+" : messageCount}

@@ -1,3 +1,7 @@
+# Getting Started
+
+Check out the actual [app](https://solace.aramhammoudeh.com/) and [api documentation](https://solace.aramhammoudeh.com/api/docs) to get a feel for the project. If you want to dive deeper on the UI, check out the [storybook](https://solace-storybook.aramhammoudeh.com). If you are interested in high level summary, skip to [TLDR;](#tldr) but if you are up for a deep dive, read on.
+
 # Table of Contents
 
 - [Logs](#logs)
@@ -15,10 +19,12 @@
   - [PR 12 - React Query integration](#pr-12---react-query-integration)
   - [PR 13 - Harden Search Functionality](#pr-13---harden-search-functionality)
   - [PR 14 - UI Cleanup](#pr-14---ui-cleanup)
-  
+  - [PR 15 - UI Filler app.solace.health](#pr-15---ui-filler-appsolacehealth)
+  - [TLDR;](#tldr)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
   - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
+  - [API Documentation: https://solace.aramhammoudeh.com/api/docs](https://solace.aramhammoudeh.com/api/docs)
   - [Storybook: https://solace-storybook.aramhammoudeh.com](https://solace-storybook.aramhammoudeh.com)
 
 # Logs
@@ -187,3 +193,27 @@ TLDR; We are now using a hybrid approach to caching and pagination, where we use
 ## [PR 14 - UI Cleanup](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/33)
 
 Numerous UI bugs have been found while working on the previous harden search functionality, such as mobile view of the down chevron, the filter badges not seeming like they worked correctly, and other misc refactors to improve responsiveness and accessibility.
+
+## [PR 15 - UI Filler app.solace.health](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/34)
+
+Now that we have finished everything important and have a bit of time to spare, lets add some filler UI. nothing feature full, just some of the views on account menu, notification sidebar, the messages, notes, forms, health insurance and help pages, just to add a bit of color to the app. Make you really feel like you are using the real app.
+
+We also update and finalize some documentation here.
+
+I also went ahead and added the OpenAPI spec with Scalar to add some auto generated docs for the back end since the front end has all its tooling set up. Running out of time for this sprint, so just tidying up.
+
+## TLDR;
+
+In this project, we took a basic table with mock data in a nextjs starter, and scaled it into a production grade app, with developer experience improvements like pre commit hooks, Github actions for code validation at multiple layers, tools such as Storybook, Drizzle Kit / Studio, React Query, OpenAPI that make the development experience easier and more efficient.
+
+For the front end, we have an entire UI system built from scratch that matches the app.solace.health reference as closely as possible, with our table having strong filtering and search capabilities.
+
+This ties into full stack with our queries system that handles front and back end cacheing to ensure speedy responses and a great user experience.
+
+Our back end is simple, but all of the logic is abstracted to be portable between applications, being able to switch easily from serverless to traditional hosting with just a few new pages and no core changes. Drizzle Kit handles migrations and schema changes, and we have optimized our backend to scale to 100,000 advocates with no issues on the free tier of Neon / Redis
+
+My focus was building a solid foundation for an enterprise org to build on top of, with a focus on developer experience and scalability. Different pods can now easily take isolated shares of work, with proper testing and documentation to ensure new developers can hit the ground running.
+
+Tools used for this were Claude Code and a decade of software engineering experience.
+
+For future work, we could add authentication so that we can add proper CRUD to each part of the app, improve some edge cases in terms of responsiveness from the user interface, and centralize the cache system so that it does not need to be injected for each feature. Prisma Redis is a fantastic example of merging that layer, but a more custom solution would be required for Drizzle.
