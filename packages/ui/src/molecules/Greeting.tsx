@@ -59,10 +59,12 @@ export const Greeting: React.FC<GreetingProps> = ({ userName, timePeriod, classN
         alt={imageAlt}
         width="64"
         height="64"
-        className="mt-xl block max-w-full object-contain md:hidden"
+        className="mt-lg mb-sm block max-w-full object-contain md:hidden"
       />
 
-      <h1 className="text-secondary-900 p-xl font-serif text-3xl font-bold">{greetingText}</h1>
+      <h1 className="text-secondary-900 px-sm sm:px-md md:px-lg md:py-xl pb-lg font-serif text-2xl font-bold sm:text-3xl">
+        {greetingText}
+      </h1>
 
       {/* PNG for tablet - right side, same size as mobile */}
       <img
@@ -70,7 +72,7 @@ export const Greeting: React.FC<GreetingProps> = ({ userName, timePeriod, classN
         alt={imageAlt}
         width="64"
         height="64"
-        className="mr-xl hidden max-w-full object-contain md:block lg:hidden"
+        className="mr-md sm:mr-lg md:mr-xl hidden max-w-full object-contain md:block lg:hidden"
       />
 
       {/* SVG for desktop - full height */}

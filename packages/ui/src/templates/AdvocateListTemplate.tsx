@@ -141,7 +141,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
     return "evening";
   };
 
-  const paddingClasses = "p-md md:p-lg lg:p-xl";
+  const paddingClasses = "p-sm sm:p-md md:p-lg lg:p-xl";
   const spacingClasses = "my-lg md:my-xl lg:my-2xl";
 
   if (isLoading) {

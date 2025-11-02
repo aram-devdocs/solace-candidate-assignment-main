@@ -150,3 +150,9 @@ Simple refactoring. Prevent cross dependncies by combining database queries in a
 ## [PR 10 - Toasts, Error states, and UX Refinement](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/25)
 
 Added toasts and containers to the UI package and error handling to the web app in general to protect agaisnt network errors and other unexpected behavior. This is just a hardening stage where we ensure that the app is robust enough to stand up to unexpected edge cases.
+
+## [PR 11- Bug fix: Incorrect padding on slim devices](https://github.com/aram-devdocs/solace-candidate-assignment-main/pull/27)
+
+Sent this out to do some testing on a bunch of devices, and got back fairly consistent feedback that on the right side of the home page, the Greeting.tsx badge, filters, and table are bleeding into the right and you couldn't scroll right to it. Small bug, but an indication that our theme is not fully responsive. A good chance to review, identify, and squash this at a low level so we don't have these kind of issues down the line.
+
+The culprit ends up being tokens not fitting the right screen size, so a few quick css changes is the solution.
