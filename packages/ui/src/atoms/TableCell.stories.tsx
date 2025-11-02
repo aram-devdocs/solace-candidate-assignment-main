@@ -37,3 +37,35 @@ export const HeaderCell: Story = {
     children: "Table header",
   },
 };
+
+export const LeftAligned: Story = {
+  args: {
+    as: "td",
+    children: "Left aligned text",
+    align: "left",
+  },
+};
+
+export const CenterAligned: Story = {
+  args: {
+    as: "td",
+    children: "Center aligned text",
+    align: "center",
+  },
+};
+
+export const RightAligned: Story = {
+  args: {
+    as: "td",
+    children: "Right aligned text",
+    align: "right",
+  },
+};
+
+export const NumericData: Story = {
+  args: {
+    as: "td",
+    children: "42",
+    align: "center",
+  },
+};

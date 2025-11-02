@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Advocate } from "@repo/types";
 import { fetchAdvocates } from "@repo/queries";
-import { filterAdvocates } from "@repo/utils";
+import { filterAdvocatesBySearch } from "@repo/utils";
 import { useDebouncedValue } from "./use-debounced-value";
 
 /**
@@ -48,7 +48,7 @@ export function useAdvocateSearch() {
     };
   }, []);
 
-  const filteredAdvocates = filterAdvocates(advocates, debouncedSearchTerm);
+  const filteredAdvocates = filterAdvocatesBySearch(advocates, debouncedSearchTerm);
 
   const handleSearchChange = (e: React.ChangeEvent<React.ElementRef<"input">>) => {
     setSearchTerm(e.target.value);

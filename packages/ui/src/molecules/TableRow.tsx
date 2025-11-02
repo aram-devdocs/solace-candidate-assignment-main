@@ -2,8 +2,12 @@ import React from "react";
 import { TableCell } from "../atoms/TableCell";
 import { ARIA_LABELS } from "../constants/accessibility";
 
+export type TableCellData =
+  | React.ReactNode
+  | { content: React.ReactNode; align?: "left" | "center" | "right" };
+
 export interface TableRowProps {
-  cells: React.ReactNode[];
+  cells: TableCellData[];
   /**
    * Additional cells to show in expandable section on mobile
    */
@@ -39,9 +43,17 @@ export const TableRow: React.FC<TableRowProps> = ({
   return (
     <>
       <tr className="border-secondary-200 hover:bg-primary-50 border-b transition-colors">
-        {cells.map((cell, index) => (
-          <TableCell key={index}>{cell}</TableCell>
-        ))}
+        {cells.map((cell, index) => {
+          const isCellObject = typeof cell === "object" && cell !== null && "content" in cell;
+          const content = isCellObject ? cell.content : cell;
+          const align = isCellObject ? cell.align : undefined;
+
+          return (
+            <TableCell key={index} align={align}>
+              {content}
+            </TableCell>
+          );
+        })}
         {hasExpandableContent && onToggleExpand && (
           <TableCell className="xl:hidden">
             <button
@@ -56,13 +68,13 @@ export const TableRow: React.FC<TableRowProps> = ({
         )}
       </tr>
       {isExpanded && hasExpandableContent && (
-        <tr className="border-secondary-200 bg-secondary-50 border-b xl:hidden">
+        <tr className="border-secondary-200 border-b bg-white xl:hidden">
           <td colSpan={cells.length + 1} className="p-md">
-            <div className="space-y-sm">
+            <div className="space-y-xs">
               {expandableCells.map((item, index) => (
                 <div key={index} className="flex flex-col">
-                  <span className="text-secondary-700 text-sm font-semibold">{item.label}:</span>
-                  <span className="text-secondary-900">{item.content}</span>
+                  <span className="text-secondary-500 text-sm font-medium">{item.label}:</span>
+                  <span className="text-secondary-700 mt-xs">{item.content}</span>
                 </div>
               ))}
             </div>

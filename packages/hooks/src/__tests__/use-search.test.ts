@@ -8,7 +8,7 @@ vi.mock("@repo/queries", () => ({
 }));
 
 vi.mock("@repo/utils", () => ({
-  filterAdvocates: vi.fn((advocates, searchTerm) => {
+  filterAdvocatesBySearch: vi.fn((advocates, searchTerm) => {
     if (!searchTerm) return advocates;
     return advocates.filter((a: Advocate) =>
       a.firstName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -167,8 +167,8 @@ describe("useAdvocateSearch", () => {
     await new Promise((resolve) => setTimeout(resolve, 1100));
   });
 
-  it("should use filterAdvocates to filter results by debouncedSearchTerm", async () => {
-    const { filterAdvocates: mockFilterAdvocates } = await import("@repo/utils");
+  it("should use filterAdvocatesBySearch to filter results by debouncedSearchTerm", async () => {
+    const { filterAdvocatesBySearch: mockFilterAdvocates } = await import("@repo/utils");
 
     vi.mocked(fetchAdvocates).mockResolvedValue(mockAdvocates);
 

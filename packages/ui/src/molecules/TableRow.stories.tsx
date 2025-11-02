@@ -44,3 +44,40 @@ export const WithComplexContent: Story = {
     ],
   },
 };
+
+export const WithCenterAlignedCell: Story = {
+  args: {
+    cells: [
+      "Jane Smith",
+      "jane@example.com",
+      { content: "42", align: "center" as const },
+      "Active",
+    ],
+  },
+};
+
+export const WithExpandableContent: Story = {
+  args: {
+    cells: ["Jane", "Smith", "New York"],
+    expandableCells: [
+      { label: "Degree", content: "PhD" },
+      { label: "Specialties", content: "Cardiology, Internal Medicine" },
+      { label: "Years of Experience", content: "10" },
+      { label: "Phone Number", content: "(555) 123-4567" },
+    ],
+    isExpanded: false,
+  },
+};
+
+export const WithExpandedContent: Story = {
+  args: {
+    cells: ["Jane", "Smith", "New York"],
+    expandableCells: [
+      { label: "Degree", content: "PhD" },
+      { label: "Specialties", content: "Cardiology, Internal Medicine" },
+      { label: "Years of Experience", content: "10" },
+      { label: "Phone Number", content: "(555) 123-4567" },
+    ],
+    isExpanded: true,
+  },
+};

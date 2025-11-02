@@ -30,6 +30,10 @@ const config: StorybookConfig = {
           plugins: [require("tailwindcss"), require("autoprefixer")],
         },
       },
+      define: {
+        ...config.define,
+        "process.env": {},
+      },
     };
   },
 };
