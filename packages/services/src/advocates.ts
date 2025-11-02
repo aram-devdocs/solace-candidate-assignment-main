@@ -131,11 +131,17 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     conditions.push(lte(advocates.yearsOfExperience, filters.maxExperience));
   }
 
-  // Text search filter (searches first name and last name)
+  // Text search filter
+  // NOTE: This only filters advocates table fields. Full cross-table search requires
+  // using searchAdvocates() which performs PostgreSQL full-text search with joins.
   if (filters.search && filters.search.trim()) {
     const searchTerm = `%${filters.search.trim()}%`;
     conditions.push(
-      or(ilike(advocates.firstName, searchTerm), ilike(advocates.lastName, searchTerm))!
+      or(
+        ilike(advocates.firstName, searchTerm),
+        ilike(advocates.lastName, searchTerm),
+        ilike(advocates.phoneNumber, searchTerm)
+      )!
     );
   }
 
@@ -289,7 +295,8 @@ export async function getAdvocatesPaginated(
 
 /**
  * Performs full-text search on advocates using PostgreSQL's full-text search.
- * Searches first name, last name, and ranks results by relevance.
+ * Searches across: first name, last name, city, degree, and phone number.
+ * Ranks results by relevance.
  *
  * @param searchTerm - Text to search for
  * @param page - Page number
@@ -317,20 +324,27 @@ export async function searchAdvocates(
 
     const offset = (page - 1) * pageSize;
 
-    // Use PostgreSQL full-text search with ranking
+    // Use PostgreSQL full-text search with ranking across multiple fields
     const searchQuery = sql`to_tsquery('english', ${searchTerm.trim().replace(/\s+/g, " & ")})`;
-    const rankExpression = sql`ts_rank(to_tsvector('english', ${advocates.firstName} || ' ' || ${advocates.lastName}), ${searchQuery})`;
+
+    // Build search vector including advocate name, city, degree, and phone
+    const searchVector = sql`to_tsvector('english',
+      ${advocates.firstName} || ' ' ||
+      ${advocates.lastName} || ' ' ||
+      COALESCE(${cities.name}, '') || ' ' ||
+      COALESCE(${degrees.code}, '') || ' ' ||
+      COALESCE(${advocates.phoneNumber}, '')
+    )`;
+
+    const rankExpression = sql`ts_rank(${searchVector}, ${searchQuery})`;
 
     // Get total count
     const countResult = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(advocates)
-      .where(
-        and(
-          eq(advocates.isActive, true),
-          sql`to_tsvector('english', ${advocates.firstName} || ' ' || ${advocates.lastName}) @@ ${searchQuery}`
-        )
-      );
+      .leftJoin(cities, eq(advocates.cityId, cities.id))
+      .leftJoin(degrees, eq(advocates.degreeId, degrees.id))
+      .where(and(eq(advocates.isActive, true), sql`${searchVector} @@ ${searchQuery}`));
 
     const totalRecords = countResult[0]?.count ?? 0;
     const totalPages = Math.ceil(totalRecords / pageSize);
@@ -346,12 +360,7 @@ export async function searchAdvocates(
       .from(advocates)
       .leftJoin(cities, eq(advocates.cityId, cities.id))
       .leftJoin(degrees, eq(advocates.degreeId, degrees.id))
-      .where(
-        and(
-          eq(advocates.isActive, true),
-          sql`to_tsvector('english', ${advocates.firstName} || ' ' || ${advocates.lastName}) @@ ${searchQuery}`
-        )
-      )
+      .where(and(eq(advocates.isActive, true), sql`${searchVector} @@ ${searchQuery}`))
       .orderBy(desc(rankExpression))
       .limit(pageSize)
       .offset(offset);

@@ -15,7 +15,7 @@ function parseQueryParams(searchParams: URLSearchParams): {
 } {
   // Pagination
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "25")));
+  const pageSize = Math.min(500, Math.max(1, parseInt(searchParams.get("pageSize") || "25")));
 
   // Search
   const searchTerm = searchParams.get("search") || undefined;
@@ -81,7 +81,7 @@ function parseQueryParams(searchParams: URLSearchParams): {
  *
  * Query Parameters:
  * - page: Page number (default: 1)
- * - pageSize: Items per page (default: 25, max: 100)
+ * - pageSize: Items per page (default: 25, max: 500)
  * - search: Full-text search term
  * - cityIds[]: Array of city IDs to filter by
  * - degreeIds[]: Array of degree IDs to filter by

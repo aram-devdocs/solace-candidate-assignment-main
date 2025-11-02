@@ -176,3 +176,5 @@ At this point, everything works. With a few thousand rows, I am able to search a
 3. Service layer optimizations, combining all of these steps. It is exactly why we created this layer in the first place, as we can now combine the database and cache packages here to create a more robust and scalable solution.
 
 4. Once we did all that, we just update queries to use the new layer and pagination, and everything just clicks together.
+
+To make things easier to test at scale, we use the faker.js package in database to auto scale up and down using env variables, and setting the docker compose settings to match the resources of our free tier on vercel storage.

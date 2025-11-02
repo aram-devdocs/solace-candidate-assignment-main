@@ -8,7 +8,8 @@
     "MAX_CLIENT_CACHE",
     "BACKGROUND_BATCH_SIZE",
     "REDIS_URL",
-    "KV_URL"
+    "KV_URL",
+    "SEED_COUNT"
   ],
   "tasks": {
     "build": {

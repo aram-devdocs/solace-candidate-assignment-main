@@ -21,6 +21,10 @@ import { formatPhoneNumber, extractAreaCode } from "@repo/utils";
 export interface AdvocateTableProps {
   advocates: AdvocateWithRelations[];
   /**
+   * Loading state for the table
+   */
+  isLoading?: boolean;
+  /**
    * Current device size (from useDeviceSize hook in parent)
    */
   deviceSize: DeviceSize;
@@ -165,6 +169,7 @@ function getCellValue(
  */
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
+  isLoading = false,
   deviceSize,
   expandedRows = new Set(),
   onToggleRow,
@@ -244,7 +249,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                   colSpan={visibleColumns.length + (!isDesktop ? 1 : 0)}
                   className="p-lg text-secondary-500 text-center"
                 >
-                  No advocates found
+                  {isLoading ? "Loading..." : "No advocates found"}
                 </td>
               </tr>
             ) : (
@@ -294,7 +299,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       </div>
 
       {/* Pagination */}
-      {pagination && advocates.length > 0 && (
+      {pagination && pagination.totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination
             currentPage={pagination.currentPage}

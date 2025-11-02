@@ -7,7 +7,8 @@ import type { AdvocateWithRelations } from "@repo/types";
 import { extractAreaCode } from "./area-code";
 
 /**
- * Filters advocates by search term (case-insensitive, searches first and last name)
+ * Filters advocates by search term (case-insensitive)
+ * Searches across: first name, last name, city, degree, specialties, and phone number
  */
 export function filterBySearch(
   advocates: AdvocateWithRelations[],
@@ -19,7 +20,22 @@ export function filterBySearch(
   return advocates.filter((advocate) => {
     const firstName = advocate.firstName.toLowerCase();
     const lastName = advocate.lastName.toLowerCase();
-    return firstName.includes(normalizedSearch) || lastName.includes(normalizedSearch);
+    const cityName = advocate.city.name.toLowerCase();
+    const degreeCode = advocate.degree.code.toLowerCase();
+    const phoneNumber = advocate.phoneNumber.toLowerCase();
+
+    const specialtyNames = advocate.advocateSpecialties
+      .map((as) => as.specialty.name.toLowerCase())
+      .join(" ");
+
+    return (
+      firstName.includes(normalizedSearch) ||
+      lastName.includes(normalizedSearch) ||
+      cityName.includes(normalizedSearch) ||
+      degreeCode.includes(normalizedSearch) ||
+      specialtyNames.includes(normalizedSearch) ||
+      phoneNumber.includes(normalizedSearch)
+    );
   });
 }
 

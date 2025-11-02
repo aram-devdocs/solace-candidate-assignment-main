@@ -126,9 +126,16 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const [sortColumn, setSortColumn] = useUrlState("sort", "firstName");
   const [sortDirection, setSortDirection] = useUrlState("sortDir", "asc");
 
-  // Local cache state
-  const [cachedAdvocates, setCachedAdvocates] = useState<AdvocateWithRelations[]>([]);
+  // Local cache state - using Map for O(1) inserts without sorting
+  const [cachedAdvocatesMap, setCachedAdvocatesMap] = useState<Map<number, AdvocateWithRelations>>(
+    new Map()
+  );
+  const [cacheSize, setCacheSize] = useState(0); // Track size for memo dependencies
   const [totalCount, setTotalCount] = useState(0);
+  const [fetchingPage, setFetchingPage] = useState<number | null>(null);
+  const [loadedBatches, setLoadedBatches] = useState<Set<number>>(new Set());
+  const [backfillBatch, setBackfillBatch] = useState<number | null>(null);
+  const [currentBatchLoaded, setCurrentBatchLoaded] = useState(false);
 
   const sortConfig: AdvocateSortConfig = {
     column: sortColumn as AdvocateSortConfig["column"],
@@ -173,66 +180,212 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     hasFilters,
   ]);
 
-  // Initial fetch - load first batch of advocates
-  const {
-    data: initialResponse,
-    isLoading: isInitialLoading,
-    error: initialError,
-  } = useAdvocates({
-    page: 1,
-    pageSize: MAX_INITIAL_FETCH,
-    enabled: true,
-  });
+  // Calculate which page we need to fetch from server for current UI page
+  const calculateServerPage = (uiPage: number, uiPageSize: number): number => {
+    const startRecord = (uiPage - 1) * uiPageSize;
+    return Math.floor(startRecord / MAX_INITIAL_FETCH) + 1;
+  };
 
-  // Background fetch - validates/expands cache when filters change
+  // Check if we have the data for current page in cache
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  // Calculate which batch we need for the current page
+  const currentBatchNeeded = calculateServerPage(currentPage, pageSize);
+
+  // We need data if we haven't loaded the batch that contains the current page
+  const needsData = !hasFilters && (totalCount === 0 || !loadedBatches.has(currentBatchNeeded));
+
+  // Strategy: Fetch current batch FIRST, then backfill gaps in background
+  // This prevents UI flashing when jumping to high pages
+  let serverPageNeeded: number | null = null;
+  if (needsData) {
+    if (!loadedBatches.has(currentBatchNeeded)) {
+      // Priority: fetch the batch we need for the current page
+      serverPageNeeded = currentBatchNeeded;
+    } else if (currentBatchNeeded > 1) {
+      // Current batch loaded, now fill gaps if any
+      serverPageNeeded =
+        Array.from({ length: currentBatchNeeded - 1 }, (_, i) => i + 1).find(
+          (batch) => !loadedBatches.has(batch)
+        ) || null;
+    }
+  }
+
+  // Calculate total pages early so we can use it in prefetch logic
+  const totalPages = Math.ceil(totalCount / pageSize) || 1;
+
+  // Main fetch - fetches data for current page OR when filters change
   const {
-    data: backgroundResponse,
-    isFetching: isBackgroundFetching,
-    error: backgroundError,
+    data: mainResponse,
+    isFetching: isMainFetching,
+    isLoading: isMainLoading,
+    error: mainError,
   } = useAdvocates({
-    page: 1,
+    page: serverPageNeeded || 1,
     pageSize: MAX_INITIAL_FETCH,
     filters,
-    enabled: hasFilters, // Only fetch when filters active
+    enabled: hasFilters || serverPageNeeded !== null, // Fetch when filters active OR need specific page
+  });
+
+  // Backfill mechanism - progressively fetch earlier batches in background
+  const { data: backfillResponse } = useAdvocates({
+    page: backfillBatch || 1,
+    pageSize: MAX_INITIAL_FETCH,
+    enabled: backfillBatch !== null && !loadedBatches.has(backfillBatch),
+  });
+
+  // Prefetch next page if user is getting close
+  const nextServerPage = calculateServerPage(currentPage + 1, pageSize);
+  const shouldPrefetchNext =
+    !hasFilters &&
+    currentPage < totalPages &&
+    nextServerPage > (serverPageNeeded || 1) &&
+    cacheSize < nextServerPage * MAX_INITIAL_FETCH &&
+    loadedBatches.has(nextServerPage - 1); // Only prefetch if previous batch is loaded
+
+  const { data: prefetchResponse } = useAdvocates({
+    page: nextServerPage,
+    pageSize: MAX_INITIAL_FETCH,
+    enabled: shouldPrefetchNext,
   });
 
   const { data: filterOptionsResponse } = useAdvocateFilterOptions();
 
-  // Update cache from initial fetch
+  // Update cache from main fetch
   useEffect(() => {
-    if (initialResponse?.success && Array.isArray(initialResponse.data)) {
-      setCachedAdvocates(initialResponse.data);
-      if (initialResponse.pagination?.totalRecords) {
-        setTotalCount(initialResponse.pagination.totalRecords);
-      }
-    }
-  }, [initialResponse]);
+    if (mainResponse?.success && Array.isArray(mainResponse.data) && serverPageNeeded !== null) {
+      // Calculate starting index for this batch
+      const batchStartIndex = (serverPageNeeded - 1) * MAX_INITIAL_FETCH;
 
-  // Merge background fetch results into cache
-  useEffect(() => {
-    if (backgroundResponse?.success && Array.isArray(backgroundResponse.data)) {
-      setCachedAdvocates((prev) => {
-        const existingIds = new Set(prev.map((a) => a.id));
-        const newAdvocates = backgroundResponse.data.filter((a) => !existingIds.has(a.id));
+      setCachedAdvocatesMap((prev) => {
+        const next = new Map(prev);
+        let hasNewData = false;
 
-        if (newAdvocates.length > 0) {
-          return [...prev, ...newAdvocates];
-        }
-        return prev;
+        mainResponse.data.forEach((advocate, i) => {
+          const recordIndex = batchStartIndex + i;
+          if (!next.has(recordIndex)) {
+            next.set(recordIndex, advocate);
+            hasNewData = true;
+          }
+        });
+
+        return hasNewData ? next : prev;
       });
 
-      if (backgroundResponse.pagination?.totalRecords) {
-        setTotalCount(backgroundResponse.pagination.totalRecords);
+      setCacheSize(() => {
+        const newSize =
+          cachedAdvocatesMap.size +
+          mainResponse.data.filter((_, i) => !cachedAdvocatesMap.has(batchStartIndex + i)).length;
+        return newSize;
+      });
+
+      if (mainResponse.pagination?.totalRecords) {
+        setTotalCount(mainResponse.pagination.totalRecords);
+      }
+
+      setLoadedBatches((prev) => new Set(prev).add(serverPageNeeded));
+
+      // If we just loaded the current batch and it's > 1, start backfilling
+      if (
+        serverPageNeeded === currentBatchNeeded &&
+        serverPageNeeded > 1 &&
+        backfillBatch === null
+      ) {
+        setCurrentBatchLoaded(true);
+        setBackfillBatch(1);
+      }
+
+      if (fetchingPage !== null && serverPageNeeded === fetchingPage) {
+        setFetchingPage(null);
       }
     }
-  }, [backgroundResponse]);
+  }, [
+    mainResponse,
+    fetchingPage,
+    serverPageNeeded,
+    currentBatchNeeded,
+    backfillBatch,
+    MAX_INITIAL_FETCH,
+    cachedAdvocatesMap,
+  ]);
+
+  // Handle backfill responses
+  useEffect(() => {
+    if (
+      backfillResponse?.success &&
+      Array.isArray(backfillResponse.data) &&
+      backfillBatch !== null
+    ) {
+      // Calculate starting index for this batch
+      const batchStartIndex = (backfillBatch - 1) * MAX_INITIAL_FETCH;
+
+      setCachedAdvocatesMap((prev) => {
+        const next = new Map(prev);
+        let hasNewData = false;
+
+        backfillResponse.data.forEach((advocate, i) => {
+          const recordIndex = batchStartIndex + i;
+          if (!next.has(recordIndex)) {
+            next.set(recordIndex, advocate);
+            hasNewData = true;
+          }
+        });
+
+        return hasNewData ? next : prev;
+      });
+
+      setCacheSize(cachedAdvocatesMap.size);
+
+      // Mark this batch as loaded
+      setLoadedBatches((prev) => new Set(prev).add(backfillBatch));
+
+      // Continue backfilling to the next batch
+      const maxBatchToFetch = (currentBatchNeeded || 1) - 1;
+
+      if (backfillBatch < maxBatchToFetch) {
+        setBackfillBatch(backfillBatch + 1);
+      } else {
+        // Backfill complete
+        setBackfillBatch(null);
+        setCurrentBatchLoaded(false);
+      }
+    }
+  }, [backfillResponse, backfillBatch, currentBatchNeeded, MAX_INITIAL_FETCH, cachedAdvocatesMap]);
+
+  // Merge prefetch results into cache
+  useEffect(() => {
+    if (prefetchResponse?.success && Array.isArray(prefetchResponse.data) && nextServerPage) {
+      // Calculate starting index for this batch
+      const batchStartIndex = (nextServerPage - 1) * MAX_INITIAL_FETCH;
+
+      setCachedAdvocatesMap((prev) => {
+        const next = new Map(prev);
+        let hasNewData = false;
+
+        prefetchResponse.data.forEach((advocate, i) => {
+          const recordIndex = batchStartIndex + i;
+          if (!next.has(recordIndex)) {
+            next.set(recordIndex, advocate);
+            hasNewData = true;
+          }
+        });
+
+        return hasNewData ? next : prev;
+      });
+
+      setCacheSize(cachedAdvocatesMap.size);
+      setLoadedBatches((prev) => new Set(prev).add(nextServerPage));
+    }
+  }, [prefetchResponse, nextServerPage, MAX_INITIAL_FETCH, cachedAdvocatesMap]);
 
   // Client-side filtering and sorting (instant)
   const filteredAndSortedAdvocates = useMemo(() => {
-    let result = cachedAdvocates;
+    // Convert Map to Array - only recompute when cache size changes
+    const cachedArray = Array.from(cachedAdvocatesMap.values());
 
     // Apply all filters client-side
-    result = applyAllFilters(result, {
+    let result = applyAllFilters(cachedArray, {
       searchTerm: debouncedSearchTerm,
       cityIds: selectedCities,
       degreeIds: selectedDegrees,
@@ -251,7 +404,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
     return result;
   }, [
-    cachedAdvocates,
+    cacheSize, // Use size instead of map reference to prevent unnecessary recomputation
     debouncedSearchTerm,
     selectedCities,
     selectedDegrees,
@@ -260,20 +413,33 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     minExperience,
     maxExperience,
     sortConfig,
+    cachedAdvocatesMap,
   ]);
 
   // Calculate client-side pagination
-  const totalRecords = hasFilters ? totalCount : cachedAdvocates.length;
-  const loadedRecords = cachedAdvocates.length;
-  const filteredCount = filteredAndSortedAdvocates.length;
-  const totalPages = Math.ceil(filteredCount / pageSize) || 1;
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
+  const totalRecords = totalCount;
+  const loadedRecords = cacheSize;
 
   // Get paginated advocates for current page
   const advocates = useMemo(() => {
-    return filteredAndSortedAdvocates.slice(startIndex, endIndex);
-  }, [filteredAndSortedAdvocates, startIndex, endIndex]);
+    // When no filters, slice directly from the sorted/filtered results
+    // The Map-based cache + size dependency prevents unnecessary recomputation
+    const sliced = filteredAndSortedAdvocates.slice(startIndex, endIndex);
+
+    // If we're fetching this page and have no data, return empty to show loading
+    if (sliced.length === 0 && needsData && isMainFetching && !currentBatchLoaded) {
+      return [];
+    }
+
+    return sliced;
+  }, [
+    filteredAndSortedAdvocates,
+    startIndex,
+    endIndex,
+    needsData,
+    isMainFetching,
+    currentBatchLoaded,
+  ]);
 
   const filterOptions = useMemo(
     () =>
@@ -283,22 +449,18 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     [filterOptionsResponse]
   );
 
-  const error = initialError
-    ? initialError instanceof Error
-      ? initialError.message
+  const error = mainError
+    ? mainError instanceof Error
+      ? mainError.message
       : "Failed to fetch advocates"
-    : backgroundError
-      ? backgroundError instanceof Error
-        ? backgroundError.message
-        : "Failed to fetch filtered advocates"
-      : initialResponse?.success === false
-        ? initialResponse.error.message
-        : undefined;
+    : mainResponse?.success === false
+      ? mainResponse.error.message
+      : undefined;
 
   useEffect(() => {
-    if (initialResponse?.success && !hasShownInitialToast.current) {
+    if (mainResponse?.success && !hasShownInitialToast.current) {
       hasShownInitialToast.current = true;
-      const count = initialResponse.pagination?.totalRecords || initialResponse.data.length;
+      const count = mainResponse.pagination?.totalRecords || mainResponse.data.length;
       showToast({
         variant: "success",
         message: "Advocates loaded successfully",
@@ -306,7 +468,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
         duration: 3000,
       });
     }
-  }, [initialResponse, showToast]);
+  }, [mainResponse, showToast]);
 
   useEffect(() => {
     if (error) {
@@ -452,9 +614,9 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   return {
     advocates,
-    isLoading: isInitialLoading,
-    isFetching: isBackgroundFetching,
-    isBackgroundFetching,
+    isLoading: isMainLoading && totalCount === 0 && cachedAdvocatesMap.size === 0,
+    isFetching: isMainFetching,
+    isBackgroundFetching: isMainFetching || backfillBatch !== null,
     error,
     searchTerm,
     setSearchTerm: (value: string) => {
