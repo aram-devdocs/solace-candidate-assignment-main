@@ -1,9 +1,20 @@
 import { getAdvocatesPaginated, searchAdvocates } from "@repo/services";
 import { isAppError, type AdvocateFilters, type AdvocateSortConfig } from "@repo/types";
+import { API_LIMITS, FILTER_LIMITS } from "@repo/utils";
 import { NextRequest } from "next/server";
 
+const VALID_SORT_COLUMNS = [
+  "firstName",
+  "lastName",
+  "city",
+  "degree",
+  "yearsOfExperience",
+  "createdAt",
+] as const;
+
 /**
- * Parses query parameters into typed filter and sort objects.
+ * Parses query parameters into typed filter and sort objects with validation.
+ * @throws {Error} If validation fails
  */
 function parseQueryParams(searchParams: URLSearchParams): {
   page: number;
@@ -13,37 +24,98 @@ function parseQueryParams(searchParams: URLSearchParams): {
   useSearch: boolean;
   searchTerm?: string;
 } {
-  // Pagination
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const pageSize = Math.min(500, Math.max(1, parseInt(searchParams.get("pageSize") || "25")));
+  // Pagination validation
+  const pageStr = searchParams.get("page") || "1";
+  const pageSizeStr = searchParams.get("pageSize") || String(API_LIMITS.DEFAULT_PAGE_SIZE);
+
+  const page = parseInt(pageStr, 10);
+  const pageSize = parseInt(pageSizeStr, 10);
+
+  if (isNaN(page) || page < API_LIMITS.MIN_PAGE || page > API_LIMITS.MAX_PAGE) {
+    throw new Error(
+      `Invalid page number: must be between ${API_LIMITS.MIN_PAGE} and ${API_LIMITS.MAX_PAGE}`
+    );
+  }
+
+  if (
+    isNaN(pageSize) ||
+    pageSize < API_LIMITS.MIN_PAGE_SIZE ||
+    pageSize > API_LIMITS.MAX_PAGE_SIZE
+  ) {
+    throw new Error(
+      `Invalid pageSize: must be between ${API_LIMITS.MIN_PAGE_SIZE} and ${API_LIMITS.MAX_PAGE_SIZE}`
+    );
+  }
 
   // Search
   const searchTerm = searchParams.get("search") || undefined;
   const useSearch = !!searchTerm?.trim();
 
-  // Filters
-  const cityIds = searchParams
-    .getAll("cityIds")
-    .map(Number)
-    .filter((n) => !isNaN(n));
-  const degreeIds = searchParams
-    .getAll("degreeIds")
-    .map(Number)
-    .filter((n) => !isNaN(n));
-  const specialtyIds = searchParams
-    .getAll("specialtyIds")
-    .map(Number)
-    .filter((n) => !isNaN(n));
-  const minExperience = searchParams.get("minExperience");
-  const maxExperience = searchParams.get("maxExperience");
+  // Filter ID validation
+  const validateIdArray = (paramName: string, values: string[]): number[] => {
+    if (values.length > FILTER_LIMITS.MAX_ARRAY_LENGTH) {
+      throw new Error(`Too many ${paramName}: maximum ${FILTER_LIMITS.MAX_ARRAY_LENGTH} allowed`);
+    }
+
+    const ids = values.map((val) => {
+      const num = parseInt(val, 10);
+      if (isNaN(num) || num < 1) {
+        throw new Error(`Invalid ${paramName} value: ${val}. Must be a positive integer.`);
+      }
+      return num;
+    });
+
+    return ids;
+  };
+
+  const cityIds = validateIdArray("cityIds", searchParams.getAll("cityIds"));
+  const degreeIds = validateIdArray("degreeIds", searchParams.getAll("degreeIds"));
+  const specialtyIds = validateIdArray("specialtyIds", searchParams.getAll("specialtyIds"));
+
+  // Experience validation
+  const minExperienceStr = searchParams.get("minExperience");
+  const maxExperienceStr = searchParams.get("maxExperience");
+
+  let minExperience: number | undefined;
+  let maxExperience: number | undefined;
+
+  if (minExperienceStr) {
+    minExperience = parseInt(minExperienceStr, 10);
+    if (
+      isNaN(minExperience) ||
+      minExperience < FILTER_LIMITS.MIN_EXPERIENCE ||
+      minExperience > FILTER_LIMITS.MAX_EXPERIENCE
+    ) {
+      throw new Error(
+        `Invalid minExperience: must be between ${FILTER_LIMITS.MIN_EXPERIENCE} and ${FILTER_LIMITS.MAX_EXPERIENCE}`
+      );
+    }
+  }
+
+  if (maxExperienceStr) {
+    maxExperience = parseInt(maxExperienceStr, 10);
+    if (
+      isNaN(maxExperience) ||
+      maxExperience < FILTER_LIMITS.MIN_EXPERIENCE ||
+      maxExperience > FILTER_LIMITS.MAX_EXPERIENCE
+    ) {
+      throw new Error(
+        `Invalid maxExperience: must be between ${FILTER_LIMITS.MIN_EXPERIENCE} and ${FILTER_LIMITS.MAX_EXPERIENCE}`
+      );
+    }
+  }
+
+  if (minExperience !== undefined && maxExperience !== undefined && minExperience > maxExperience) {
+    throw new Error("minExperience cannot be greater than maxExperience");
+  }
 
   const filters: AdvocateFilters = {
     search: searchTerm,
     cityIds: cityIds.length > 0 ? cityIds : undefined,
     degreeIds: degreeIds.length > 0 ? degreeIds : undefined,
     specialtyIds: specialtyIds.length > 0 ? specialtyIds : undefined,
-    minExperience: minExperience ? parseInt(minExperience) : undefined,
-    maxExperience: maxExperience ? parseInt(maxExperience) : undefined,
+    minExperience,
+    maxExperience,
   };
 
   // Remove undefined values
@@ -53,17 +125,33 @@ function parseQueryParams(searchParams: URLSearchParams): {
     }
   });
 
-  // Sort
+  // Sort validation
   const sortColumn = searchParams.get("sortColumn");
   const sortDirection = searchParams.get("sortDirection");
 
-  const sort: AdvocateSortConfig | undefined =
-    sortColumn && sortDirection
-      ? {
-          column: sortColumn as AdvocateSortConfig["column"],
-          direction: sortDirection as "asc" | "desc",
-        }
-      : undefined;
+  let sort: AdvocateSortConfig | undefined;
+
+  if (sortColumn || sortDirection) {
+    if (!sortColumn) {
+      throw new Error("sortColumn is required when sortDirection is provided");
+    }
+    if (!sortDirection) {
+      throw new Error("sortDirection is required when sortColumn is provided");
+    }
+
+    if (!VALID_SORT_COLUMNS.includes(sortColumn as (typeof VALID_SORT_COLUMNS)[number])) {
+      throw new Error(`Invalid sortColumn: must be one of ${VALID_SORT_COLUMNS.join(", ")}`);
+    }
+
+    if (sortDirection !== "asc" && sortDirection !== "desc") {
+      throw new Error('Invalid sortDirection: must be "asc" or "desc"');
+    }
+
+    sort = {
+      column: sortColumn as AdvocateSortConfig["column"],
+      direction: sortDirection as "asc" | "desc",
+    };
+  }
 
   return {
     page,
@@ -114,7 +202,28 @@ function parseQueryParams(searchParams: URLSearchParams): {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const { page, pageSize, filters, sort, useSearch, searchTerm } = parseQueryParams(searchParams);
+
+    // Parse and validate query parameters
+    let parsedParams;
+    try {
+      parsedParams = parseQueryParams(searchParams);
+    } catch (validationError) {
+      return Response.json(
+        {
+          success: false,
+          error: {
+            code: "VALIDATION_ERROR",
+            message:
+              validationError instanceof Error
+                ? validationError.message
+                : "Invalid request parameters",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const { page, pageSize, filters, sort, useSearch, searchTerm } = parsedParams;
 
     // Use full-text search if search term provided, otherwise use filtered pagination
     const result =
@@ -134,7 +243,7 @@ export async function GET(request: NextRequest) {
     const statusCode = isAppError(error) ? error.statusCode : 500;
 
     if (process.env.NODE_ENV === "development") {
-      console.error("API Error [GET /api/advocates]:", {
+      console.error("[API] Error in GET /api/advocates:", {
         code: isAppError(error) ? error.code : "UNKNOWN",
         message: error.message,
         details: isAppError(error) ? error.details : undefined,
@@ -153,7 +262,7 @@ export async function GET(request: NextRequest) {
       { status: statusCode }
     );
   } catch (error) {
-    console.error("Unexpected error in GET /api/advocates:", error);
+    console.error("[API] Unexpected error in GET /api/advocates:", error);
     return Response.json(
       {
         success: false,

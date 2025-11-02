@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@repo/utils": "workspace:*",
     "ioredis": "^5.4.1"
   },
   "devDependencies": {

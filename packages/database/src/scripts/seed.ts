@@ -2,7 +2,7 @@
 
 import { db } from "../client";
 import { advocates, cities, degrees, specialties, advocateSpecialties } from "../schema";
-import { asc, sql } from "drizzle-orm";
+import { asc, inArray, sql } from "drizzle-orm";
 import {
   generateAdvocates,
   CITY_DATA,
@@ -162,7 +162,7 @@ async function insertAdvocate(
 async function deleteAdvocates(advocateIds: number[]): Promise<void> {
   if (advocateIds.length === 0) return;
 
-  await db.delete(advocates).where(sql`${advocates.id} IN (${sql.raw(advocateIds.join(","))})`);
+  await db.delete(advocates).where(inArray(advocates.id, advocateIds));
 }
 
 /**

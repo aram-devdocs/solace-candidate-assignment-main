@@ -12,6 +12,7 @@
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.62.11"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ import type {
   AdvocateSortConfig,
   PaginatedResponse,
 } from "@repo/types";
+import { CACHE_CONFIG, TIMEOUTS } from "@repo/utils";
 import { fetchAdvocatesPaginated } from "../advocates";
 import { queryKeys } from "../query-keys";
 import type { ApiResponse } from "../client";
@@ -100,10 +101,11 @@ export function useAdvocates<TData = PaginatedAdvocatesResponse>(
       const response = await fetchAdvocatesPaginated({ page, pageSize, filters, sort });
       return response;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: CACHE_CONFIG.STALE_TIME_MS,
+    gcTime: CACHE_CONFIG.GC_TIME_MS,
     retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex) =>
+      Math.min(1000 * 2 ** attemptIndex, TIMEOUTS.API_REQUEST_TIMEOUT_MS),
     enabled,
     ...options,
   });

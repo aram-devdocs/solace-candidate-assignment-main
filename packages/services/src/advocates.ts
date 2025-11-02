@@ -131,9 +131,21 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     conditions.push(lte(advocates.yearsOfExperience, filters.maxExperience));
   }
 
-  // Text search filter
-  // NOTE: This only filters advocates table fields. Full cross-table search requires
-  // using searchAdvocates() which performs PostgreSQL full-text search with joins.
+  // Specialty filter using EXISTS subquery
+  if (filters.specialtyIds && filters.specialtyIds.length > 0) {
+    conditions.push(
+      sql`EXISTS (
+        SELECT 1 FROM ${advocateSpecialties}
+        WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+        AND ${advocateSpecialties.specialtyId} IN (${sql.join(
+          filters.specialtyIds.map((id) => sql`${id}`),
+          sql`, `
+        )})
+      )`
+    );
+  }
+
+  // Text search on advocates table fields only
   if (filters.search && filters.search.trim()) {
     const searchTerm = `%${filters.search.trim()}%`;
     conditions.push(

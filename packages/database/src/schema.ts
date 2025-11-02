@@ -79,15 +79,20 @@ export const advocates = pgTable(
   (table) => ({
     // Check constraint for non-negative experience
     experienceCheck: check("experience_check", sql`${table.yearsOfExperience} >= 0`),
-    // Indexes for common queries
+    // Single column indexes
     cityIdx: index("idx_advocates_city").on(table.cityId),
     degreeIdx: index("idx_advocates_degree").on(table.degreeId),
     experienceIdx: index("idx_advocates_experience").on(table.yearsOfExperience),
-    // Composite index for common filter combination
+    // Composite indexes for common filter combinations
     cityDegreeIdx: index("idx_advocates_city_degree").on(table.cityId, table.degreeId),
-    // Partial index for active records only
-    activeIdx: index("idx_advocates_active")
-      .on(table.isActive)
+    cityDegreeExpIdx: index("idx_advocates_city_degree_exp").on(
+      table.cityId,
+      table.degreeId,
+      table.yearsOfExperience
+    ),
+    // Partial index for active non-deleted records (common query pattern)
+    activePaginationIdx: index("idx_advocates_active_pagination")
+      .on(table.isActive, table.createdAt)
       .where(sql`${table.deletedAt} IS NULL`),
     // Full-text search index on names
     nameSearchIdx: index("idx_advocates_name_search").using(

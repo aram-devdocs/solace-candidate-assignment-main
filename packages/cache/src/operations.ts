@@ -1,4 +1,5 @@
 import { getRedisClient } from "./client";
+import { CACHE_CONFIG } from "@repo/utils";
 
 /**
  * TTL (Time To Live) constants in seconds.
@@ -16,11 +17,15 @@ export const CacheTTL = {
  * Gets a cached value by key.
  *
  * @param key - Cache key
- * @returns Parsed JSON value or null if not found/expired
+ * @returns Parsed JSON value or null if not found/expired/unavailable
  */
 export async function getCached<T>(key: string): Promise<T | null> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return null;
+    }
+
     const cached = await redis.get(key);
 
     if (!cached) {
@@ -29,7 +34,7 @@ export async function getCached<T>(key: string): Promise<T | null> {
 
     return JSON.parse(cached) as T;
   } catch (error) {
-    console.error(`Cache GET error for key "${key}":`, error);
+    console.error(`[Cache] GET error for key "${key}":`, error);
     return null;
   }
 }
@@ -45,12 +50,16 @@ export async function getCached<T>(key: string): Promise<T | null> {
 export async function setCache<T>(key: string, value: T, ttlSeconds: number): Promise<boolean> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return false;
+    }
+
     const serialized = JSON.stringify(value);
 
     await redis.setex(key, ttlSeconds, serialized);
     return true;
   } catch (error) {
-    console.error(`Cache SET error for key "${key}":`, error);
+    console.error(`[Cache] SET error for key "${key}":`, error);
     return false;
   }
 }
@@ -64,16 +73,19 @@ export async function setCache<T>(key: string, value: T, ttlSeconds: number): Pr
 export async function deleteCache(key: string): Promise<number> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return 0;
+    }
     return await redis.del(key);
   } catch (error) {
-    console.error(`Cache DELETE error for key "${key}":`, error);
+    console.error(`[Cache] DELETE error for key "${key}":`, error);
     return 0;
   }
 }
 
 /**
  * Invalidates all cache keys matching a pattern.
- * Uses SCAN for memory-efficient iteration.
+ * Uses SCAN for memory-efficient iteration with batching protection.
  *
  * @param pattern - Redis key pattern (e.g., "advocates:v1:*")
  * @returns Number of keys deleted
@@ -81,22 +93,42 @@ export async function deleteCache(key: string): Promise<number> {
 export async function invalidatePattern(pattern: string): Promise<number> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return 0;
+    }
+
     let cursor = "0";
     let deletedCount = 0;
+    let iterations = 0;
 
     do {
-      const [newCursor, keys] = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
+      if (iterations++ > CACHE_CONFIG.MAX_SCAN_ITERATIONS) {
+        console.warn(
+          `[Cache] Invalidation stopped after ${CACHE_CONFIG.MAX_SCAN_ITERATIONS} iterations for pattern "${pattern}"`
+        );
+        break;
+      }
+
+      const [newCursor, keys] = await redis.scan(
+        cursor,
+        "MATCH",
+        pattern,
+        "COUNT",
+        CACHE_CONFIG.REDIS_SCAN_BATCH_SIZE
+      );
       cursor = newCursor;
 
       if (keys.length > 0) {
-        const deleted = await redis.del(...keys);
-        deletedCount += deleted;
+        const pipeline = redis.pipeline();
+        keys.forEach((key) => pipeline.del(key));
+        const results = await pipeline.exec();
+        deletedCount += results?.filter(([err]) => !err).length ?? 0;
       }
     } while (cursor !== "0");
 
     return deletedCount;
   } catch (error) {
-    console.error(`Cache invalidate pattern error for "${pattern}":`, error);
+    console.error(`[Cache] Invalidate pattern error for "${pattern}":`, error);
     return 0;
   }
 }
@@ -115,6 +147,16 @@ export async function getMultipleCached<T>(keys: string[]): Promise<Record<strin
 
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return keys.reduce(
+        (acc, key) => {
+          acc[key] = null;
+          return acc;
+        },
+        {} as Record<string, T | null>
+      );
+    }
+
     const values = await redis.mget(...keys);
 
     return keys.reduce(
@@ -126,7 +168,7 @@ export async function getMultipleCached<T>(keys: string[]): Promise<Record<strin
       {} as Record<string, T | null>
     );
   } catch (error) {
-    console.error("Cache MGET error:", error);
+    console.error("[Cache] MGET error:", error);
     return keys.reduce(
       (acc, key) => {
         acc[key] = null;
@@ -146,10 +188,13 @@ export async function getMultipleCached<T>(keys: string[]): Promise<Record<strin
 export async function cacheExists(key: string): Promise<boolean> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return false;
+    }
     const result = await redis.exists(key);
     return result === 1;
   } catch (error) {
-    console.error(`Cache EXISTS error for key "${key}":`, error);
+    console.error(`[Cache] EXISTS error for key "${key}":`, error);
     return false;
   }
 }
@@ -158,14 +203,17 @@ export async function cacheExists(key: string): Promise<boolean> {
  * Gets the remaining TTL for a cache key.
  *
  * @param key - Cache key
- * @returns TTL in seconds, -1 if no expiry, -2 if key doesn't exist
+ * @returns TTL in seconds, -1 if no expiry, -2 if key doesn't exist or cache unavailable
  */
 export async function getCacheTTL(key: string): Promise<number> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return -2;
+    }
     return await redis.ttl(key);
   } catch (error) {
-    console.error(`Cache TTL error for key "${key}":`, error);
+    console.error(`[Cache] TTL error for key "${key}":`, error);
     return -2;
   }
 }
@@ -185,6 +233,16 @@ export async function getCacheStats(): Promise<{
 }> {
   try {
     const redis = getRedisClient();
+    if (!redis) {
+      return {
+        usedMemory: 0,
+        usedMemoryHuman: "0B",
+        maxMemory: 0,
+        maxMemoryHuman: "0B",
+        keyCount: 0,
+      };
+    }
+
     const info = await redis.info("memory");
     const dbSize = await redis.dbsize();
 
@@ -201,7 +259,7 @@ export async function getCacheStats(): Promise<{
       keyCount: dbSize,
     };
   } catch (error) {
-    console.error("Cache stats error:", error);
+    console.error("[Cache] Stats error:", error);
     return {
       usedMemory: 0,
       usedMemoryHuman: "0B",

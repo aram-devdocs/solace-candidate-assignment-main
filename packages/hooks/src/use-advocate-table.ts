@@ -9,7 +9,7 @@ import {
 } from "./use-url-state";
 import { useDebouncedValue } from "./use-debounced-value";
 import { useToast } from "./use-toast";
-import { getPageNumbers, applyAllFilters, sortAdvocates } from "@repo/utils";
+import { getPageNumbers, applyAllFilters, sortAdvocates, TIMEOUTS, PAGINATION } from "@repo/utils";
 
 export interface ActiveFilter {
   type: "degree" | "city" | "specialty" | "experience" | "areaCode";
@@ -17,7 +17,6 @@ export interface ActiveFilter {
   value?: string;
 }
 
-/* eslint-disable no-unused-vars */
 export interface UseAdvocateTableReturn {
   advocates: AdvocateWithRelations[];
   isLoading: boolean;
@@ -25,25 +24,25 @@ export interface UseAdvocateTableReturn {
   isBackgroundFetching: boolean;
   error: string | undefined;
   searchTerm: string;
-  setSearchTerm: (value: string) => void;
+  setSearchTerm: (_value: string) => void;
   selectedDegrees: number[];
-  setSelectedDegrees: (value: number[]) => void;
+  setSelectedDegrees: (_value: number[]) => void;
   selectedCities: number[];
-  setSelectedCities: (value: number[]) => void;
+  setSelectedCities: (_value: number[]) => void;
   selectedSpecialties: number[];
-  setSelectedSpecialties: (value: number[]) => void;
+  setSelectedSpecialties: (_value: number[]) => void;
   selectedAreaCodes: string[];
-  setSelectedAreaCodes: (value: string[]) => void;
+  setSelectedAreaCodes: (_value: string[]) => void;
   minExperience: number | "";
-  setMinExperience: (value: number | "") => void;
+  setMinExperience: (_value: number | "") => void;
   maxExperience: number | "";
-  setMaxExperience: (value: number | "") => void;
+  setMaxExperience: (_value: number | "") => void;
   sortConfig: AdvocateSortConfig;
-  handleSort: (column: string) => void;
+  handleSort: (_column: string) => void;
   currentPage: number;
-  setCurrentPage: (page: number) => void;
+  setCurrentPage: (_page: number) => void;
   pageSize: number;
-  setPageSize: (size: number) => void;
+  setPageSize: (_size: number) => void;
   totalPages: number;
   totalRecords: number;
   loadedRecords: number;
@@ -51,69 +50,32 @@ export interface UseAdvocateTableReturn {
   hasPrevious: boolean;
   hasNext: boolean;
   activeFilters: ActiveFilter[];
-  removeFilter: (type: string, value?: string) => void;
+  removeFilter: (_type: string, _value?: string) => void;
   clearAllFilters: () => void;
   filterOptions: {
     cities: Array<{ id: number; name: string; count: number }>;
     degrees: Array<{ id: number; code: string; name: string; count: number }>;
     specialties: Array<{ id: number; name: string; count: number }>;
   };
-  addSpecialtyFilter: (specialtyId: number) => void;
-  addCityFilter: (cityId: number) => void;
-  addDegreeFilter: (degreeId: number) => void;
-  addAreaCodeFilter: (areaCode: string) => void;
+  addSpecialtyFilter: (_specialtyId: number) => void;
+  addCityFilter: (_cityId: number) => void;
+  addDegreeFilter: (_degreeId: number) => void;
+  addAreaCodeFilter: (_areaCode: string) => void;
 }
-/* eslint-enable no-unused-vars */
 
 /**
- * Hook for managing advocate table with smart progressive hybrid caching.
+ * Hook for managing advocate table with filtering, sorting, and pagination.
+ * Uses server-side filtering when filters are active, client-side caching for browsing.
  *
- * Smart Caching Strategy:
- * 1. **Initial Load:** Fetches MAX_INITIAL_FETCH records (default 500)
- * 2. **Client-Side First:** All filters/sorts happen instantly on cached data
- * 3. **Background Validation:** When filters change, fetches from server in background
- * 4. **Progressive Merge:** New server results merged into cache seamlessly
- * 5. **No Loading States:** Only shows skeleton on initial load, never on filter changes
- *
- * UX Benefits:
- * - Instant filter/sort/search (0ms response on cached data)
- * - Smooth background fetching (transparent to user)
- * - Accurate total counts (server provides truth)
- * - Progressive data loading (cache builds as user interacts)
- * - Environment-configurable limits (no hardcoded values)
- *
- * @returns Object containing all state and handlers for the advocate table
+ * @returns Object containing advocates data, loading states, and filter/pagination handlers
  *
  * @example
- * function AdvocateTablePage() {
- *   const {
- *     advocates,
- *     isLoading,
- *     isBackgroundFetching,
- *     totalRecords,
- *     loadedRecords,
- *     searchTerm,
- *     setSearchTerm,
- *     // ... other properties
- *   } = useAdvocateTable();
- *
- *   return (
- *     <AdvocateListTemplate
- *       advocates={advocates}
- *       isLoading={isLoading}
- *       isBackgroundFetching={isBackgroundFetching}
- *       totalRecords={totalRecords}
- *       loadedRecords={loadedRecords}
- *       ...
- *     />
- *   );
- * }
+ * const { advocates, isLoading, searchTerm, setSearchTerm, currentPage, setCurrentPage } = useAdvocateTable();
  */
 export function useAdvocateTable(): UseAdvocateTableReturn {
   const { showToast } = useToast();
   const hasShownInitialToast = useRef(false);
 
-  // URL state for persistence
   const [currentPage, setCurrentPage] = useUrlNumberState("page", 1);
   const [pageSize, setPageSize] = useUrlNumberState("pageSize", 25);
   const [searchTerm, setSearchTerm] = useUrlState("search", "");
@@ -126,11 +88,10 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const [sortColumn, setSortColumn] = useUrlState("sort", "firstName");
   const [sortDirection, setSortDirection] = useUrlState("sortDir", "asc");
 
-  // Local cache state - using Map for O(1) inserts without sorting
   const [cachedAdvocatesMap, setCachedAdvocatesMap] = useState<Map<number, AdvocateWithRelations>>(
     new Map()
   );
-  const [cacheSize, setCacheSize] = useState(0); // Track size for memo dependencies
+  const [cacheSize, setCacheSize] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [fetchingPage, setFetchingPage] = useState<number | null>(null);
   const [loadedBatches, setLoadedBatches] = useState<Set<number>>(new Set());
@@ -142,12 +103,12 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     direction: sortDirection as AdvocateSortConfig["direction"],
   };
 
-  const debouncedSearchTerm = useDebouncedValue(searchTerm, 300);
+  const debouncedSearchTerm = useDebouncedValue(searchTerm, TIMEOUTS.SEARCH_DEBOUNCE_MS);
+  const [filteredTotalCount, setFilteredTotalCount] = useState<number | null>(null);
 
-  // Get environment config with fallbacks
-  const MAX_INITIAL_FETCH = parseInt(process.env.NEXT_PUBLIC_MAX_INITIAL_FETCH || "500");
-
-  // Build filters object
+  const MAX_INITIAL_FETCH = parseInt(
+    process.env.NEXT_PUBLIC_MAX_INITIAL_FETCH || String(PAGINATION.MAX_INITIAL_FETCH)
+  );
   const hasFilters = Boolean(
     debouncedSearchTerm ||
       selectedCities.length > 0 ||
@@ -180,31 +141,21 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     hasFilters,
   ]);
 
-  // Calculate which page we need to fetch from server for current UI page
   const calculateServerPage = (uiPage: number, uiPageSize: number): number => {
     const startRecord = (uiPage - 1) * uiPageSize;
     return Math.floor(startRecord / MAX_INITIAL_FETCH) + 1;
   };
 
-  // Check if we have the data for current page in cache
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-
-  // Calculate which batch we need for the current page
   const currentBatchNeeded = calculateServerPage(currentPage, pageSize);
-
-  // We need data if we haven't loaded the batch that contains the current page
   const needsData = !hasFilters && (totalCount === 0 || !loadedBatches.has(currentBatchNeeded));
 
-  // Strategy: Fetch current batch FIRST, then backfill gaps in background
-  // This prevents UI flashing when jumping to high pages
   let serverPageNeeded: number | null = null;
   if (needsData) {
     if (!loadedBatches.has(currentBatchNeeded)) {
-      // Priority: fetch the batch we need for the current page
       serverPageNeeded = currentBatchNeeded;
     } else if (currentBatchNeeded > 1) {
-      // Current batch loaded, now fill gaps if any
       serverPageNeeded =
         Array.from({ length: currentBatchNeeded - 1 }, (_, i) => i + 1).find(
           (batch) => !loadedBatches.has(batch)
@@ -212,8 +163,8 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     }
   }
 
-  // Calculate total pages early so we can use it in prefetch logic
-  const totalPages = Math.ceil(totalCount / pageSize) || 1;
+  // Temporary totalPages for prefetch logic - will be recalculated with filtered counts later
+  const tempTotalPages = Math.ceil(totalCount / pageSize) || 1;
 
   // Main fetch - fetches data for current page OR when filters change
   const {
@@ -222,8 +173,10 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     isLoading: isMainLoading,
     error: mainError,
   } = useAdvocates({
-    page: serverPageNeeded || 1,
-    pageSize: MAX_INITIAL_FETCH,
+    // When filters active, use actual current page for server pagination
+    // When no filters, use server batch page for cache loading
+    page: hasFilters ? currentPage : serverPageNeeded || 1,
+    pageSize: hasFilters ? pageSize : MAX_INITIAL_FETCH,
     filters,
     enabled: hasFilters || serverPageNeeded !== null, // Fetch when filters active OR need specific page
   });
@@ -239,7 +192,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const nextServerPage = calculateServerPage(currentPage + 1, pageSize);
   const shouldPrefetchNext =
     !hasFilters &&
-    currentPage < totalPages &&
+    currentPage < tempTotalPages &&
     nextServerPage > (serverPageNeeded || 1) &&
     cacheSize < nextServerPage * MAX_INITIAL_FETCH &&
     loadedBatches.has(nextServerPage - 1); // Only prefetch if previous batch is loaded
@@ -254,6 +207,17 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   // Update cache from main fetch
   useEffect(() => {
+    // When filters active, update filtered total count from server response
+    if (hasFilters && mainResponse?.success && mainResponse.pagination?.totalRecords) {
+      setFilteredTotalCount(mainResponse.pagination.totalRecords);
+    }
+
+    // When no filters, clear filtered count
+    if (!hasFilters && filteredTotalCount !== null) {
+      setFilteredTotalCount(null);
+    }
+
+    // Existing cache update logic for non-filtered browsing
     if (mainResponse?.success && Array.isArray(mainResponse.data) && serverPageNeeded !== null) {
       // Calculate starting index for this batch
       const batchStartIndex = (serverPageNeeded - 1) * MAX_INITIAL_FETCH;
@@ -308,6 +272,8 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     backfillBatch,
     MAX_INITIAL_FETCH,
     cachedAdvocatesMap,
+    hasFilters,
+    filteredTotalCount,
   ]);
 
   // Handle backfill responses
@@ -381,7 +347,12 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   // Client-side filtering and sorting (instant)
   const filteredAndSortedAdvocates = useMemo(() => {
-    // Convert Map to Array - only recompute when cache size changes
+    // When filters active, use server data directly - no client-side filtering
+    if (hasFilters && mainResponse?.success && Array.isArray(mainResponse.data)) {
+      return mainResponse.data;
+    }
+
+    // When no filters, apply client-side filtering on cache for instant UX
     const cachedArray = Array.from(cachedAdvocatesMap.values());
 
     // Apply all filters client-side
@@ -404,7 +375,9 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
     return result;
   }, [
-    cacheSize, // Use size instead of map reference to prevent unnecessary recomputation
+    hasFilters,
+    mainResponse,
+    cacheSize,
     debouncedSearchTerm,
     selectedCities,
     selectedDegrees,
@@ -416,14 +389,21 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     cachedAdvocatesMap,
   ]);
 
-  // Calculate client-side pagination
-  const totalRecords = totalCount;
-  const loadedRecords = cacheSize;
+  // Calculate total records - use filtered count when filters active
+  const totalRecords = hasFilters && filteredTotalCount !== null ? filteredTotalCount : totalCount;
+  const loadedRecords = hasFilters && filteredTotalCount !== null ? filteredTotalCount : cacheSize;
+
+  // Calculate total pages using the correct total (filtered or unfiltered)
+  const totalPages = Math.ceil(totalRecords / pageSize) || 1;
 
   // Get paginated advocates for current page
   const advocates = useMemo(() => {
-    // When no filters, slice directly from the sorted/filtered results
-    // The Map-based cache + size dependency prevents unnecessary recomputation
+    // When filters active, server already paginated - return data as is
+    if (hasFilters) {
+      return filteredAndSortedAdvocates;
+    }
+
+    // When no filters, slice from cache for client-side pagination
     const sliced = filteredAndSortedAdvocates.slice(startIndex, endIndex);
 
     // If we're fetching this page and have no data, return empty to show loading
@@ -433,6 +413,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
     return sliced;
   }, [
+    hasFilters,
     filteredAndSortedAdvocates,
     startIndex,
     endIndex,
