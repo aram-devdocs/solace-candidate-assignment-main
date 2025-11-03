@@ -257,6 +257,8 @@ export async function getAdvocatesPaginated(
 ): Promise<Result<PaginatedResponse<AdvocateWithRelations>, DatabaseError>> {
   try {
     // Detect if this is a default query (no filters, first page, default sort)
+    // DEMO PURPOSE: Default queries are cached for 72 hours to ensure instant load times
+    // since the demo data doesn't change. In production, adjust TTL based on update frequency.
     const isDefaultQuery =
       !filters &&
       page === 1 &&
@@ -286,7 +288,7 @@ export async function getAdvocatesPaginated(
         .from(advocates)
         .where(whereConditions);
       totalRecords = countResult[0]?.count ?? 0;
-      // Use longer TTL for default query total count
+      // Use longer TTL for default query total count (72 hours for demo)
       const countTTL = isDefaultQuery ? CacheTTL.DEFAULT_TOTAL_COUNT : CacheTTL.TOTAL_COUNT;
       await setCache(countCacheKey, totalRecords, countTTL);
     }
@@ -336,7 +338,7 @@ export async function getAdvocatesPaginated(
       pagination,
     };
 
-    // Cache with extended TTL for default queries (1 hour) to improve initial load experience
+    // Cache with extended TTL for default queries (72 hours for demo) to improve initial load experience
     const cacheTTL = isDefaultQuery
       ? CacheTTL.DEFAULT_PAGINATED_RESULTS
       : CacheTTL.PAGINATED_RESULTS;
