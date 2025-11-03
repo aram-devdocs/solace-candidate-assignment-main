@@ -253,17 +253,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
 
       {/* Table */}
       <div className="border-secondary-200 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
-        {/* Loading overlay when fetching new data */}
-        {isFetching && advocates.length > 0 && (
-          <div className="bg-secondary-900/10 absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm">
-            <div className="bg-primary-50 border-primary-200 text-primary-700 rounded-lg border px-6 py-4 shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="border-primary-500 h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></div>
-                <span className="font-medium">Loading advocates...</span>
-              </div>
-            </div>
-          </div>
-        )}
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>
@@ -295,7 +284,24 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
               )}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="relative">
+            {/* Loading overlay when fetching new data - only covers rows */}
+            {isFetching && advocates.length > 0 && (
+              <tr className="pointer-events-none absolute inset-0">
+                <td className="absolute inset-0">
+                  <div className="bg-secondary-100/40 absolute inset-0 backdrop-blur-[2px]">
+                    <div className="flex h-full items-center justify-center">
+                      <div className="text-secondary-700 rounded-md bg-white/90 px-4 py-2 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="border-secondary-400 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
+                          <span className="text-sm">Loading...</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
             {advocates.length === 0 ? (
               <tr>
                 <td
