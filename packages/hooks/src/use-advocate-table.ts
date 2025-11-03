@@ -159,11 +159,15 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const [totalCount, setTotalCount] = useState(0);
   const [fetchingPage, setFetchingPage] = useState<number | null>(null);
   const [loadedBatches, setLoadedBatches] = useState<Set<number>>(new Set());
+  const [previousAdvocates, setPreviousAdvocates] = useState<AdvocateWithRelations[]>([]);
 
-  const sortConfig: AdvocateSortConfig = {
-    column: sortColumn as AdvocateSortConfig["column"],
-    direction: sortDirection as AdvocateSortConfig["direction"],
-  };
+  const sortConfig: AdvocateSortConfig = useMemo(
+    () => ({
+      column: sortColumn as AdvocateSortConfig["column"],
+      direction: sortDirection as AdvocateSortConfig["direction"],
+    }),
+    [sortColumn, sortDirection]
+  );
 
   const debouncedSearchTerm = useDebouncedValue(searchTerm, TIMEOUTS.SEARCH_DEBOUNCE_MS);
   const [filteredTotalCount, setFilteredTotalCount] = useState<number | null>(null);
@@ -411,7 +415,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const totalPages = Math.ceil(totalRecords / pageSize) || 1;
 
   // Get paginated advocates for current page
-  const advocates = useMemo(() => {
+  const currentAdvocates = useMemo(() => {
     // When filters active, server already paginated - return data as is
     if (hasFilters) {
       return filteredAndSortedAdvocates;
@@ -426,20 +430,19 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
       }
     }
 
-    if (result.length === 0 && needsData && isMainFetching) {
-      return [];
-    }
-
     return result;
-  }, [
-    hasFilters,
-    filteredAndSortedAdvocates,
-    startIndex,
-    endIndex,
-    needsData,
-    isMainFetching,
-    cachedAdvocatesMap,
-  ]);
+  }, [hasFilters, filteredAndSortedAdvocates, startIndex, endIndex, cachedAdvocatesMap]);
+
+  // Show previous data during loading, otherwise show current data
+  const advocates =
+    isMainFetching && previousAdvocates.length > 0 ? previousAdvocates : currentAdvocates;
+
+  // Update previous advocates when current data changes and we're not fetching
+  useEffect(() => {
+    if (currentAdvocates.length > 0 && !isMainFetching) {
+      setPreviousAdvocates(currentAdvocates);
+    }
+  }, [currentAdvocates, isMainFetching]);
 
   const filterOptions = useMemo(
     () =>
@@ -483,7 +486,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   // Clear cache when sort changes to fetch data with new sort order
   useEffect(() => {
-    cachedAdvocatesMap.clear();
+    setCachedAdvocatesMap(new Map());
     setLoadedBatches(new Set());
     setCacheSize(0);
   }, [sortConfig.column, sortConfig.direction]);
