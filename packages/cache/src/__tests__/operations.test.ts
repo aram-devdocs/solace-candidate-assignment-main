@@ -12,12 +12,14 @@ describe("Cache Operations", () => {
     });
 
     it("should have reasonable TTL hierarchy", () => {
-      // Filter options should cache longer than search/paginated results
+      // Filter options should cache longer than paginated results
       expect(CacheTTL.FILTER_OPTIONS).toBeGreaterThanOrEqual(CacheTTL.PAGINATED_RESULTS);
-      expect(CacheTTL.FILTER_OPTIONS).toBeGreaterThanOrEqual(CacheTTL.SEARCH_RESULTS);
 
-      // Detail cache should be longer than search results
-      expect(CacheTTL.ADVOCATE_DETAIL).toBeGreaterThanOrEqual(CacheTTL.SEARCH_RESULTS);
+      // Search results can cache longer than detail for better UX (15 min vs 10 min)
+      expect(CacheTTL.SEARCH_RESULTS).toBeGreaterThanOrEqual(CacheTTL.ADVOCATE_DETAIL);
+
+      // Filter options should cache longer than other result types
+      expect(CacheTTL.FILTER_OPTIONS).toBeGreaterThanOrEqual(CacheTTL.SEARCH_RESULTS);
     });
 
     it("should define all expected TTL constants", () => {
