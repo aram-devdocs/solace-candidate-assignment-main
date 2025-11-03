@@ -159,6 +159,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const [totalCount, setTotalCount] = useState(0);
   const [fetchingPage, setFetchingPage] = useState<number | null>(null);
   const [loadedBatches, setLoadedBatches] = useState<Set<number>>(new Set());
+  const [previousAdvocates, setPreviousAdvocates] = useState<AdvocateWithRelations[]>([]);
 
   const sortConfig: AdvocateSortConfig = {
     column: sortColumn as AdvocateSortConfig["column"],
@@ -412,25 +413,40 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   // Get paginated advocates for current page
   const advocates = useMemo(() => {
+    let currentData: AdvocateWithRelations[];
+
     // When filters active, server already paginated - return data as is
     if (hasFilters) {
-      return filteredAndSortedAdvocates;
-    }
+      currentData = filteredAndSortedAdvocates;
+    } else {
+      // When no filters, extract records from cache using absolute indices
+      const result: AdvocateWithRelations[] = [];
+      for (let i = startIndex; i < endIndex; i++) {
+        const advocate = cachedAdvocatesMap.get(i);
+        if (advocate) {
+          result.push(advocate);
+        }
+      }
 
-    // When no filters, extract records from cache using absolute indices
-    const result: AdvocateWithRelations[] = [];
-    for (let i = startIndex; i < endIndex; i++) {
-      const advocate = cachedAdvocatesMap.get(i);
-      if (advocate) {
-        result.push(advocate);
+      if (result.length === 0 && needsData && isMainFetching) {
+        currentData = [];
+      } else {
+        currentData = result;
       }
     }
 
-    if (result.length === 0 && needsData && isMainFetching) {
-      return [];
+    // Update previous advocates when we have new data
+    if (currentData.length > 0 && !isMainFetching) {
+      setPreviousAdvocates(currentData);
+      return currentData;
     }
 
-    return result;
+    // During loading: show previous data if we have it, otherwise show current (might be empty)
+    if (isMainFetching && previousAdvocates.length > 0) {
+      return previousAdvocates;
+    }
+
+    return currentData;
   }, [
     hasFilters,
     filteredAndSortedAdvocates,
@@ -439,6 +455,7 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     needsData,
     isMainFetching,
     cachedAdvocatesMap,
+    previousAdvocates,
   ]);
 
   const filterOptions = useMemo(
@@ -486,7 +503,22 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
     cachedAdvocatesMap.clear();
     setLoadedBatches(new Set());
     setCacheSize(0);
+    setPreviousAdvocates([]);
   }, [sortConfig.column, sortConfig.direction]);
+
+  // Clear previous advocates when filters change
+  useEffect(() => {
+    setPreviousAdvocates([]);
+  }, [
+    hasFilters,
+    debouncedSearchTerm,
+    selectedCities,
+    selectedDegrees,
+    selectedSpecialties,
+    selectedAreaCodes,
+    minExperience,
+    maxExperience,
+  ]);
 
   const visiblePageNumbers = useMemo(
     () => getPageNumbers(currentPage, totalPages),

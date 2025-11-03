@@ -1,4 +1,4 @@
-import { useQuery, keepPreviousData, type UseQueryOptions } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import type {
   AdvocateWithRelations,
   AdvocateFilters,
@@ -107,7 +107,6 @@ export function useAdvocates<TData = PaginatedAdvocatesResponse>(
     retryDelay: (attemptIndex) =>
       Math.min(1000 * 2 ** attemptIndex, TIMEOUTS.API_REQUEST_TIMEOUT_MS),
     enabled,
-    placeholderData: keepPreviousData,
     ...options,
   });
 
