@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "idx_specialties_name_trgm" ON "specialties" USING gin ("name" gin_trgm_ops);

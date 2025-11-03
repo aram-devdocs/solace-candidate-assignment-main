@@ -13,7 +13,7 @@ export const CacheTTL = {
    * In production, consider reducing to 1 hour based on data update frequency.
    */
   DEFAULT_PAGINATED_RESULTS: 259200, // 72 hours = 72 * 60 * 60
-  SEARCH_RESULTS: 180,
+  SEARCH_RESULTS: 900, // 15 minutes - increased from 3 min for better UX
   TOTAL_COUNT: 300,
   /**
    * DEMO PURPOSE: Extended to 72 hours for demo environment where data doesn't change.

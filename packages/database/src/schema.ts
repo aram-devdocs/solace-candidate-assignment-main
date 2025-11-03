@@ -40,15 +40,22 @@ export const cities = pgTable("cities", {
 /**
  * Lookup table for specialties
  */
-export const specialties = pgTable("specialties", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(),
-  category: text("category"),
-  description: text("description"),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+export const specialties = pgTable(
+  "specialties",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull().unique(),
+    category: text("category"),
+    description: text("description"),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Trigram index for fast ILIKE searches on specialty names
+    nameTrgmIdx: index("idx_specialties_name_trgm").using("gin", sql`${table.name} gin_trgm_ops`),
+  })
+);
 
 /**
  * Main advocates table with normalized relationships

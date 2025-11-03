@@ -43,6 +43,13 @@
       "when": 1762188294572,
       "tag": "0005_wet_oracle",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1762192165401,
+      "tag": "0006_dapper_the_fury",
+      "breakpoints": true
     }
   ]
 }
