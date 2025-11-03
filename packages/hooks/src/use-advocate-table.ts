@@ -161,10 +161,13 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const [loadedBatches, setLoadedBatches] = useState<Set<number>>(new Set());
   const [previousAdvocates, setPreviousAdvocates] = useState<AdvocateWithRelations[]>([]);
 
-  const sortConfig: AdvocateSortConfig = {
-    column: sortColumn as AdvocateSortConfig["column"],
-    direction: sortDirection as AdvocateSortConfig["direction"],
-  };
+  const sortConfig: AdvocateSortConfig = useMemo(
+    () => ({
+      column: sortColumn as AdvocateSortConfig["column"],
+      direction: sortDirection as AdvocateSortConfig["direction"],
+    }),
+    [sortColumn, sortDirection]
+  );
 
   const debouncedSearchTerm = useDebouncedValue(searchTerm, TIMEOUTS.SEARCH_DEBOUNCE_MS);
   const [filteredTotalCount, setFilteredTotalCount] = useState<number | null>(null);
@@ -412,51 +415,34 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   const totalPages = Math.ceil(totalRecords / pageSize) || 1;
 
   // Get paginated advocates for current page
-  const advocates = useMemo(() => {
-    let currentData: AdvocateWithRelations[];
-
+  const currentAdvocates = useMemo(() => {
     // When filters active, server already paginated - return data as is
     if (hasFilters) {
-      currentData = filteredAndSortedAdvocates;
-    } else {
-      // When no filters, extract records from cache using absolute indices
-      const result: AdvocateWithRelations[] = [];
-      for (let i = startIndex; i < endIndex; i++) {
-        const advocate = cachedAdvocatesMap.get(i);
-        if (advocate) {
-          result.push(advocate);
-        }
-      }
+      return filteredAndSortedAdvocates;
+    }
 
-      if (result.length === 0 && needsData && isMainFetching) {
-        currentData = [];
-      } else {
-        currentData = result;
+    // When no filters, extract records from cache using absolute indices
+    const result: AdvocateWithRelations[] = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      const advocate = cachedAdvocatesMap.get(i);
+      if (advocate) {
+        result.push(advocate);
       }
     }
 
-    // Update previous advocates when we have new data
-    if (currentData.length > 0 && !isMainFetching) {
-      setPreviousAdvocates(currentData);
-      return currentData;
-    }
+    return result;
+  }, [hasFilters, filteredAndSortedAdvocates, startIndex, endIndex, cachedAdvocatesMap]);
 
-    // During loading: show previous data if we have it, otherwise show current (might be empty)
-    if (isMainFetching && previousAdvocates.length > 0) {
-      return previousAdvocates;
-    }
+  // Show previous data during loading, otherwise show current data
+  const advocates =
+    isMainFetching && previousAdvocates.length > 0 ? previousAdvocates : currentAdvocates;
 
-    return currentData;
-  }, [
-    hasFilters,
-    filteredAndSortedAdvocates,
-    startIndex,
-    endIndex,
-    needsData,
-    isMainFetching,
-    cachedAdvocatesMap,
-    previousAdvocates,
-  ]);
+  // Update previous advocates when current data changes and we're not fetching
+  useEffect(() => {
+    if (currentAdvocates.length > 0 && !isMainFetching) {
+      setPreviousAdvocates(currentAdvocates);
+    }
+  }, [currentAdvocates, isMainFetching]);
 
   const filterOptions = useMemo(
     () =>
@@ -500,25 +486,10 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
 
   // Clear cache when sort changes to fetch data with new sort order
   useEffect(() => {
-    cachedAdvocatesMap.clear();
+    setCachedAdvocatesMap(new Map());
     setLoadedBatches(new Set());
     setCacheSize(0);
-    setPreviousAdvocates([]);
   }, [sortConfig.column, sortConfig.direction]);
-
-  // Clear previous advocates when filters change
-  useEffect(() => {
-    setPreviousAdvocates([]);
-  }, [
-    hasFilters,
-    debouncedSearchTerm,
-    selectedCities,
-    selectedDegrees,
-    selectedSpecialties,
-    selectedAreaCodes,
-    minExperience,
-    maxExperience,
-  ]);
 
   const visiblePageNumbers = useMemo(
     () => getPageNumbers(currentPage, totalPages),

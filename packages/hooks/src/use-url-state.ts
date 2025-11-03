@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 /**
  * Hook for syncing state with URL query parameters
@@ -72,9 +72,17 @@ export function useUrlArrayState(
   key: string,
   defaultValue: string[]
 ): [string[], (arg: string[]) => void] {
-  const [urlValue, setUrlValue] = useUrlState(key, defaultValue.join(","));
+  // Memoize default value string to avoid recreating on every render
+  const defaultValueString = useMemo(() => defaultValue.join(","), []);
+  const [urlValue, setUrlValue] = useUrlState(key, defaultValueString);
 
-  const valuesList = urlValue ? urlValue.split(",").filter(Boolean) : defaultValue;
+  const valuesList = useMemo(() => {
+    if (urlValue) {
+      const parsed = urlValue.split(",").filter(Boolean);
+      return parsed.length > 0 ? parsed : [];
+    }
+    return [];
+  }, [urlValue]);
 
   const setValues = useCallback(
     (newValues: string[]) => {
@@ -133,15 +141,21 @@ export function useUrlNumberArrayState(
   key: string,
   defaultValue: number[]
 ): [number[], (arg: number[]) => void] {
-  const [urlValue, setUrlValue] = useUrlState(key, defaultValue.join(","));
+  // Memoize default value string to avoid recreating on every render
+  const defaultValueString = useMemo(() => defaultValue.join(","), []);
+  const [urlValue, setUrlValue] = useUrlState(key, defaultValueString);
 
-  const valuesList = urlValue
-    ? urlValue
+  const valuesList = useMemo(() => {
+    if (urlValue) {
+      const parsed = urlValue
         .split(",")
         .filter(Boolean)
         .map((v) => parseInt(v, 10))
-        .filter((n) => !isNaN(n))
-    : defaultValue;
+        .filter((n) => !isNaN(n));
+      return parsed.length > 0 ? parsed : [];
+    }
+    return [];
+  }, [urlValue]);
 
   const setValues = useCallback(
     (newValues: number[]) => {
