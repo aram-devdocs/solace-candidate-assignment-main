@@ -94,6 +94,12 @@ export const advocates = pgTable(
     activePaginationIdx: index("idx_advocates_active_pagination")
       .on(table.isActive, table.createdAt)
       .where(sql`${table.deletedAt} IS NULL`),
+    // Partial index for active records only (optimized for filtering)
+    activeOnlyIdx: index("idx_advocates_active_only")
+      .on(table.id)
+      .where(sql`${table.isActive} = true AND ${table.deletedAt} IS NULL`),
+    // Functional index for area code filtering (first 3 chars of phone)
+    areaCodeIdx: index("idx_advocates_area_code").on(sql`SUBSTRING(${table.phoneNumber}, 1, 3)`),
     // Full-text search index on names
     nameSearchIdx: index("idx_advocates_name_search").using(
       "gin",

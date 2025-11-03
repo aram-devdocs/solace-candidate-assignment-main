@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS "idx_advocates_active_only" ON "advocates" USING btree ("id") WHERE "advocates"."is_active" = true AND "advocates"."deleted_at" IS NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "idx_advocates_area_code" ON "advocates" USING btree (SUBSTRING("phone_number", 1, 3));
