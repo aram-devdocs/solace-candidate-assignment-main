@@ -1,0 +1,3 @@
+CREATE INDEX IF NOT EXISTS "idx_advocates_first_name_sort" ON "advocates" USING btree ("is_active","first_name","id") WHERE "advocates"."deleted_at" IS NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "idx_advocates_last_name_sort" ON "advocates" USING btree ("is_active","last_name","id") WHERE "advocates"."deleted_at" IS NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "idx_advocates_default_pagination" ON "advocates" USING btree ("is_active","first_name","city_id","degree_id") WHERE "advocates"."deleted_at" IS NULL;

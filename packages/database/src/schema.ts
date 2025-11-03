@@ -99,6 +99,17 @@ export const advocates = pgTable(
       "gin",
       sql`to_tsvector('english', ${table.firstName} || ' ' || ${table.lastName})`
     ),
+    // Sorting indexes for name-based pagination (performance optimization)
+    firstNameSortIdx: index("idx_advocates_first_name_sort")
+      .on(table.isActive, table.firstName, table.id)
+      .where(sql`${table.deletedAt} IS NULL`),
+    lastNameSortIdx: index("idx_advocates_last_name_sort")
+      .on(table.isActive, table.lastName, table.id)
+      .where(sql`${table.deletedAt} IS NULL`),
+    // Covering index for default pagination query (includes frequently joined columns)
+    defaultPaginationIdx: index("idx_advocates_default_pagination")
+      .on(table.isActive, table.firstName, table.cityId, table.degreeId)
+      .where(sql`${table.deletedAt} IS NULL`),
   })
 );
 

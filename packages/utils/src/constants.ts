@@ -71,8 +71,8 @@ export const API_LIMITS = {
  * Client-side caching strategy configuration
  */
 export const CACHE_STRATEGY = {
-  /** Maximum records to fetch on initial page load */
-  INITIAL_FETCH_SIZE: 500,
+  /** Maximum records to fetch on initial page load (reduced for performance) */
+  INITIAL_FETCH_SIZE: 100,
   /** Maximum records to cache client-side (prevents memory issues) */
   MAX_CACHED_RECORDS: 2000,
   /** Background fetch batch size for progressive loading */
