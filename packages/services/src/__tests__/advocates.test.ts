@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getAllAdvocates, getAdvocateById } from "../advocates";
+import { parseSearchTokens } from "@repo/utils";
 import { createMockAdvocates, createMockAdvocate } from "@repo/database/testing";
 import { isSuccess, isFailure } from "@repo/types";
 
@@ -218,5 +219,78 @@ describe.skip("getAdvocateById", () => {
       expect(result.data).toHaveProperty("lastName");
       expect(result.data).toHaveProperty("city");
     }
+  });
+});
+
+describe("parseSearchTokens", () => {
+  it("should return empty array for empty string", () => {
+    expect(parseSearchTokens("")).toEqual([]);
+    expect(parseSearchTokens("   ")).toEqual([]);
+  });
+
+  it("should parse single word", () => {
+    expect(parseSearchTokens("denver")).toEqual(["denver"]);
+    expect(parseSearchTokens("  denver  ")).toEqual(["denver"]);
+  });
+
+  it("should parse multiple unquoted words", () => {
+    expect(parseSearchTokens("denver vegan")).toEqual(["denver", "vegan"]);
+    expect(parseSearchTokens("john doe")).toEqual(["john", "doe"]);
+    expect(parseSearchTokens("  denver   vegan  ")).toEqual(["denver", "vegan"]);
+  });
+
+  it("should parse quoted phrases as single token", () => {
+    expect(parseSearchTokens('"sports medicine"')).toEqual(["sports medicine"]);
+    expect(parseSearchTokens('"vegan nutrition"')).toEqual(["vegan nutrition"]);
+  });
+
+  it("should parse mixed quoted and unquoted terms", () => {
+    expect(parseSearchTokens('denver "sports medicine"')).toEqual(["denver", "sports medicine"]);
+    expect(parseSearchTokens('"vegan nutrition" denver')).toEqual(["vegan nutrition", "denver"]);
+    expect(parseSearchTokens('denver "sports medicine" john')).toEqual([
+      "denver",
+      "sports medicine",
+      "john",
+    ]);
+  });
+
+  it("should handle unclosed quotes gracefully", () => {
+    expect(parseSearchTokens('"unclosed quote')).toEqual(["unclosed quote"]);
+    expect(parseSearchTokens('denver "unclosed')).toEqual(["denver", "unclosed"]);
+  });
+
+  it("should remove duplicates while preserving order", () => {
+    expect(parseSearchTokens("denver denver")).toEqual(["denver"]);
+    expect(parseSearchTokens("denver vegan denver")).toEqual(["denver", "vegan"]);
+  });
+
+  it("should handle multiple spaces between words", () => {
+    expect(parseSearchTokens("denver     vegan")).toEqual(["denver", "vegan"]);
+  });
+
+  it("should handle empty quoted strings", () => {
+    expect(parseSearchTokens('""')).toEqual([]);
+    expect(parseSearchTokens('"" denver')).toEqual(["denver"]);
+    expect(parseSearchTokens('denver ""')).toEqual(["denver"]);
+  });
+
+  it("should trim whitespace from quoted phrases", () => {
+    expect(parseSearchTokens('"  sports medicine  "')).toEqual(["sports medicine"]);
+  });
+
+  it("should handle multiple quoted phrases", () => {
+    expect(parseSearchTokens('"sports medicine" "vegan nutrition"')).toEqual([
+      "sports medicine",
+      "vegan nutrition",
+    ]);
+  });
+
+  it("should handle complex real-world searches", () => {
+    expect(parseSearchTokens('denver "sports medicine" vegan')).toEqual([
+      "denver",
+      "sports medicine",
+      "vegan",
+    ]);
+    expect(parseSearchTokens('"john doe" 555-1234')).toEqual(["john doe", "555-1234"]);
   });
 });

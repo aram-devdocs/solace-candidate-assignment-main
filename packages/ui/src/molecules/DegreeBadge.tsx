@@ -1,4 +1,5 @@
 import React from "react";
+import { getHighlightedSegments } from "@repo/utils";
 
 export interface DegreeBadgeProps {
   /**
@@ -21,6 +22,10 @@ export interface DegreeBadgeProps {
    * Whether this filter is currently active
    */
   isActive?: boolean;
+  /**
+   * Search tokens to highlight in the degree name
+   */
+  searchTokens?: string[];
   /**
    * Additional className
    */
@@ -52,15 +57,32 @@ export const DegreeBadge: React.FC<DegreeBadgeProps> = ({
   onClick,
   clickable = false,
   isActive = false,
+  searchTokens,
   className = "",
 }) => {
+  const segments = getHighlightedSegments(degree, searchTokens);
+
   const baseClasses = isActive
     ? "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-600 text-white border-primary-700 whitespace-nowrap shadow-sm"
     : "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-50 text-primary-700 border-primary-150 whitespace-nowrap shadow-xs";
 
   const clickableClasses = clickable
-    ? "cursor-pointer hover:bg-primary-200 hover:border-primary-300 hover:shadow-sm active:bg-primary-300 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
+    ? "cursor-pointer hover:bg-primary-200 hover:border-primary-300 hover:shadow-sm active:scale-95 active:ring-2 active:ring-primary-400 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
     : "";
+
+  const renderText = () => (
+    <>
+      {segments.map((segment, index) =>
+        segment.highlighted ? (
+          <mark key={index} className="bg-highlight/80 text-primary-900 rounded px-0.5">
+            {segment.text}
+          </mark>
+        ) : (
+          <React.Fragment key={index}>{segment.text}</React.Fragment>
+        )
+      )}
+    </>
+  );
 
   const handleClick = (): void => {
     if (clickable && onClick) {
@@ -117,10 +139,10 @@ export const DegreeBadge: React.FC<DegreeBadgeProps> = ({
             />
           </svg>
         )}
-        {degree}
+        {renderText()}
       </button>
     );
   }
 
-  return <span className={`${baseClasses} ${className}`.trim()}>{degree}</span>;
+  return <span className={`${baseClasses} ${className}`.trim()}>{renderText()}</span>;
 };

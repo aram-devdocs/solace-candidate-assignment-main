@@ -98,6 +98,12 @@ export type { FilterChipProps } from "./atoms/FilterChip";
 export { SearchBar } from "./molecules/SearchBar";
 export type { SearchBarProps } from "./molecules/SearchBar";
 
+export { SearchPills } from "./molecules/SearchPills";
+export type { SearchPillsProps } from "./molecules/SearchPills";
+
+export { SearchHelpTooltip } from "./atoms/SearchHelpTooltip";
+export type { SearchHelpTooltipProps } from "./atoms/SearchHelpTooltip";
+
 export { TableHeader } from "./molecules/TableHeader";
 export type { TableHeaderProps } from "./molecules/TableHeader";
 

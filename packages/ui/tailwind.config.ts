@@ -98,6 +98,11 @@ const config: Config = {
           900: "#14532d",
           950: "#052e16",
         },
+        highlight: {
+          light: "#F9F3E8",
+          DEFAULT: "#F5EBDB",
+          dark: "#F0E3CE",
+        },
       },
       spacing: {
         xs: "0.25rem",

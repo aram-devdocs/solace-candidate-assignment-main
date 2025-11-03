@@ -11,5 +11,6 @@ export * from "./constants";
 export * from "./filter";
 export * from "./format";
 export * from "./pagination";
+export * from "./search";
 export * from "./sort";
 export * from "./sort-types";

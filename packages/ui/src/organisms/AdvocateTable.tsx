@@ -16,7 +16,7 @@ import {
 } from "../constants/table";
 import { ARIA_LABELS } from "../constants/accessibility";
 import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
-import { formatPhoneNumber, extractAreaCode } from "@repo/utils";
+import { formatPhoneNumber, extractAreaCode, getHighlightedSegments } from "@repo/utils";
 
 export interface AdvocateTableProps {
   advocates: AdvocateWithRelations[];
@@ -32,6 +32,10 @@ export interface AdvocateTableProps {
    * Current device size (from useDeviceSize hook in parent)
    */
   deviceSize: DeviceSize;
+  /**
+   * Search tokens to highlight in results
+   */
+  searchTokens?: string[];
   /**
    * Set of expanded row indices (from useExpandableRows hook in parent)
    */
@@ -109,6 +113,27 @@ export interface AdvocateTableProps {
 }
 
 /**
+ * Helper function to highlight matching search tokens in text
+ */
+function highlightText(text: string, searchTokens?: string[]): React.ReactNode {
+  const segments = getHighlightedSegments(text, searchTokens);
+
+  return (
+    <>
+      {segments.map((segment, index) =>
+        segment.highlighted ? (
+          <mark key={index} className="bg-highlight/80 rounded px-0.5 text-neutral-900">
+            {segment.text}
+          </mark>
+        ) : (
+          <React.Fragment key={index}>{segment.text}</React.Fragment>
+        )
+      )}
+    </>
+  );
+}
+
+/**
  * Helper function to get cell value with proper formatting
  */
 function getCellValue(
@@ -121,7 +146,8 @@ function getCellValue(
   activeSpecialtyIds?: number[],
   activeCityIds?: number[],
   activeDegreeIds?: number[],
-  activeAreaCodes?: string[]
+  activeAreaCodes?: string[],
+  searchTokens?: string[]
 ): React.ReactNode {
   if (key === "specialties") {
     return (
@@ -134,6 +160,7 @@ function getCellValue(
             onClick={onSpecialtyClick}
             clickable={!!onSpecialtyClick}
             isActive={activeSpecialtyIds?.includes(as.specialty.id)}
+            searchTokens={searchTokens}
           />
         ))}
       </div>
@@ -148,6 +175,7 @@ function getCellValue(
         onClick={onCityClick}
         clickable={!!onCityClick}
         isActive={activeCityIds?.includes(advocate.city.id)}
+        searchTokens={searchTokens}
       />
     );
   }
@@ -160,6 +188,7 @@ function getCellValue(
         onClick={onDegreeClick}
         clickable={!!onDegreeClick}
         isActive={activeDegreeIds?.includes(advocate.degree.id)}
+        searchTokens={searchTokens}
       />
     );
   }
@@ -175,8 +204,14 @@ function getCellValue(
         onAreaCodeClick={onAreaCodeClick}
         clickable={!!onAreaCodeClick}
         isActiveAreaCode={activeAreaCodes?.includes(areaCode)}
+        searchTokens={searchTokens}
       />
     );
+  }
+
+  // Apply highlighting to text fields
+  if (key === "firstName" || key === "lastName") {
+    return highlightText(advocate[key], searchTokens);
   }
 
   return advocate[key];
@@ -209,6 +244,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   isLoading = false,
   isFetching = false,
   deviceSize,
+  searchTokens = [],
   expandedRows = new Set(),
   onToggleRow,
   sortColumn,
@@ -324,7 +360,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                     activeSpecialtyIds,
                     activeCityIds,
                     activeDegreeIds,
-                    activeAreaCodes
+                    activeAreaCodes,
+                    searchTokens
                   );
                 });
 
@@ -343,7 +380,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                           activeSpecialtyIds,
                           activeCityIds,
                           activeDegreeIds,
-                          activeAreaCodes
+                          activeAreaCodes,
+                          searchTokens
                         ),
                       }))
                   : undefined;

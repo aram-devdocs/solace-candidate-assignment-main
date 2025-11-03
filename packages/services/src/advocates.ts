@@ -23,6 +23,7 @@ import {
   advocateDetailKey,
   allAdvocatesPattern,
 } from "@repo/cache";
+import { parseSearchTokens } from "@repo/utils";
 
 /**
  * Executes a minimal database query to verify connectivity.
@@ -195,19 +196,37 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     );
   }
 
-  // Text search optimized with trigram indexes (ILIKE with pg_trgm)
+  // Multi-term text search optimized with trigram indexes (ILIKE with pg_trgm)
   // Searches advocate names and phone (fast with trigram indexes)
-  // City/degree search handled separately in query builder with JOIN conditions
+  // City/degree/specialty search handled separately in query builder with JOIN conditions
   if (filters.search && filters.search.trim()) {
-    const searchTerm = `%${filters.search.trim()}%`;
-    // Note: City/degree/specialty search added in query builder where tables are JOINed
-    conditions.push(
-      or(
-        ilike(advocates.firstName, searchTerm),
-        ilike(advocates.lastName, searchTerm),
-        ilike(advocates.phoneNumber, searchTerm)
-      )!
-    );
+    const tokens = parseSearchTokens(filters.search);
+
+    if (tokens.length === 0) {
+      // No valid tokens, skip search
+    } else if (tokens.length === 1) {
+      // Single token: Use simple OR search (current behavior for performance)
+      const searchTerm = `%${tokens[0]}%`;
+      conditions.push(
+        or(
+          ilike(advocates.firstName, searchTerm),
+          ilike(advocates.lastName, searchTerm),
+          ilike(advocates.phoneNumber, searchTerm)
+        )!
+      );
+    } else {
+      // Multiple tokens: Each token must match at least one field (AND logic)
+      // Example: "denver vegan" means (denver in ANY field) AND (vegan in ANY field)
+      const tokenConditions = tokens.map((token: string) => {
+        const searchTerm = `%${token}%`;
+        return or(
+          ilike(advocates.firstName, searchTerm),
+          ilike(advocates.lastName, searchTerm),
+          ilike(advocates.phoneNumber, searchTerm)
+        )!;
+      });
+      conditions.push(and(...tokenConditions)!);
+    }
   }
 
   return and(...conditions);
@@ -301,7 +320,7 @@ export async function getAdvocatesPaginated(
       let countFinalConditions: SQL<unknown> | undefined;
 
       if (filters?.search && filters.search.trim()) {
-        const searchTerm = `%${filters.search.trim()}%`;
+        const tokens = parseSearchTokens(filters.search);
         const countBaseConditions: SQL<unknown>[] = [eq(advocates.isActive, true)];
 
         if (filters.cityIds && filters.cityIds.length > 0) {
@@ -325,23 +344,49 @@ export async function getAdvocatesPaginated(
           );
         }
 
-        countBaseConditions.push(
-          or(
-            ilike(advocates.firstName, searchTerm),
-            ilike(advocates.lastName, searchTerm),
-            ilike(advocates.phoneNumber, searchTerm),
-            ilike(cities.name, searchTerm),
-            ilike(degrees.code, searchTerm),
-            ilike(degrees.name, searchTerm),
-            // Search specialties using EXISTS subquery
-            sql`EXISTS (
-              SELECT 1 FROM ${advocateSpecialties}
-              INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
-              WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
-              AND ${specialties.name} ILIKE ${searchTerm}
-            )`
-          )!
-        );
+        // Multi-term search: each token must match at least one field (AND logic)
+        if (tokens.length === 1) {
+          // Single token: Use simple OR search across all fields
+          const searchTerm = `%${tokens[0]}%`;
+          countBaseConditions.push(
+            or(
+              ilike(advocates.firstName, searchTerm),
+              ilike(advocates.lastName, searchTerm),
+              ilike(advocates.phoneNumber, searchTerm),
+              ilike(cities.name, searchTerm),
+              ilike(degrees.code, searchTerm),
+              ilike(degrees.name, searchTerm),
+              // Search specialties using EXISTS subquery
+              sql`EXISTS (
+                SELECT 1 FROM ${advocateSpecialties}
+                INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+                WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+                AND ${specialties.name} ILIKE ${searchTerm}
+              )`
+            )!
+          );
+        } else if (tokens.length > 1) {
+          // Multiple tokens: Each token must match at least one field (AND logic)
+          const tokenConditions = tokens.map((token: string) => {
+            const searchTerm = `%${token}%`;
+            return or(
+              ilike(advocates.firstName, searchTerm),
+              ilike(advocates.lastName, searchTerm),
+              ilike(advocates.phoneNumber, searchTerm),
+              ilike(cities.name, searchTerm),
+              ilike(degrees.code, searchTerm),
+              ilike(degrees.name, searchTerm),
+              // Search specialties using EXISTS subquery
+              sql`EXISTS (
+                SELECT 1 FROM ${advocateSpecialties}
+                INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+                WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+                AND ${specialties.name} ILIKE ${searchTerm}
+              )`
+            )!;
+          });
+          countBaseConditions.push(and(...tokenConditions)!);
+        }
 
         countFinalConditions = and(...countBaseConditions);
       } else {
@@ -400,7 +445,7 @@ export async function getAdvocatesPaginated(
     let finalConditions: SQL<unknown> | undefined;
 
     if (filters?.search && filters.search.trim()) {
-      const searchTerm = `%${filters.search.trim()}%`;
+      const tokens = parseSearchTokens(filters.search);
       const baseConditions: SQL<unknown>[] = [eq(advocates.isActive, true)];
 
       // Add all non-search filters
@@ -425,25 +470,50 @@ export async function getAdvocatesPaginated(
         );
       }
 
-      // Add comprehensive search across all fields including specialty search via EXISTS subquery
-      // Uses EXISTS instead of LEFT JOIN to avoid expensive GROUP BY
-      baseConditions.push(
-        or(
-          ilike(advocates.firstName, searchTerm),
-          ilike(advocates.lastName, searchTerm),
-          ilike(advocates.phoneNumber, searchTerm),
-          ilike(cities.name, searchTerm),
-          ilike(degrees.code, searchTerm),
-          ilike(degrees.name, searchTerm),
-          // Search specialties using EXISTS subquery for better performance
-          sql`EXISTS (
-            SELECT 1 FROM ${advocateSpecialties}
-            INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
-            WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
-            AND ${specialties.name} ILIKE ${searchTerm}
-          )`
-        )!
-      );
+      // Multi-term search: each token must match at least one field (AND logic)
+      if (tokens.length === 1) {
+        // Single token: Use simple OR search across all fields
+        const searchTerm = `%${tokens[0]}%`;
+        baseConditions.push(
+          or(
+            ilike(advocates.firstName, searchTerm),
+            ilike(advocates.lastName, searchTerm),
+            ilike(advocates.phoneNumber, searchTerm),
+            ilike(cities.name, searchTerm),
+            ilike(degrees.code, searchTerm),
+            ilike(degrees.name, searchTerm),
+            // Search specialties using EXISTS subquery for better performance
+            sql`EXISTS (
+              SELECT 1 FROM ${advocateSpecialties}
+              INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+              WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+              AND ${specialties.name} ILIKE ${searchTerm}
+            )`
+          )!
+        );
+      } else if (tokens.length > 1) {
+        // Multiple tokens: Each token must match at least one field (AND logic)
+        // Example: "denver vegan" means (denver in ANY field) AND (vegan in ANY field)
+        const tokenConditions = tokens.map((token: string) => {
+          const searchTerm = `%${token}%`;
+          return or(
+            ilike(advocates.firstName, searchTerm),
+            ilike(advocates.lastName, searchTerm),
+            ilike(advocates.phoneNumber, searchTerm),
+            ilike(cities.name, searchTerm),
+            ilike(degrees.code, searchTerm),
+            ilike(degrees.name, searchTerm),
+            // Search specialties using EXISTS subquery for better performance
+            sql`EXISTS (
+              SELECT 1 FROM ${advocateSpecialties}
+              INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+              WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+              AND ${specialties.name} ILIKE ${searchTerm}
+            )`
+          )!;
+        });
+        baseConditions.push(and(...tokenConditions)!);
+      }
 
       finalConditions = and(...baseConditions);
     } else {

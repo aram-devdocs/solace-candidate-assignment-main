@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Filter as FilterIcon } from "lucide-react";
 import type { AdvocateWithRelations } from "@repo/types";
+import { parseSearchTokens } from "@repo/utils";
 import { Greeting } from "../molecules/Greeting";
 import { TemplateHeader } from "../molecules/TemplateHeader";
 import { SearchBar } from "../molecules/SearchBar";
+import { SearchPills } from "../molecules/SearchPills";
+import { SearchHelpTooltip } from "../atoms/SearchHelpTooltip";
 import { ErrorState } from "../molecules/ErrorState";
 import { AdvocateTable } from "../organisms/AdvocateTable";
 import { FilterPanel } from "../organisms/FilterPanel";
@@ -149,6 +152,86 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [timePeriod, setTimePeriod] = useState<"morning" | "afternoon" | "evening">("morning");
 
+  // Parse search tokens for highlighting and pills display
+  const searchTokens = useMemo(() => parseSearchTokens(searchTerm), [searchTerm]);
+
+  // Handler to remove individual search token
+  const handleRemoveToken = (tokenToRemove: string): void => {
+    const remainingTokens = searchTokens.filter((token: string) => token !== tokenToRemove);
+    const newSearchTerm = remainingTokens
+      .map((token: string) => (token.includes(" ") ? `"${token}"` : token))
+      .join(" ");
+
+    const event = {
+      target: { value: newSearchTerm },
+    } as React.ChangeEvent<HTMLInputElement>;
+    onSearchChange(event);
+  };
+
+  // Helper to find and remove matching search token
+  const findAndRemoveMatchingToken = (text: string): void => {
+    const normalizedText = text.toLowerCase().trim();
+    const matchingToken = searchTokens.find((token) =>
+      normalizedText.includes(token.toLowerCase())
+    );
+    if (matchingToken) {
+      handleRemoveToken(matchingToken);
+    }
+  };
+
+  // Smart badge click handlers that remove matching search token and add filter
+  const handleSmartSpecialtyClick = (specialtyId: number): void => {
+    if (filters?.onSpecialtyClick) {
+      // Find the specialty name to match against search tokens
+      const advocate = advocates.find((adv) =>
+        adv.advocateSpecialties.some((as) => as.specialty.id === specialtyId)
+      );
+      const specialty = advocate?.advocateSpecialties.find((as) => as.specialty.id === specialtyId)
+        ?.specialty.name;
+
+      if (specialty) {
+        findAndRemoveMatchingToken(specialty);
+      }
+
+      filters.onSpecialtyClick(specialtyId);
+    }
+  };
+
+  const handleSmartCityClick = (cityId: number): void => {
+    if (filters?.onCityClick) {
+      // Find the city name to match against search tokens
+      const advocate = advocates.find((adv) => adv.city.id === cityId);
+      const city = advocate?.city.name;
+
+      if (city) {
+        findAndRemoveMatchingToken(city);
+      }
+
+      filters.onCityClick(cityId);
+    }
+  };
+
+  const handleSmartDegreeClick = (degreeId: number): void => {
+    if (filters?.onDegreeClick) {
+      // Find the degree code to match against search tokens
+      const advocate = advocates.find((adv) => adv.degree.id === degreeId);
+      const degree = advocate?.degree.code;
+
+      if (degree) {
+        findAndRemoveMatchingToken(degree);
+      }
+
+      filters.onDegreeClick(degreeId);
+    }
+  };
+
+  const handleSmartAreaCodeClick = (areaCode: string): void => {
+    if (filters?.onAreaCodeClick) {
+      findAndRemoveMatchingToken(areaCode);
+      filters.onAreaCodeClick(areaCode);
+    }
+  };
+
   // Calculate time period on client only to avoid hydration mismatch
   React.useEffect(() => {
     const hour = new Date().getHours();
@@ -201,12 +284,13 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
         />
       </div>
 
-      {/* Search Bar with Filter Button */}
+      {/* Search Bar with Filter Button and Help */}
       <div className={spacingClasses}>
         <div className="gap-sm flex items-center">
           <div className="flex-1">
             <SearchBar value={searchTerm} onChange={onSearchChange} onReset={onResetSearch} />
           </div>
+          <SearchHelpTooltip />
           {filters && (
             <IconButton
               icon={FilterIcon}
@@ -217,6 +301,12 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
             />
           )}
         </div>
+        {/* Search Pills */}
+        {searchTokens.length > 0 && (
+          <div className="mt-3">
+            <SearchPills tokens={searchTokens} onRemove={handleRemoveToken} removable={true} />
+          </div>
+        )}
       </div>
 
       {/* Active Filters Bar */}
@@ -251,6 +341,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           advocates={advocates}
           isFetching={isFetching}
           deviceSize={deviceSize}
+          searchTokens={searchTokens}
           expandedRows={expandedRows}
           onToggleRow={onToggleRow}
           sortColumn={sort?.column}
@@ -258,10 +349,10 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           onSort={sort?.onSort}
           pagination={pagination}
           pageSize={pageSize}
-          onSpecialtyClick={filters?.onSpecialtyClick}
-          onCityClick={filters?.onCityClick}
-          onDegreeClick={filters?.onDegreeClick}
-          onAreaCodeClick={filters?.onAreaCodeClick}
+          onSpecialtyClick={handleSmartSpecialtyClick}
+          onCityClick={handleSmartCityClick}
+          onDegreeClick={handleSmartDegreeClick}
+          onAreaCodeClick={handleSmartAreaCodeClick}
           activeSpecialtyIds={filters?.activeSpecialtyIds}
           activeCityIds={filters?.activeCityIds}
           activeDegreeIds={filters?.activeDegreeIds}
