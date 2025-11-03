@@ -56,7 +56,7 @@ export const FILTER_LIMITS = {
  */
 export const API_LIMITS = {
   /** Maximum page number to prevent excessive pagination */
-  MAX_PAGE: 10000,
+  MAX_PAGE: 100000,
   /** Minimum valid page number */
   MIN_PAGE: 1,
   /** Maximum number of items per page */
