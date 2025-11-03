@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["100", "300", "400", "700", "900"],
-  style: ["normal", "italic"],
-});
 
 export const metadata: Metadata = {
   title: "Solace Candidate Assignment",
@@ -26,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={lato.className}>
+      <body className="font-sans">
         <Providers>{children}</Providers>
       </body>
     </html>

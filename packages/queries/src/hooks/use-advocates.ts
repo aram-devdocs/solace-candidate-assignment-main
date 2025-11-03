@@ -107,6 +107,7 @@ export function useAdvocates<TData = PaginatedAdvocatesResponse>(
     retryDelay: (attemptIndex) =>
       Math.min(1000 * 2 ** attemptIndex, TIMEOUTS.API_REQUEST_TIMEOUT_MS),
     enabled,
+    placeholderData: (previousData) => previousData,
     ...options,
   });
 

@@ -25,6 +25,10 @@ export interface AdvocateTableProps {
    */
   isLoading?: boolean;
   /**
+   * Fetching state (loading new data while existing data is visible)
+   */
+  isFetching?: boolean;
+  /**
    * Current device size (from useDeviceSize hook in parent)
    */
   deviceSize: DeviceSize;
@@ -203,6 +207,7 @@ function getCellValue(
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
   isLoading = false,
+  isFetching = false,
   deviceSize,
   expandedRows = new Set(),
   onToggleRow,
@@ -247,7 +252,18 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 scrollbar-hide max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
+      <div className="border-secondary-200 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
+        {/* Loading overlay when fetching new data */}
+        {isFetching && advocates.length > 0 && (
+          <div className="bg-secondary-900/10 absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm">
+            <div className="bg-primary-50 border-primary-200 text-primary-700 rounded-lg border px-6 py-4 shadow-lg">
+              <div className="flex items-center gap-3">
+                <div className="border-primary-500 h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></div>
+                <span className="font-medium">Loading advocates...</span>
+              </div>
+            </div>
+          </div>
+        )}
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>
