@@ -25,6 +25,23 @@ import {
 } from "@repo/cache";
 
 /**
+ * Executes a minimal database query to verify connectivity.
+ * Used by health check endpoints to keep database connections warm
+ * and prevent cold starts on serverless platforms.
+ *
+ * @returns Promise that resolves when database is responsive
+ * @throws DatabaseError if connection fails
+ */
+export async function healthCheck(): Promise<void> {
+  try {
+    await db.execute(sql`SELECT 1`);
+  } catch (error) {
+    const appError = toAppError(error);
+    throw new DatabaseError("Database health check failed", appError.message);
+  }
+}
+
+/**
  * Retrieves all advocates from the database.
  * DEPRECATED: Use getAdvocatesPaginated for better performance at scale.
  *
@@ -164,19 +181,9 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     conditions.push(lte(advocates.yearsOfExperience, filters.maxExperience));
   }
 
-  // Specialty filter using EXISTS subquery
-  if (filters.specialtyIds && filters.specialtyIds.length > 0) {
-    conditions.push(
-      sql`EXISTS (
-        SELECT 1 FROM ${advocateSpecialties}
-        WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
-        AND ${advocateSpecialties.specialtyId} IN (${sql.join(
-          filters.specialtyIds.map((id) => sql`${id}`),
-          sql`, `
-        )})
-      )`
-    );
-  }
+  // Specialty filter: We'll handle this via INNER JOIN in the query builder
+  // for better performance (avoids EXISTS subquery on 1M+ rows)
+  // The actual JOIN is added in getAdvocatesPaginated function
 
   // Area code filter - match first 3 characters of phone number
   if (filters.areaCodes && filters.areaCodes.length > 0) {
@@ -188,30 +195,17 @@ function buildFilterConditions(filters?: AdvocateFilters): SQL<unknown> | undefi
     );
   }
 
-  // Text search across all relevant fields including specialties
+  // Text search optimized with trigram indexes (ILIKE with pg_trgm)
+  // Searches advocate names and phone (fast with trigram indexes)
+  // City/degree search handled separately in query builder with JOIN conditions
   if (filters.search && filters.search.trim()) {
     const searchTerm = `%${filters.search.trim()}%`;
+    // Note: City/degree/specialty search added in query builder where tables are JOINed
     conditions.push(
       or(
         ilike(advocates.firstName, searchTerm),
         ilike(advocates.lastName, searchTerm),
-        ilike(advocates.phoneNumber, searchTerm),
-        sql`EXISTS (
-          SELECT 1 FROM ${cities}
-          WHERE ${cities.id} = ${advocates.cityId}
-          AND ${ilike(cities.name, searchTerm)}
-        )`,
-        sql`EXISTS (
-          SELECT 1 FROM ${degrees}
-          WHERE ${degrees.id} = ${advocates.degreeId}
-          AND ${ilike(degrees.code, searchTerm)}
-        )`,
-        sql`EXISTS (
-          SELECT 1 FROM ${advocateSpecialties}
-          JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
-          WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
-          AND ${ilike(specialties.name, searchTerm)}
-        )`
+        ilike(advocates.phoneNumber, searchTerm)
       )!
     );
   }
@@ -283,10 +277,88 @@ export async function getAdvocatesPaginated(
     let totalRecords = await getCached<number>(countCacheKey);
 
     if (totalRecords === null) {
-      const countResult = await db
-        .select({ count: sql<number>`count(*)::int` })
+      // Build count query with specialty JOIN optimization
+      let countQuery = db
+        .select({ count: sql<number>`count(DISTINCT ${advocates.id})::int` })
         .from(advocates)
-        .where(whereConditions);
+        .leftJoin(cities, eq(advocates.cityId, cities.id))
+        .leftJoin(degrees, eq(advocates.degreeId, degrees.id))
+        .$dynamic();
+
+      // Only JOIN specialty tables when filtering by specialtyIds (not for search)
+      const countNeedsSpecialtyJoin = filters?.specialtyIds && filters.specialtyIds.length > 0;
+
+      if (countNeedsSpecialtyJoin) {
+        countQuery = countQuery
+          .innerJoin(advocateSpecialties, eq(advocates.id, advocateSpecialties.advocateId))
+          .innerJoin(
+            specialties,
+            eq(advocateSpecialties.specialtyId, specialties.id)
+          ) as typeof countQuery;
+      }
+
+      // Build count conditions with search (same logic as main query)
+      let countFinalConditions: SQL<unknown> | undefined;
+
+      if (filters?.search && filters.search.trim()) {
+        const searchTerm = `%${filters.search.trim()}%`;
+        const countBaseConditions: SQL<unknown>[] = [eq(advocates.isActive, true)];
+
+        if (filters.cityIds && filters.cityIds.length > 0) {
+          countBaseConditions.push(inArray(advocates.cityId, filters.cityIds));
+        }
+        if (filters.degreeIds && filters.degreeIds.length > 0) {
+          countBaseConditions.push(inArray(advocates.degreeId, filters.degreeIds));
+        }
+        if (filters.minExperience !== undefined) {
+          countBaseConditions.push(gte(advocates.yearsOfExperience, filters.minExperience));
+        }
+        if (filters.maxExperience !== undefined) {
+          countBaseConditions.push(lte(advocates.yearsOfExperience, filters.maxExperience));
+        }
+        if (filters.areaCodes && filters.areaCodes.length > 0) {
+          countBaseConditions.push(
+            sql`SUBSTRING(${advocates.phoneNumber}, 1, 3) IN (${sql.join(
+              filters.areaCodes.map((code) => sql`${code}`),
+              sql`, `
+            )})`
+          );
+        }
+
+        countBaseConditions.push(
+          or(
+            ilike(advocates.firstName, searchTerm),
+            ilike(advocates.lastName, searchTerm),
+            ilike(advocates.phoneNumber, searchTerm),
+            ilike(cities.name, searchTerm),
+            ilike(degrees.code, searchTerm),
+            ilike(degrees.name, searchTerm),
+            // Search specialties using EXISTS subquery
+            sql`EXISTS (
+              SELECT 1 FROM ${advocateSpecialties}
+              INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+              WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+              AND ${specialties.name} ILIKE ${searchTerm}
+            )`
+          )!
+        );
+
+        countFinalConditions = and(...countBaseConditions);
+      } else {
+        countFinalConditions = whereConditions;
+      }
+
+      // Add specialty filter condition if filtering by specialties
+      if (filters?.specialtyIds && filters.specialtyIds.length > 0) {
+        countFinalConditions = and(
+          countFinalConditions,
+          inArray(advocateSpecialties.specialtyId, filters.specialtyIds)
+        );
+      }
+
+      countQuery = countQuery.where(countFinalConditions!) as typeof countQuery;
+
+      const countResult = await countQuery;
       totalRecords = countResult[0]?.count ?? 0;
       // Use longer TTL for default query total count (72 hours for demo)
       const countTTL = isDefaultQuery ? CacheTTL.DEFAULT_TOTAL_COUNT : CacheTTL.TOTAL_COUNT;
@@ -297,8 +369,9 @@ export async function getAdvocatesPaginated(
     const offset = (page - 1) * pageSize;
     const totalPages = Math.ceil(totalRecords / pageSize);
 
-    // Fetch advocates with basic relations
-    const advocateResults = await db
+    // Build query with dynamic specialty JOIN for performance
+    // Join specialty tables when search exists OR when filtering by specialties
+    let query = db
       .select({
         advocate: advocates,
         city: cities,
@@ -307,10 +380,95 @@ export async function getAdvocatesPaginated(
       .from(advocates)
       .leftJoin(cities, eq(advocates.cityId, cities.id))
       .leftJoin(degrees, eq(advocates.degreeId, degrees.id))
-      .where(whereConditions)
-      .orderBy(orderBy)
-      .limit(pageSize)
-      .offset(offset);
+      .$dynamic();
+
+    // Only JOIN specialty tables when filtering by specialtyIds (not for search)
+    // This avoids expensive LEFT JOIN + GROUP BY for name/city/degree searches
+    const needsSpecialtyJoin = filters?.specialtyIds && filters.specialtyIds.length > 0;
+
+    // Add specialty INNER JOIN only when filtering by specialties
+    if (needsSpecialtyJoin) {
+      query = query
+        .innerJoin(advocateSpecialties, eq(advocates.id, advocateSpecialties.advocateId))
+        .innerJoin(
+          specialties,
+          eq(advocateSpecialties.specialtyId, specialties.id)
+        ) as typeof query;
+    }
+
+    // Build complete WHERE conditions including city/degree/specialty search
+    let finalConditions: SQL<unknown> | undefined;
+
+    if (filters?.search && filters.search.trim()) {
+      const searchTerm = `%${filters.search.trim()}%`;
+      const baseConditions: SQL<unknown>[] = [eq(advocates.isActive, true)];
+
+      // Add all non-search filters
+      if (filters.cityIds && filters.cityIds.length > 0) {
+        baseConditions.push(inArray(advocates.cityId, filters.cityIds));
+      }
+      if (filters.degreeIds && filters.degreeIds.length > 0) {
+        baseConditions.push(inArray(advocates.degreeId, filters.degreeIds));
+      }
+      if (filters.minExperience !== undefined) {
+        baseConditions.push(gte(advocates.yearsOfExperience, filters.minExperience));
+      }
+      if (filters.maxExperience !== undefined) {
+        baseConditions.push(lte(advocates.yearsOfExperience, filters.maxExperience));
+      }
+      if (filters.areaCodes && filters.areaCodes.length > 0) {
+        baseConditions.push(
+          sql`SUBSTRING(${advocates.phoneNumber}, 1, 3) IN (${sql.join(
+            filters.areaCodes.map((code) => sql`${code}`),
+            sql`, `
+          )})`
+        );
+      }
+
+      // Add comprehensive search across all fields including specialty search via EXISTS subquery
+      // Uses EXISTS instead of LEFT JOIN to avoid expensive GROUP BY
+      baseConditions.push(
+        or(
+          ilike(advocates.firstName, searchTerm),
+          ilike(advocates.lastName, searchTerm),
+          ilike(advocates.phoneNumber, searchTerm),
+          ilike(cities.name, searchTerm),
+          ilike(degrees.code, searchTerm),
+          ilike(degrees.name, searchTerm),
+          // Search specialties using EXISTS subquery for better performance
+          sql`EXISTS (
+            SELECT 1 FROM ${advocateSpecialties}
+            INNER JOIN ${specialties} ON ${advocateSpecialties.specialtyId} = ${specialties.id}
+            WHERE ${advocateSpecialties.advocateId} = ${advocates.id}
+            AND ${specialties.name} ILIKE ${searchTerm}
+          )`
+        )!
+      );
+
+      finalConditions = and(...baseConditions);
+    } else {
+      finalConditions = whereConditions;
+    }
+
+    // Add specialty filter condition if filtering by specialties
+    if (filters?.specialtyIds && filters.specialtyIds.length > 0) {
+      finalConditions = and(
+        finalConditions,
+        inArray(advocateSpecialties.specialtyId, filters.specialtyIds)
+      );
+    }
+
+    // Apply conditions and GROUP BY if specialty JOIN was added
+    if (needsSpecialtyJoin) {
+      query = query
+        .where(finalConditions!)
+        .groupBy(advocates.id, cities.id, degrees.id) as typeof query;
+    } else {
+      query = query.where(finalConditions!) as typeof query;
+    }
+
+    // Execute query with ordering and pagination
+    const advocateResults = await query.orderBy(orderBy).limit(pageSize).offset(offset);
 
     const advocateIds = advocateResults.map((r) => r.advocate.id);
     const specialtiesByAdvocate = await loadAdvocateSpecialties(advocateIds);

@@ -36,6 +36,13 @@
       "when": 1762185537306,
       "tag": "0004_yellow_titania",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762188294572,
+      "tag": "0005_wet_oracle",
+      "breakpoints": true
     }
   ]
 }

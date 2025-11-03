@@ -12,4 +12,5 @@ export {
   searchAdvocates,
   getAdvocateFilterOptions,
   invalidateAdvocateCaches,
+  healthCheck,
 } from "./advocates";

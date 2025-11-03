@@ -99,12 +99,28 @@ export const advocates = pgTable(
       "gin",
       sql`to_tsvector('english', ${table.firstName} || ' ' || ${table.lastName})`
     ),
-    // Sorting indexes for name-based pagination (performance optimization)
+    // Trigram indexes for fast partial name search (ILIKE queries)
+    firstNameTrgmIdx: index("idx_advocates_first_name_trgm").using(
+      "gin",
+      sql`${table.firstName} gin_trgm_ops`
+    ),
+    lastNameTrgmIdx: index("idx_advocates_last_name_trgm").using(
+      "gin",
+      sql`${table.lastName} gin_trgm_ops`
+    ),
+    // Sorting indexes for name-based pagination (ASC direction)
     firstNameSortIdx: index("idx_advocates_first_name_sort")
       .on(table.isActive, table.firstName, table.id)
       .where(sql`${table.deletedAt} IS NULL`),
     lastNameSortIdx: index("idx_advocates_last_name_sort")
       .on(table.isActive, table.lastName, table.id)
+      .where(sql`${table.deletedAt} IS NULL`),
+    // Sorting indexes for DESC direction (performance optimization)
+    firstNameSortDescIdx: index("idx_advocates_first_name_sort_desc")
+      .on(table.isActive, sql`${table.firstName} DESC`, sql`${table.id} DESC`)
+      .where(sql`${table.deletedAt} IS NULL`),
+    lastNameSortDescIdx: index("idx_advocates_last_name_sort_desc")
+      .on(table.isActive, sql`${table.lastName} DESC`, sql`${table.id} DESC`)
       .where(sql`${table.deletedAt} IS NULL`),
     // Covering index for default pagination query (includes frequently joined columns)
     defaultPaginationIdx: index("idx_advocates_default_pagination")
