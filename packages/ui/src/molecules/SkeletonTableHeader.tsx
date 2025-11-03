@@ -9,7 +9,7 @@ import { SkeletonLine } from "../atoms/SkeletonLine";
 export const SkeletonTableHeader: React.FC = () => {
   return (
     <thead>
-      <tr className="bg-secondary-50 border-secondary-300 border-b-2">
+      <tr className="bg-secondary-50 dark:bg-secondary-800 border-secondary-300 dark:border-secondary-700 border-b-2">
         <th className="px-lg py-md text-left">
           <SkeletonLine width="80px" height="1rem" />
         </th>

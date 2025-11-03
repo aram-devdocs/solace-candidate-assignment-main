@@ -17,11 +17,16 @@ export interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
 }
 
 const VARIANT_CLASSES = {
-  default: "bg-secondary-100 text-secondary-700 border-secondary-200",
-  primary: "bg-primary-100 text-primary-700 border-primary-200",
-  secondary: "bg-secondary-100 text-secondary-600 border-secondary-200",
-  success: "bg-success-100 text-success-700 border-success-200",
-  error: "bg-error-100 text-error-700 border-error-200",
+  default:
+    "bg-secondary-100 text-secondary-700 border-secondary-200 dark:bg-secondary-800 dark:text-secondary-200 dark:border-secondary-700",
+  primary:
+    "bg-primary-100 text-primary-700 border-primary-200 dark:bg-primary-900 dark:text-primary-300 dark:border-primary-700",
+  secondary:
+    "bg-secondary-100 text-secondary-600 border-secondary-200 dark:bg-secondary-800 dark:text-secondary-300 dark:border-secondary-700",
+  success:
+    "bg-success-100 text-success-700 border-success-200 dark:bg-success-900 dark:text-success-300 dark:border-success-700",
+  error:
+    "bg-error-100 text-error-700 border-error-200 dark:bg-error-900 dark:text-error-300 dark:border-error-700",
 };
 
 const SIZE_CLASSES = {

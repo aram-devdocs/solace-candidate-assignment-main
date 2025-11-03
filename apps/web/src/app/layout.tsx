@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { ThemeScript } from "@repo/hooks";
 
 export const metadata: Metadata = {
   title: "Solace Candidate Assignment",
@@ -19,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <ThemeScript />
+      </head>
       <body className="font-sans">
         <Providers>{children}</Providers>
       </body>

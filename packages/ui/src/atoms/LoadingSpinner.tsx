@@ -22,7 +22,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = "md", cla
 
   return (
     <div
-      className={`${sizeClasses[size]} border-primary-200 border-t-primary-600 animate-spin rounded-full ${className}`}
+      className={`${sizeClasses[size]} border-primary-200 border-t-primary-600 dark:border-primary-700 dark:border-t-primary-400 animate-spin rounded-full ${className}`}
       role="status"
       aria-label="Loading"
     >

@@ -14,7 +14,9 @@ export interface FormsEmptyStateProps {
 export const FormsEmptyState: React.FC<FormsEmptyStateProps> = ({ className = "" }) => {
   return (
     <div className={`${className}`}>
-      <p className="text-base text-neutral-900">You do not currently have any forms...</p>
+      <p className="dark:text-secondary-100 text-base text-neutral-900">
+        You do not currently have any forms...
+      </p>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode, ReactElement } from "react";
+import type { Theme } from "@repo/hooks";
 import { useNavigation, type NavigationItem as NavItem } from "@repo/hooks";
 import { HomeIcon } from "../atoms/HomeIcon";
 import { MessagesIcon } from "../atoms/MessagesIcon";
@@ -85,6 +86,14 @@ export interface AppLayoutProps {
    * Callback to show toast notification (for demo UI actions)
    */
   onShowToast?: () => void;
+  /**
+   * Current theme mode
+   */
+  theme?: Theme;
+  /**
+   * Callback when theme toggle is clicked
+   */
+  onThemeToggle?: () => void;
 }
 
 /**
@@ -129,6 +138,8 @@ export function AppLayout({
   isNavigating = false,
   onNavigationStart,
   onShowToast,
+  theme = "light",
+  onThemeToggle,
 }: AppLayoutProps) {
   const { items } = useNavigation(navigationItems, currentPath);
 
@@ -172,6 +183,8 @@ export function AppLayout({
         onNotificationsClick,
         onProfileClick,
       }}
+      theme={theme}
+      onThemeToggle={onThemeToggle}
       renderNavigation={renderNavigation}
       navigationHeader="MENU"
       footer={{

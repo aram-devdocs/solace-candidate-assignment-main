@@ -73,11 +73,11 @@ export const ActiveFiltersBar: React.FC<ActiveFiltersBarProps> = ({
   }
 
   return (
-    <div className="gap-sm bg-secondary-50 p-md border-secondary-200 flex flex-col items-start rounded-md border sm:flex-row sm:items-center">
-      <div className="gap-sm text-secondary-700 flex items-center text-sm font-medium">
+    <div className="gap-sm bg-secondary-50 dark:bg-secondary-800 p-md border-secondary-200 dark:border-secondary-700 flex flex-col items-start rounded-md border sm:flex-row sm:items-center">
+      <div className="gap-sm text-secondary-700 dark:text-secondary-300 flex items-center text-sm font-medium">
         <span>Active Filters:</span>
         {resultCount !== undefined && (
-          <span className="text-primary-700">
+          <span className="text-primary-700 dark:text-primary-400">
             ({resultCount} result{resultCount !== 1 ? "s" : ""})
           </span>
         )}

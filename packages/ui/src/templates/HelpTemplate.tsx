@@ -36,11 +36,13 @@ export const HelpTemplate: React.FC<HelpTemplateProps> = ({
   onContactSupportClick,
 }) => {
   return (
-    <main className={`absolute inset-0 overflow-auto bg-white ${className}`}>
+    <main className={`dark:bg-secondary-900 absolute inset-0 overflow-auto bg-white ${className}`}>
       <div className="p-md md:p-lg lg:p-xl">
-        <h1 className="font-serif text-4xl font-light text-neutral-900">We&apos;re here to help</h1>
+        <h1 className="dark:text-secondary-100 font-serif text-4xl font-light text-neutral-900">
+          We&apos;re here to help
+        </h1>
 
-        <p className="mt-md text-base text-neutral-900">
+        <p className="mt-md dark:text-secondary-100 text-base text-neutral-900">
           Have a question? Reach out to our team. We&apos;ll respond as soon as possible!
         </p>
 
@@ -66,11 +68,11 @@ export const HelpTemplate: React.FC<HelpTemplateProps> = ({
           />
         </div>
 
-        <p className="mt-2xl text-base text-neutral-900">
+        <p className="mt-2xl dark:text-secondary-100 text-base text-neutral-900">
           Not finding what you&apos;re looking for? Contact{" "}
           <button
             onClick={onContactSupportClick}
-            className="text-primary-600 hover:text-primary-700 font-normal underline"
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-normal underline"
           >
             Solace Support
           </button>

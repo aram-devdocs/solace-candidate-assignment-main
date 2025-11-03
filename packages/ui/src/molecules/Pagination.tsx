@@ -81,9 +81,9 @@ export const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const buttonBaseClasses =
     "px-sm py-xs rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
-  const pageButtonClasses = `${buttonBaseClasses} hover:bg-secondary-200`;
-  const activePageClasses = `${buttonBaseClasses} bg-primary-700 text-white`;
-  const navButtonClasses = `${buttonBaseClasses} border border-secondary-400 hover:bg-secondary-100 flex items-center gap-xs`;
+  const pageButtonClasses = `${buttonBaseClasses} hover:bg-secondary-200 dark:hover:bg-secondary-700 dark:text-secondary-200`;
+  const activePageClasses = `${buttonBaseClasses} bg-primary-700 text-white dark:bg-primary-600 dark:text-white`;
+  const navButtonClasses = `${buttonBaseClasses} border border-secondary-400 dark:border-secondary-600 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 flex items-center gap-xs`;
 
   const showFirstLast = totalPages > 5;
 
@@ -116,7 +116,10 @@ export const Pagination: React.FC<PaginationProps> = ({
           {visiblePages.map((page, index) => {
             if (page === "...") {
               return (
-                <span key={`ellipsis-${index}`} className="px-sm text-secondary-500">
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-sm text-secondary-500 dark:text-secondary-400"
+                >
                   ...
                 </span>
               );
@@ -140,7 +143,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       )}
 
       {deviceSize === "mobile" && (
-        <div className="px-sm text-secondary-700 text-sm">
+        <div className="px-sm text-secondary-700 dark:text-secondary-300 text-sm">
           Page {currentPage} of {totalPages}
         </div>
       )}

@@ -41,7 +41,7 @@ export const HelpCard: React.FC<HelpCardProps> = ({
       <div className="pointer-events-none absolute -bottom-20 -right-8 h-[350px] w-[350px] rounded-full bg-neutral-100 opacity-0 transition-all duration-500 ease-in-out group-hover:translate-x-20 group-hover:translate-y-20 group-hover:opacity-100" />
 
       {/* Title at top */}
-      <h3 className="mb-lg relative z-10 text-left text-lg font-medium text-neutral-900 transition-colors duration-500 group-hover:text-white">
+      <h3 className="mb-lg dark:text-secondary-100 relative z-10 text-left text-lg font-medium text-neutral-900 transition-colors duration-500 group-hover:text-white">
         {title}
       </h3>
 

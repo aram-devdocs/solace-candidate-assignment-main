@@ -26,9 +26,13 @@ export const HealthInsuranceTemplate: React.FC<HealthInsuranceTemplateProps> = (
   onContactSupport,
 }) => {
   return (
-    <main className={`absolute inset-0 overflow-hidden bg-white ${className}`}>
+    <main
+      className={`dark:bg-secondary-900 absolute inset-0 overflow-hidden bg-white ${className}`}
+    >
       <div className="p-md md:p-lg lg:p-xl">
-        <h1 className="font-serif text-4xl font-light text-neutral-900">Health Insurance</h1>
+        <h1 className="dark:text-secondary-100 font-serif text-4xl font-light text-neutral-900">
+          Health Insurance
+        </h1>
         <div className="mt-lg md:mt-xl">
           <HealthInsuranceEmptyState onContactSupport={onContactSupport} />
         </div>

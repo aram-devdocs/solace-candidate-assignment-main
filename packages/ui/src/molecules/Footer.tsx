@@ -39,7 +39,7 @@ export interface FooterProps {
  */
 export function Footer({ links, copyright, children }: FooterProps) {
   return (
-    <footer className="border-secondary-200 w-full border-t bg-white">
+    <footer className="border-secondary-200 dark:border-secondary-700 dark:bg-secondary-900 w-full border-t bg-white">
       <div className="px-4 py-3 md:px-6">
         {/* Custom content */}
         {children}
@@ -51,7 +51,7 @@ export function Footer({ links, copyright, children }: FooterProps) {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-secondary-600 hover:text-primary-700 text-xs transition-colors"
+                className="text-secondary-600 dark:text-secondary-300 hover:text-primary-700 dark:hover:text-primary-400 text-xs transition-colors"
               >
                 {link.label}
               </a>
@@ -60,7 +60,9 @@ export function Footer({ links, copyright, children }: FooterProps) {
         )}
 
         {/* Copyright */}
-        {copyright && <div className="text-secondary-500 text-xs">{copyright}</div>}
+        {copyright && (
+          <div className="text-secondary-500 dark:text-secondary-400 text-xs">{copyright}</div>
+        )}
       </div>
     </footer>
   );

@@ -38,9 +38,9 @@ export function Text({
   };
 
   const colorClasses = {
-    default: "text-secondary-900",
-    error: "text-error-600",
-    secondary: "text-secondary-600",
+    default: "text-secondary-900 dark:text-secondary-100",
+    error: "text-error-600 dark:text-error-400",
+    secondary: "text-secondary-600 dark:text-secondary-400",
   };
 
   return (

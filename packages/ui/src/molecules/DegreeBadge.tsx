@@ -55,11 +55,11 @@ export const DegreeBadge: React.FC<DegreeBadgeProps> = ({
   className = "",
 }) => {
   const baseClasses = isActive
-    ? "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-600 text-white border-primary-700 whitespace-nowrap shadow-sm"
-    : "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-50 text-primary-700 border-primary-150 whitespace-nowrap shadow-xs";
+    ? "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-600 text-white border-primary-700 dark:bg-primary-500 dark:text-white dark:border-primary-600 whitespace-nowrap shadow-sm"
+    : "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-50 text-primary-700 border-primary-150 dark:bg-primary-900 dark:text-primary-300 dark:border-primary-700 whitespace-nowrap shadow-xs";
 
   const clickableClasses = clickable
-    ? "cursor-pointer hover:bg-primary-200 hover:border-primary-300 hover:shadow-sm active:bg-primary-300 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
+    ? "cursor-pointer hover:bg-primary-200 hover:border-primary-300 dark:hover:bg-primary-800 dark:hover:border-primary-600 hover:shadow-sm active:bg-primary-300 dark:active:bg-primary-700 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-offset-1"
     : "";
 
   const handleClick = (): void => {

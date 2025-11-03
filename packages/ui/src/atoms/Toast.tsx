@@ -27,24 +27,29 @@ export interface ToastProps {
 export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
   ({ id, variant, message, description, onDismiss, action }, ref) => {
     const variantClasses = {
-      info: "bg-primary-50 border-primary-300 text-primary-900",
-      success: "bg-success-50 border-success-300 text-success-900",
-      warning: "bg-accent-50 border-accent-300 text-accent-900",
-      error: "bg-error-50 border-error-300 text-error-900",
+      info: "bg-primary-50 border-primary-300 text-primary-900 dark:bg-primary-900 dark:border-primary-700 dark:text-primary-100",
+      success:
+        "bg-success-50 border-success-300 text-success-900 dark:bg-success-900 dark:border-success-700 dark:text-success-100",
+      warning:
+        "bg-accent-50 border-accent-300 text-accent-900 dark:bg-accent-800 dark:border-accent-600 dark:text-accent-100",
+      error:
+        "bg-error-50 border-error-300 text-error-900 dark:bg-error-900 dark:border-error-700 dark:text-error-100",
     };
 
     const iconClasses = {
-      info: "text-primary-600",
-      success: "text-success-600",
-      warning: "text-accent-600",
-      error: "text-error-600",
+      info: "text-primary-600 dark:text-primary-400",
+      success: "text-success-600 dark:text-success-400",
+      warning: "text-accent-600 dark:text-accent-400",
+      error: "text-error-600 dark:text-error-400",
     };
 
     const buttonClasses = {
-      info: "text-primary-700 hover:text-primary-800",
-      success: "text-success-700 hover:text-success-800",
-      warning: "text-accent-700 hover:text-accent-800",
-      error: "text-error-700 hover:text-error-800",
+      info: "text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200",
+      success:
+        "text-success-700 hover:text-success-800 dark:text-success-300 dark:hover:text-success-200",
+      warning:
+        "text-accent-700 hover:text-accent-800 dark:text-accent-300 dark:hover:text-accent-200",
+      error: "text-error-700 hover:text-error-800 dark:text-error-300 dark:hover:text-error-200",
     };
 
     const icons = {

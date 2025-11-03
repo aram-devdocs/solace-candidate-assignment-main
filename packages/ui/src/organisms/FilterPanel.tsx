@@ -163,8 +163,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
   const isMobile = deviceSize === "mobile";
   const panelClasses = isMobile
-    ? "fixed inset-0 z-50 bg-white overflow-y-auto animate-slideInRight"
-    : "fixed right-0 top-0 h-full z-50 bg-white shadow-2xl overflow-y-auto w-70 md:w-80 animate-slideInRight";
+    ? "fixed inset-0 z-50 bg-white dark:bg-secondary-900 overflow-y-auto animate-slideInRight"
+    : "fixed right-0 top-0 h-full z-50 bg-white dark:bg-secondary-900 shadow-2xl overflow-y-auto w-70 md:w-80 animate-slideInRight";
 
   const degreeOptions: MultiSelectOption[] = availableDegrees.map((degree) => ({
     value: degree,
@@ -206,10 +206,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       {/* Panel */}
       <div className={panelClasses}>
         {/* Header */}
-        <div className="border-secondary-200 p-lg sticky top-0 flex items-center justify-between border-b bg-white">
+        <div className="border-secondary-200 dark:border-secondary-700 p-lg dark:bg-secondary-900 sticky top-0 flex items-center justify-between border-b bg-white">
           <div className="gap-sm flex items-center">
-            <Filter className="text-primary-700 h-5 w-5" />
-            <h2 className="text-secondary-900 text-lg font-semibold">Filters</h2>
+            <Filter className="text-primary-700 dark:text-primary-400 h-5 w-5" />
+            <h2 className="text-secondary-900 dark:text-secondary-100 text-lg font-semibold">
+              Filters
+            </h2>
           </div>
           <IconButton
             icon={X}
@@ -223,18 +225,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Filter Controls */}
         <div className="p-lg space-y-md">
           {/* Search Section */}
-          <div className="border-secondary-200 pb-md border-b">
+          <div className="border-secondary-200 dark:border-secondary-700 pb-md border-b">
             <button
               type="button"
               onClick={() => toggleSection("search")}
               className="flex w-full items-center justify-between text-left"
               aria-expanded={openSections.search}
             >
-              <h3 className="text-secondary-900 text-sm font-semibold">Search</h3>
+              <h3 className="text-secondary-900 dark:text-secondary-100 text-sm font-semibold">
+                Search
+              </h3>
               {openSections.search ? (
-                <ChevronUp className="text-secondary-600 h-4 w-4" />
+                <ChevronUp className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               ) : (
-                <ChevronDown className="text-secondary-600 h-4 w-4" />
+                <ChevronDown className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               )}
             </button>
             {openSections.search && (
@@ -245,7 +249,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   value={searchTerm}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Search advocates..."
-                  className="px-md py-sm border-secondary-400 focus:ring-primary-700 focus:border-primary-700 w-full rounded-md border focus:outline-none focus:ring-2"
+                  className="px-md py-sm border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 focus:ring-primary-700 dark:focus:ring-primary-500 focus:border-primary-700 dark:focus:border-primary-500 w-full rounded-md border focus:outline-none focus:ring-2"
                   aria-label="Search advocates"
                 />
               </div>
@@ -253,18 +257,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </div>
 
           {/* Demographics Section */}
-          <div className="border-secondary-200 pb-md border-b">
+          <div className="border-secondary-200 dark:border-secondary-700 pb-md border-b">
             <button
               type="button"
               onClick={() => toggleSection("demographics")}
               className="flex w-full items-center justify-between text-left"
               aria-expanded={openSections.demographics}
             >
-              <h3 className="text-secondary-900 text-sm font-semibold">Demographics</h3>
+              <h3 className="text-secondary-900 dark:text-secondary-100 text-sm font-semibold">
+                Demographics
+              </h3>
               {openSections.demographics ? (
-                <ChevronUp className="text-secondary-600 h-4 w-4" />
+                <ChevronUp className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               ) : (
-                <ChevronDown className="text-secondary-600 h-4 w-4" />
+                <ChevronDown className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               )}
             </button>
             {openSections.demographics && (
@@ -272,7 +278,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 <div className="space-y-sm">
                   <label
                     htmlFor="filter-degree"
-                    className="text-secondary-700 block text-xs font-medium"
+                    className="text-secondary-700 dark:text-secondary-300 block text-xs font-medium"
                   >
                     Degree
                   </label>
@@ -286,7 +292,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 <div className="space-y-sm">
                   <label
                     htmlFor="filter-city"
-                    className="text-secondary-700 block text-xs font-medium"
+                    className="text-secondary-700 dark:text-secondary-300 block text-xs font-medium"
                   >
                     City
                   </label>
@@ -302,18 +308,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </div>
 
           {/* Specialties Section */}
-          <div className="border-secondary-200 pb-md border-b">
+          <div className="border-secondary-200 dark:border-secondary-700 pb-md border-b">
             <button
               type="button"
               onClick={() => toggleSection("specialties")}
               className="flex w-full items-center justify-between text-left"
               aria-expanded={openSections.specialties}
             >
-              <h3 className="text-secondary-900 text-sm font-semibold">Specialties</h3>
+              <h3 className="text-secondary-900 dark:text-secondary-100 text-sm font-semibold">
+                Specialties
+              </h3>
               {openSections.specialties ? (
-                <ChevronUp className="text-secondary-600 h-4 w-4" />
+                <ChevronUp className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               ) : (
-                <ChevronDown className="text-secondary-600 h-4 w-4" />
+                <ChevronDown className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               )}
             </button>
             {openSections.specialties && (
@@ -330,25 +338,27 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </div>
 
           {/* Contact Section */}
-          <div className="border-secondary-200 pb-md border-b">
+          <div className="border-secondary-200 dark:border-secondary-700 pb-md border-b">
             <button
               type="button"
               onClick={() => toggleSection("contact")}
               className="flex w-full items-center justify-between text-left"
               aria-expanded={openSections.contact}
             >
-              <h3 className="text-secondary-900 text-sm font-semibold">Contact</h3>
+              <h3 className="text-secondary-900 dark:text-secondary-100 text-sm font-semibold">
+                Contact
+              </h3>
               {openSections.contact ? (
-                <ChevronUp className="text-secondary-600 h-4 w-4" />
+                <ChevronUp className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               ) : (
-                <ChevronDown className="text-secondary-600 h-4 w-4" />
+                <ChevronDown className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               )}
             </button>
             {openSections.contact && (
               <div className="mt-sm space-y-sm">
                 <label
                   htmlFor="filter-areaCode"
-                  className="text-secondary-700 block text-xs font-medium"
+                  className="text-secondary-700 dark:text-secondary-300 block text-xs font-medium"
                 >
                   Area Code
                 </label>
@@ -370,11 +380,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               className="flex w-full items-center justify-between text-left"
               aria-expanded={openSections.experience}
             >
-              <h3 className="text-secondary-900 text-sm font-semibold">Experience</h3>
+              <h3 className="text-secondary-900 dark:text-secondary-100 text-sm font-semibold">
+                Experience
+              </h3>
               {openSections.experience ? (
-                <ChevronUp className="text-secondary-600 h-4 w-4" />
+                <ChevronUp className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               ) : (
-                <ChevronDown className="text-secondary-600 h-4 w-4" />
+                <ChevronDown className="text-secondary-600 dark:text-secondary-400 h-4 w-4" />
               )}
             </button>
             {openSections.experience && (
@@ -394,7 +406,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="border-secondary-200 p-lg sticky bottom-0 border-t bg-white">
+        <div className="border-secondary-200 dark:border-secondary-700 p-lg dark:bg-secondary-900 sticky bottom-0 border-t bg-white">
           <Button variant="secondary" onClick={onClearAll} className="w-full">
             Clear All Filters
           </Button>

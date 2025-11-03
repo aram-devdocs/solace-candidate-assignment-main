@@ -61,7 +61,7 @@ export const PageSizeSelector: React.FC<PageSizeSelectorProps> = ({
 
   return (
     <div className="gap-sm flex items-center text-sm">
-      <span className="text-secondary-700">{label}</span>
+      <span className="text-secondary-700 dark:text-secondary-300">{label}</span>
       <Select
         options={selectOptions}
         value={pageSize.toString()}
@@ -69,7 +69,7 @@ export const PageSizeSelector: React.FC<PageSizeSelectorProps> = ({
         className="w-20"
         aria-label="Items per page"
       />
-      <span className="text-secondary-700">per page</span>
+      <span className="text-secondary-700 dark:text-secondary-300">per page</span>
     </div>
   );
 };

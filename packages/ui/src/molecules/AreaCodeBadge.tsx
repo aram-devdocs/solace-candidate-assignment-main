@@ -44,11 +44,11 @@ export const AreaCodeBadge: React.FC<AreaCodeBadgeProps> = ({
   onClick,
 }) => {
   const baseClasses = isActive
-    ? "inline-flex items-center gap-1 px-sm py-xs rounded-full text-sm font-medium bg-primary-600 text-white border border-primary-700 whitespace-nowrap shadow-sm"
-    : "inline-flex items-center gap-1 px-sm py-xs rounded-full text-sm font-medium bg-primary-100 text-primary-800 whitespace-nowrap shadow-xs";
+    ? "inline-flex items-center gap-1 px-sm py-xs rounded-full text-sm font-medium bg-primary-600 text-white border border-primary-700 dark:bg-primary-500 dark:text-white dark:border-primary-600 whitespace-nowrap shadow-sm"
+    : "inline-flex items-center gap-1 px-sm py-xs rounded-full text-sm font-medium bg-primary-100 text-primary-800 dark:bg-primary-700 dark:text-primary-200 whitespace-nowrap shadow-xs";
 
   const clickableClasses = clickable
-    ? "cursor-pointer hover:bg-primary-200 hover:text-primary-900 hover:shadow-sm active:bg-primary-300 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
+    ? "cursor-pointer hover:bg-primary-200 hover:text-primary-900 dark:hover:bg-primary-600 dark:hover:text-primary-100 hover:shadow-sm active:bg-primary-300 dark:active:bg-primary-500 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-offset-1"
     : "";
 
   const handleClick = (): void => {

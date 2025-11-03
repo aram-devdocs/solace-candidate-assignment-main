@@ -20,7 +20,7 @@ export const HealthInsuranceEmptyState: React.FC<HealthInsuranceEmptyStateProps>
 }) => {
   return (
     <div className={`px-md py-lg flex flex-col items-start ${className}`}>
-      <p className="mb-xl text-lg text-neutral-900">
+      <p className="mb-xl dark:text-secondary-100 text-lg text-neutral-900">
         Please{" "}
         <button
           onClick={onContactSupport}

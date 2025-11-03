@@ -15,7 +15,7 @@ export interface NotesEmptyStateProps {
 export const NotesEmptyState: React.FC<NotesEmptyStateProps> = ({ className = "" }) => {
   return (
     <div className={`px-md py-lg flex flex-col items-start ${className}`}>
-      <p className="mb-xl text-lg text-neutral-900">
+      <p className="mb-xl dark:text-secondary-100 text-lg text-neutral-900">
         Your Care Champion doesn&apos;t have any notes for you just yet.
       </p>
       <PenIllustration width={350} height={210} />

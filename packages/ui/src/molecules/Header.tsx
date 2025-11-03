@@ -2,8 +2,10 @@
 
 import { Menu } from "lucide-react";
 import type { ReactNode } from "react";
+import type { Theme } from "@repo/hooks";
 import { IconButton } from "../atoms/IconButton";
 import { SolaceLogo } from "../atoms/SolaceLogo";
+import { ThemeToggle } from "../atoms/ThemeToggle";
 
 /**
  * Props for the Header component
@@ -29,6 +31,14 @@ export interface HeaderProps {
    * Callback when user profile is clicked
    */
   onProfileClick?: () => void;
+  /**
+   * Current theme ('light' or 'dark')
+   */
+  theme?: Theme;
+  /**
+   * Callback when theme toggle is clicked
+   */
+  onThemeToggle?: () => void;
   /**
    * Number of unread messages
    */
@@ -62,25 +72,29 @@ export function Header({
   onMessagesClick,
   onNotificationsClick,
   onProfileClick,
+  theme = "light",
+  onThemeToggle,
   messageCount,
   notificationCount,
 }: HeaderProps) {
   return (
-    <header className="bg-primary-700 w-full text-white shadow-md">
+    <header className="bg-primary-700 dark:bg-secondary-900 w-full text-white shadow-md">
       <div className="h-header flex items-center justify-between px-4 md:px-6">
         {/* Left: Logo */}
         <div className="flex items-center gap-4">
           {logo && <div className="flex-shrink-0">{logo}</div>}
         </div>
 
-        {/* Right: Actions + Profile (desktop) / Hamburger (mobile) */}
+        {/* Right: Theme Toggle + Actions + Profile (desktop) / Hamburger (mobile) */}
         <div className="flex items-center gap-2">
+          {/* Theme Toggle - first in line */}
+          {onThemeToggle && <ThemeToggle theme={theme} onToggle={onThemeToggle} />}
           {/* Messages */}
           <div className="relative">
             <a
               href="/messages"
               onClick={onMessagesClick}
-              className="hover:bg-primary-600 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 dark:hover:bg-secondary-800 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
               aria-label="Messages"
             >
               <svg
@@ -111,7 +125,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={onNotificationsClick}
-              className="hover:bg-primary-600 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
+              className="hover:bg-primary-600 dark:hover:bg-secondary-800 h-icon-md w-icon-md flex items-center justify-center rounded-md transition-colors"
               aria-label="Notifications"
             >
               <svg
@@ -142,14 +156,14 @@ export function Header({
             icon={Menu}
             variant="primary"
             onClick={onMenuClick}
-            className="hover:bg-primary-800 bg-transparent md:hidden"
+            className="hover:bg-primary-800 dark:hover:bg-secondary-800 bg-transparent md:hidden"
             aria-label="Open menu"
           />
 
           {/* User Profile (desktop only) */}
           <button
             onClick={onProfileClick}
-            className="bg-primary-600 h-icon-md w-icon-md hidden items-center justify-center rounded-full transition-transform hover:scale-110 md:flex"
+            className="bg-primary-600 dark:bg-secondary-800 h-icon-md w-icon-md hidden items-center justify-center rounded-full transition-transform hover:scale-110 md:flex"
             aria-label="User profile"
           >
             <svg

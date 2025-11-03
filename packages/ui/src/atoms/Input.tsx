@@ -13,11 +13,13 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ variant = "default", className = "", ...props }, ref) => {
-    const baseClasses = "px-md py-sm rounded-md transition-colors";
+    const baseClasses =
+      "px-md py-sm rounded-md transition-colors bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100";
     const variantClasses = {
       default:
-        "border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700",
-      error: "border border-error-500 focus:outline-none focus:ring-2 focus:ring-error-500",
+        "border border-secondary-400 dark:border-secondary-600 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:focus:ring-primary-400 focus:border-primary-700 dark:focus:border-primary-400",
+      error:
+        "border border-error-500 dark:border-error-400 focus:outline-none focus:ring-2 focus:ring-error-500 dark:focus:ring-error-400",
     };
 
     return (

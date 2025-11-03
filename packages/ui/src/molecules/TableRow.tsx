@@ -43,7 +43,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   return (
     <>
       <tr
-        className={`border-secondary-200 hover:bg-primary-50 border-b transition-colors ${hasExpandableContent && onToggleExpand ? "cursor-pointer" : ""}`}
+        className={`border-secondary-200 dark:border-secondary-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 border-b transition-colors ${hasExpandableContent && onToggleExpand ? "cursor-pointer" : ""}`}
         onClick={hasExpandableContent && onToggleExpand ? onToggleExpand : undefined}
       >
         {cells.map((cell, index) => {
@@ -62,7 +62,7 @@ export const TableRow: React.FC<TableRowProps> = ({
             <button
               aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
               aria-expanded={isExpanded}
-              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"
+              className="text-primary-700 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"
             >
               {isExpanded ? "▲" : "▼"}
             </button>
@@ -70,13 +70,17 @@ export const TableRow: React.FC<TableRowProps> = ({
         )}
       </tr>
       {isExpanded && hasExpandableContent && (
-        <tr className="border-secondary-200 border-b bg-white xl:hidden">
+        <tr className="border-secondary-200 dark:border-secondary-700 dark:bg-secondary-900 border-b bg-white xl:hidden">
           <td colSpan={cells.length + 1} className="p-md">
             <div className="space-y-xs">
               {expandableCells.map((item, index) => (
                 <div key={index} className="flex flex-col">
-                  <span className="text-secondary-500 text-sm font-medium">{item.label}:</span>
-                  <span className="text-secondary-700 mt-xs">{item.content}</span>
+                  <span className="text-secondary-500 dark:text-secondary-400 text-sm font-medium">
+                    {item.label}:
+                  </span>
+                  <span className="text-secondary-700 dark:text-secondary-300 mt-xs">
+                    {item.content}
+                  </span>
                 </div>
               ))}
             </div>

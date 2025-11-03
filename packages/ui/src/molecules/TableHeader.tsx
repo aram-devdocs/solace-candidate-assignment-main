@@ -18,11 +18,11 @@ export interface TableHeaderProps {
  */
 export const TableHeader: React.FC<TableHeaderProps> = ({ headers, showExpandColumn = false }) => {
   return (
-    <thead className="bg-secondary-50 border-secondary-300 border-b-2">
+    <thead className="bg-secondary-50 dark:bg-secondary-800 border-secondary-300 dark:border-secondary-700 border-b-2">
       <tr>
         {headers.map((header, index) => (
           <TableCell key={index} as="th" scope="col">
-            <span className="text-secondary-900 font-bold">{header}</span>
+            <span className="text-secondary-900 dark:text-secondary-100 font-bold">{header}</span>
           </TableCell>
         ))}
         {showExpandColumn && (

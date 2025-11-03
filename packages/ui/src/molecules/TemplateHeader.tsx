@@ -38,10 +38,14 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
 }) => {
   return (
     <header className={`gap-xs flex flex-col ${className}`}>
-      <h1 className="text-secondary-900 font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+      <h1 className="text-secondary-900 dark:text-secondary-100 font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
         {title}
       </h1>
-      {subtitle && <p className="text-secondary-600 text-base sm:text-lg">{subtitle}</p>}
+      {subtitle && (
+        <p className="text-secondary-600 dark:text-secondary-300 text-base sm:text-lg">
+          {subtitle}
+        </p>
+      )}
     </header>
   );
 };

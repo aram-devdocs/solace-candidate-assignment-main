@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo, useEffect, useRef } from "react";
 import type { AdvocateSortConfig, AdvocateWithRelations, AdvocateFilters } from "@repo/types";
 import { useAdvocates, useAdvocateFilterOptions } from "@repo/queries";

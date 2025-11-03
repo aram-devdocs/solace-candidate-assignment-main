@@ -26,9 +26,11 @@ export const MessagesTemplate: React.FC<MessagesTemplateProps> = ({ className = 
     <main className={`absolute inset-0 flex flex-col ${className}`}>
       <div className="flex flex-1 overflow-hidden">
         {/* Thread List Panel */}
-        <div className="flex w-full flex-col border-r border-neutral-200 bg-white md:w-80 lg:w-96">
-          <div className="px-md py-md border-b border-neutral-200">
-            <h1 className="font-serif text-2xl font-light text-neutral-900">Your Inbox</h1>
+        <div className="dark:border-secondary-700 dark:bg-secondary-900 flex w-full flex-col border-r border-neutral-200 bg-white md:w-80 lg:w-96">
+          <div className="px-md py-md dark:border-secondary-700 border-b border-neutral-200">
+            <h1 className="dark:text-secondary-100 font-serif text-2xl font-light text-neutral-900">
+              Your Inbox
+            </h1>
           </div>
           <div className="flex-1 overflow-y-auto">
             <MessageThreadListEmptyState />
@@ -36,7 +38,7 @@ export const MessagesTemplate: React.FC<MessagesTemplateProps> = ({ className = 
         </div>
 
         {/* Message Panel - Hidden on mobile */}
-        <div className="hidden flex-1 flex-col bg-white md:flex">
+        <div className="dark:bg-secondary-900 hidden flex-1 flex-col bg-white md:flex">
           <MessagePanelEmptyState className="flex-1" />
         </div>
       </div>

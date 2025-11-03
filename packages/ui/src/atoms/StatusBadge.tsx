@@ -99,7 +99,7 @@ export function StatusBadge({
 
   return (
     <div
-      className={`bg-secondary-50 text-secondary-700 border-secondary-200 flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${className}`.trim()}
+      className={`bg-secondary-50 text-secondary-700 border-secondary-200 dark:bg-secondary-800 dark:text-secondary-300 dark:border-secondary-700 flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${className}`.trim()}
       role="status"
       aria-live="polite"
       {...props}
@@ -107,18 +107,20 @@ export function StatusBadge({
       <span className="font-medium">
         {statusText}
         {isBackgroundFetching && isFiltered && (
-          <span className="text-primary-600 ml-1">(checking server...)</span>
+          <span className="text-primary-600 dark:text-primary-400 ml-1">(checking server...)</span>
         )}
         {isFiltered && !isBackgroundFetching && (
-          <span className="text-primary-600 ml-1">(filtered)</span>
+          <span className="text-primary-600 dark:text-primary-400 ml-1">(filtered)</span>
         )}
         {!isFiltered && hasLoadedCount && loadedCount < totalCount && (
-          <span className="text-secondary-500 ml-1">({totalCount.toLocaleString()} total)</span>
+          <span className="text-secondary-500 dark:text-secondary-400 ml-1">
+            ({totalCount.toLocaleString()} total)
+          </span>
         )}
       </span>
       {isBackgroundFetching && (
         <svg
-          className="text-primary-600 h-4 w-4 animate-spin"
+          className="text-primary-600 dark:text-primary-400 h-4 w-4 animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

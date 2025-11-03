@@ -30,7 +30,7 @@ export interface IconButtonProps extends ComponentPropsWithoutRef<"button"> {
 const VARIANT_CLASSES = {
   primary: "bg-primary-700 text-white hover:bg-primary-800 active:bg-primary-200",
   secondary:
-    "bg-white text-primary-700 border border-primary-700 hover:bg-primary-100 active:bg-primary-100",
+    "bg-white dark:bg-secondary-900 text-primary-700 dark:text-primary-400 border border-primary-700 dark:border-primary-500 hover:bg-primary-100 dark:hover:bg-secondary-800 active:bg-primary-100 dark:active:bg-secondary-800",
   ghost: "bg-transparent text-primary-700 hover:bg-primary-100 active:bg-primary-200",
 };
 

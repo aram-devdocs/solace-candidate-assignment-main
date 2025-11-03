@@ -130,11 +130,19 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
         aria-label={ariaLabel}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        className={`px-md py-sm border-secondary-400 flex w-full items-center justify-between rounded-md border bg-white transition-colors ${
-          disabled ? "cursor-not-allowed opacity-50" : "hover:border-primary-700 cursor-pointer"
-        } ${isOpen ? "ring-primary-700 border-primary-700 ring-2" : ""}`}
+        className={`px-md py-sm border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 flex w-full items-center justify-between rounded-md border bg-white transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-50"
+            : "hover:border-primary-700 dark:hover:border-primary-500 cursor-pointer"
+        } ${isOpen ? "ring-primary-700 border-primary-700 dark:ring-primary-500 dark:border-primary-500 ring-2" : ""}`}
       >
-        <span className={!selectedOption ? "text-secondary-500" : "text-secondary-900"}>
+        <span
+          className={
+            !selectedOption
+              ? "text-secondary-500 dark:text-secondary-400"
+              : "text-secondary-900 dark:text-secondary-200"
+          }
+        >
           {displayText}
         </span>
         <ChevronDown
@@ -145,7 +153,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="mt-xs border-secondary-400 absolute z-50 w-full rounded-md border bg-white shadow-lg"
+          className="mt-xs border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 absolute z-50 w-full rounded-md border bg-white shadow-lg"
         >
           <div className="max-h-60 overflow-y-auto">
             {options.map((option) => {
@@ -157,8 +165,10 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
                   role="option"
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
-                  className={`px-md py-sm hover:bg-secondary-100 flex w-full cursor-pointer items-center text-left transition-colors ${
-                    isSelected ? "bg-primary-50 text-primary-700 font-medium" : "text-secondary-900"
+                  className={`px-md py-sm hover:bg-secondary-100 dark:hover:bg-secondary-700 flex w-full cursor-pointer items-center text-left transition-colors ${
+                    isSelected
+                      ? "bg-primary-50 text-primary-700 dark:bg-primary-900 dark:text-primary-300 font-medium"
+                      : "text-secondary-900 dark:text-secondary-200"
                   }`}
                 >
                   {option.label}

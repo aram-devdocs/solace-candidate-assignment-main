@@ -1,3 +1,5 @@
+"use client";
+
 import { filterBySearch } from "@repo/utils";
 import type { AdvocateWithRelations } from "@repo/types";
 

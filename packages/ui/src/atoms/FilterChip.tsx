@@ -51,13 +51,19 @@ export const FilterChip: React.FC<FilterChipProps> = ({
   className = "",
 }) => {
   const variantClasses = {
-    default: "bg-secondary-200 text-secondary-900 hover:bg-secondary-300",
-    primary: "bg-primary-100 text-primary-700 hover:bg-primary-200",
-    degree: "bg-primary-50 text-primary-700 hover:bg-primary-100",
-    city: "bg-primary-100 text-primary-800 hover:bg-primary-150",
-    specialty: "bg-primary-50 text-primary-700 hover:bg-primary-100",
-    experience: "bg-secondary-100 text-secondary-800 hover:bg-secondary-200",
-    areaCode: "bg-primary-300 text-primary-900 hover:bg-primary-400",
+    default:
+      "bg-secondary-200 text-secondary-900 hover:bg-secondary-300 dark:bg-secondary-700 dark:text-secondary-200 dark:hover:bg-secondary-600",
+    primary:
+      "bg-primary-100 text-primary-700 hover:bg-primary-200 dark:bg-primary-800 dark:text-primary-300 dark:hover:bg-primary-700",
+    degree:
+      "bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-900 dark:text-primary-300 dark:hover:bg-primary-800",
+    city: "bg-primary-100 text-primary-800 hover:bg-primary-150 dark:bg-primary-800 dark:text-primary-300 dark:hover:bg-primary-700",
+    specialty:
+      "bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-900 dark:text-primary-300 dark:hover:bg-primary-800",
+    experience:
+      "bg-secondary-100 text-secondary-800 hover:bg-secondary-200 dark:bg-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700",
+    areaCode:
+      "bg-primary-300 text-primary-900 hover:bg-primary-400 dark:bg-primary-600 dark:text-primary-100 dark:hover:bg-primary-500",
   };
 
   return (
@@ -68,7 +74,7 @@ export const FilterChip: React.FC<FilterChipProps> = ({
       <button
         type="button"
         onClick={onRemove}
-        className="p-xs rounded-full transition-colors hover:bg-white/50"
+        className="p-xs rounded-full transition-colors hover:bg-white/50 dark:hover:bg-black/30"
         aria-label={`Remove ${label} filter`}
       >
         <X className="h-3 w-3" />

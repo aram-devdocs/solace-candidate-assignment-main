@@ -78,9 +78,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const baseClasses = "relative px-md py-sm rounded-md transition-colors cursor-pointer";
     const variantClasses = {
       default:
-        "border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700 bg-white",
+        "border border-secondary-400 dark:border-secondary-600 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:focus:ring-primary-500 focus:border-primary-700 dark:focus:border-primary-500 bg-white dark:bg-secondary-800 dark:text-secondary-200",
       error:
-        "border border-error-500 focus:outline-none focus:ring-2 focus:ring-error-500 bg-white",
+        "border border-error-500 dark:border-error-400 focus:outline-none focus:ring-2 focus:ring-error-500 dark:focus:ring-error-400 bg-white dark:bg-secondary-800 dark:text-secondary-200",
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {

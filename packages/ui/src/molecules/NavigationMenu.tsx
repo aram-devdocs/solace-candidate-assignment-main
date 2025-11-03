@@ -77,14 +77,14 @@ export function NavigationMenu({
       <aside
         className={`
           md:border-primary-150
+          dark:bg-secondary-900
           fixed
           right-0
           top-0
-          z-50
-          flex h-screen
+          z-50 flex
+          h-screen
           flex-shrink-0
-          flex-col
-          bg-white
+          flex-col bg-white
           md:sticky md:left-0 md:right-auto md:border-r md:shadow-none
           ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
           w-64 ${collapsed ? "md:w-20" : "md:w-64"}
@@ -99,12 +99,14 @@ export function NavigationMenu({
         <div className="p-4 md:hidden">
           <button
             onClick={onClose}
-            className="border-primary-700 hover:bg-secondary-50 flex w-full items-center justify-between rounded-md border px-6 py-3 transition-colors"
+            className="border-primary-700 dark:border-primary-500 hover:bg-secondary-50 dark:hover:bg-secondary-800 flex w-full items-center justify-between rounded-md border px-6 py-3 transition-colors"
             aria-label="Close menu"
             type="button"
           >
-            <span className="text-primary-700 text-base font-semibold">Close Menu</span>
-            <X className="text-primary-700 h-5 w-5" />
+            <span className="text-primary-700 dark:text-primary-400 text-base font-semibold">
+              Close Menu
+            </span>
+            <X className="text-primary-700 dark:text-primary-400 h-5 w-5" />
           </button>
         </div>
 
@@ -120,14 +122,14 @@ export function NavigationMenu({
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="border-primary-150 hover:bg-secondary-50 flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors"
+            className="border-primary-150 dark:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-800 flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-full border transition-colors"
             aria-label={collapsed ? "Expand menu" : "Collapse menu"}
             type="button"
           >
             {collapsed ? (
-              <ChevronRight className="text-primary-700 pointer-events-none h-5 w-5" />
+              <ChevronRight className="text-primary-700 dark:text-primary-400 pointer-events-none h-5 w-5" />
             ) : (
-              <ChevronLeft className="text-primary-700 pointer-events-none h-5 w-5" />
+              <ChevronLeft className="text-primary-700 dark:text-primary-400 pointer-events-none h-5 w-5" />
             )}
           </button>
         </div>
@@ -141,7 +143,7 @@ export function NavigationMenu({
                   <>
                     {cloneElement(child, { collapsed })}
                     {index < Children.count(children) - 1 && (
-                      <hr className="border-secondary-100 my-1" />
+                      <hr className="border-secondary-100 dark:border-secondary-700 my-1" />
                     )}
                   </>
                 );
@@ -157,7 +159,7 @@ export function NavigationMenu({
                 aria-label="User profile"
               >
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                  <div className="bg-primary-600 hover:bg-primary-700 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors">
+                  <div className="bg-primary-600 dark:bg-primary-500 hover:bg-primary-700 dark:hover:bg-primary-600 flex h-[36px] w-[36px] items-center justify-center rounded-full transition-colors">
                     <svg
                       width="24"
                       height="24"
@@ -191,7 +193,11 @@ export function NavigationMenu({
         </nav>
 
         {/* Footer */}
-        {footer && <div className="border-secondary-200 border-t p-4">{footer}</div>}
+        {footer && (
+          <div className="border-secondary-200 dark:border-secondary-700 border-t p-4">
+            {footer}
+          </div>
+        )}
       </aside>
     </>
   );

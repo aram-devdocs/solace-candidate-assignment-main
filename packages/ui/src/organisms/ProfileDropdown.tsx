@@ -32,7 +32,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   return (
     <div
-      className="mt-xs absolute right-0 top-full z-50 w-52 rounded-lg border border-neutral-200 bg-white shadow-lg"
+      className="mt-xs dark:border-secondary-700 dark:bg-secondary-900 absolute right-0 top-full z-50 w-52 rounded-lg border border-neutral-200 bg-white shadow-lg"
       role="menu"
       aria-orientation="vertical"
     >
@@ -40,11 +40,11 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         <button
           type="button"
           onClick={onAccountClick}
-          className="gap-md px-lg py-md flex w-full items-center text-left text-sm text-neutral-900 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none"
+          className="gap-md px-lg py-md dark:text-secondary-100 dark:hover:bg-secondary-800 dark:focus:bg-secondary-800 flex w-full items-center text-left text-sm text-neutral-900 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none"
           role="menuitem"
         >
           <svg
-            className="text-primary-700 h-5 w-5"
+            className="text-primary-700 dark:text-primary-400 h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -63,11 +63,11 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         <button
           type="button"
           onClick={onLogoutClick}
-          className="gap-md px-lg py-md flex w-full items-center text-left text-sm text-neutral-900 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none"
+          className="gap-md px-lg py-md dark:text-secondary-100 dark:hover:bg-secondary-800 dark:focus:bg-secondary-800 flex w-full items-center text-left text-sm text-neutral-900 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none"
           role="menuitem"
         >
           <svg
-            className="text-primary-700 h-5 w-5"
+            className="text-primary-700 dark:text-primary-400 h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

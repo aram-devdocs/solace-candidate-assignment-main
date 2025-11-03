@@ -18,7 +18,9 @@ export const NotificationEmptyState: React.FC<NotificationEmptyStateProps> = ({
     <div
       className={`px-lg py-3xl flex flex-col items-center justify-center text-center ${className}`}
     >
-      <h2 className="font-serif text-2xl font-light text-neutral-900">What&apos;s New?</h2>
+      <h2 className="dark:text-secondary-100 font-serif text-2xl font-light text-neutral-900">
+        What&apos;s New?
+      </h2>
       <p className="mt-md text-sm text-neutral-600">View notifications from the past 30 days.</p>
     </div>
   );

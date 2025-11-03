@@ -53,13 +53,15 @@ export function NotFoundState({
       {...props}
     >
       <div className="max-w-md text-center">
-        <h1 className="text-secondary-300 mb-4 text-6xl font-bold">404</h1>
-        <h2 className="text-secondary-900 mb-2 text-2xl font-semibold">{title}</h2>
-        <p className="text-secondary-600 mb-6">{message}</p>
+        <h1 className="text-secondary-300 dark:text-secondary-700 mb-4 text-6xl font-bold">404</h1>
+        <h2 className="text-secondary-900 dark:text-secondary-100 mb-2 text-2xl font-semibold">
+          {title}
+        </h2>
+        <p className="text-secondary-600 dark:text-secondary-400 mb-6">{message}</p>
         {onAction && (
           <button
             onClick={onAction}
-            className="bg-primary-700 hover:bg-primary-800 rounded-md px-6 py-3 font-medium text-white transition-colors"
+            className="bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-500 rounded-md px-6 py-3 font-medium text-white transition-colors"
           >
             {actionText}
           </button>

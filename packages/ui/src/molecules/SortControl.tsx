@@ -54,14 +54,14 @@ export const SortControl: React.FC<SortControlProps> = ({
 }) => {
   const getSortIcon = (): React.ReactNode => {
     if (!isActive) {
-      return <ArrowUpDown className="text-secondary-400 h-4 w-4" />;
+      return <ArrowUpDown className="text-secondary-400 dark:text-secondary-600 h-4 w-4" />;
     }
 
     if (direction === "asc") {
-      return <ArrowUp className="text-primary-700 h-4 w-4" />;
+      return <ArrowUp className="text-primary-700 dark:text-primary-400 h-4 w-4" />;
     }
 
-    return <ArrowDown className="text-primary-700 h-4 w-4" />;
+    return <ArrowDown className="text-primary-700 dark:text-primary-400 h-4 w-4" />;
   };
 
   const getAriaLabel = (): string => {
@@ -78,7 +78,7 @@ export const SortControl: React.FC<SortControlProps> = ({
     <button
       type="button"
       onClick={onToggle}
-      className="gap-xs hover:text-primary-700 flex items-center font-medium transition-colors"
+      className="gap-xs hover:text-primary-700 dark:hover:text-primary-400 flex items-center font-medium transition-colors"
       aria-label={getAriaLabel()}
     >
       {showLabel && <span>{label}</span>}

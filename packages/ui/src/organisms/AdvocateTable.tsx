@@ -252,9 +252,9 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
+      <div className="border-secondary-200 dark:border-secondary-700 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
-          <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
+          <thead className="bg-secondary-50 dark:bg-secondary-800 border-secondary-300 dark:border-secondary-700 sticky top-0 z-10 border-b-2">
             <tr>
               {visibleColumns.map((key, index) => {
                 const isSortable = sortableColumns.includes(key as SortableColumn);
@@ -270,7 +270,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                         label={ADVOCATE_TABLE_HEADERS[key]}
                       />
                     ) : (
-                      <span className="text-secondary-900 font-bold">
+                      <span className="text-secondary-900 dark:text-secondary-100 font-bold">
                         {ADVOCATE_TABLE_HEADERS[key]}
                       </span>
                     )}

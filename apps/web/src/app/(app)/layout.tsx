@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { AppLayout } from "@repo/ui";
-import { useToast } from "@repo/hooks";
+import { useToast, useTheme } from "@repo/hooks";
 import { NAVIGATION_ITEMS } from "../../constants/navigation";
 
 export interface ApplicationLayoutProps {
@@ -22,6 +22,7 @@ export default function ApplicationLayout({ children }: ApplicationLayoutProps) 
   const pathname = usePathname();
   const [isNavigating, setIsNavigating] = useState(false);
   const { showToast } = useToast();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     setIsNavigating(false);
@@ -46,6 +47,8 @@ export default function ApplicationLayout({ children }: ApplicationLayoutProps) 
       currentPath={pathname}
       messageCount={3}
       notificationCount={5}
+      theme={theme}
+      onThemeToggle={toggleTheme}
       isNavigating={isNavigating}
       onNavigationStart={handleNavigationStart}
       onShowToast={handleShowDemoToast}

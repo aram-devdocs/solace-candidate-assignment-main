@@ -39,7 +39,7 @@ export const SkeletonLine: React.FC<SkeletonLineProps> = ({
 
   return (
     <div
-      className={`from-secondary-200 via-secondary-100 to-secondary-200 animate-shimmer bg-gradient-to-r bg-[length:2000px_100%] ${roundedClass} ${className}`}
+      className={`from-secondary-200 via-secondary-100 to-secondary-200 dark:from-secondary-700 dark:via-secondary-800 dark:to-secondary-700 animate-shimmer bg-gradient-to-r bg-[length:2000px_100%] ${roundedClass} ${className}`}
       style={{ width, height }}
       aria-hidden="true"
     />

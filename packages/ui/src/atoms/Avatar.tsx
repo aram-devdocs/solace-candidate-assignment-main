@@ -66,7 +66,7 @@ export function Avatar({
 
   return (
     <div
-      className={`bg-primary-100 text-primary-700 flex items-center justify-center overflow-hidden rounded-full ${sizeClass} ${className}`.trim()}
+      className={`bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-primary-300 flex items-center justify-center overflow-hidden rounded-full ${sizeClass} ${className}`.trim()}
       {...props}
     >
       {src ? (
@@ -74,7 +74,7 @@ export function Avatar({
       ) : initials ? (
         <span className="font-bold uppercase">{initials}</span>
       ) : showFallbackIcon ? (
-        <User className="text-primary-500 h-1/2 w-1/2" />
+        <User className="text-primary-500 dark:text-primary-400 h-1/2 w-1/2" />
       ) : null}
     </div>
   );

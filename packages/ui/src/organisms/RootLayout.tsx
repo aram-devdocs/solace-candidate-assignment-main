@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import type { Theme } from "@repo/hooks";
 import { useNotificationDrawer, useProfileDropdown } from "@repo/hooks";
 import type { FooterProps } from "../molecules/Footer";
 import { Footer } from "../molecules/Footer";
@@ -58,6 +59,14 @@ export interface RootLayoutProps {
    * Callback to show toast notification (for demo UI actions)
    */
   onShowToast?: () => void;
+  /**
+   * Current theme mode
+   */
+  theme?: Theme;
+  /**
+   * Callback when theme toggle is clicked
+   */
+  onThemeToggle?: () => void;
 }
 
 /**
@@ -99,6 +108,8 @@ export function RootLayout({
   showNavigation = true,
   isNavigating = false,
   onShowToast,
+  theme = "light",
+  onThemeToggle,
 }: RootLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const notificationDrawer = useNotificationDrawer();
@@ -140,7 +151,7 @@ export function RootLayout({
   const navigationContent = renderNavigation ? renderNavigation(handleMenuClose) : navigation;
 
   return (
-    <div className="bg-secondary-50 flex h-screen flex-col">
+    <div className="bg-secondary-50 dark:bg-secondary-900 flex h-screen flex-col">
       {/* Header with overlay */}
       <div
         className={`relative md:transform-none ${isMenuOpen ? "max-md:-translate-x-64" : ""}`}
@@ -150,7 +161,7 @@ export function RootLayout({
       >
         {/* White overlay on header when menu is open */}
         <div
-          className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden"
+          className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden dark:bg-black"
           style={{
             opacity: isMenuOpen ? 0.4 : 0,
             transition: "opacity 0.3s ease-in-out",
@@ -159,6 +170,8 @@ export function RootLayout({
         <div className="relative">
           <Header
             {...header}
+            theme={theme}
+            onThemeToggle={onThemeToggle}
             onMenuClick={() => setIsMenuOpen(true)}
             onMessagesClick={handleMessagesClick}
             onNotificationsClick={handleNotificationsClick}
@@ -213,7 +226,7 @@ export function RootLayout({
         >
           {/* White overlay when menu is open */}
           <div
-            className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden"
+            className="pointer-events-none absolute inset-0 z-30 bg-white md:hidden dark:bg-black"
             style={{
               opacity: isMenuOpen ? 0.4 : 0,
               transition: "opacity 0.3s ease-in-out",

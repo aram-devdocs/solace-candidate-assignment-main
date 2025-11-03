@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable no-undef */
 import { useState, useEffect, useRef, RefObject } from "react";
 

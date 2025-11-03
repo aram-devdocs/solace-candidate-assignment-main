@@ -35,7 +35,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   return (
     <div className="p-xl" role={A11Y_ROLES.alert} aria-label={ARIA_LABELS.errorRegion}>
       <div className="gap-md mx-auto flex max-w-2xl flex-col items-center justify-center">
-        <div className="gap-sm text-error-600 flex items-center">
+        <div className="gap-sm text-error-600 dark:text-error-400 flex items-center">
           <svg
             className="h-12 w-12"
             fill="none"
@@ -57,7 +57,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
           <Text as="h2" variant="h3" color="error" className="mb-sm">
             Something went wrong
           </Text>
-          <Text as="p" variant="body" className="text-secondary-700">
+          <Text as="p" variant="body" className="text-secondary-700 dark:text-secondary-300">
             {error}
           </Text>
         </div>
@@ -75,15 +75,15 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
             <button
               type="button"
               onClick={() => setShowDetails(!showDetails)}
-              className="text-secondary-600 hover:text-secondary-800 rounded text-sm underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="text-secondary-600 hover:text-secondary-800 dark:text-secondary-400 dark:hover:text-secondary-300 rounded text-sm underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               aria-expanded={showDetails}
             >
               {showDetails ? "Hide" : "Show"} error details
             </button>
 
             {showDetails && (
-              <div className="mt-md p-md bg-error-50 border-error-200 rounded-lg border-2">
-                <pre className="text-error-900 whitespace-pre-wrap break-words text-xs">
+              <div className="mt-md p-md bg-error-50 border-error-200 dark:bg-error-900 dark:border-error-700 rounded-lg border-2">
+                <pre className="text-error-900 dark:text-error-100 whitespace-pre-wrap break-words text-xs">
                   {errorDetails}
                 </pre>
               </div>

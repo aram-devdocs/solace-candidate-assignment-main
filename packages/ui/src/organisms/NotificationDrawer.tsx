@@ -30,24 +30,24 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
       />
 
       <div
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`dark:bg-secondary-900 fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="notification-drawer-title"
       >
-        <div className="px-lg py-md flex items-center justify-between border-b border-neutral-200">
+        <div className="px-lg py-md dark:border-secondary-700 flex items-center justify-between border-b border-neutral-200">
           <h2
             id="notification-drawer-title"
-            className="font-serif text-2xl font-light text-neutral-900"
+            className="dark:text-secondary-100 font-serif text-2xl font-light text-neutral-900"
           >
             Notifications
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-xs focus:ring-primary-500 rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus:ring-2"
+            className="p-xs focus:ring-primary-500 dark:focus:ring-primary-400 dark:text-secondary-400 dark:hover:bg-secondary-800 dark:hover:text-secondary-200 rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus:ring-2"
             aria-label="Close notifications"
           >
             <svg

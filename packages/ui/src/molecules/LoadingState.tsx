@@ -29,7 +29,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
           {Array.from({ length: skeletonRows }).map((_, index) => (
             <div
               key={index}
-              className="from-secondary-100 via-secondary-200 to-secondary-100 animate-shimmer h-12 rounded-lg bg-gradient-to-r bg-[length:2000px_100%]"
+              className="from-secondary-100 via-secondary-200 to-secondary-100 dark:from-secondary-700 dark:via-secondary-800 dark:to-secondary-700 animate-shimmer h-12 rounded-lg bg-gradient-to-r bg-[length:2000px_100%]"
             />
           ))}
         </div>

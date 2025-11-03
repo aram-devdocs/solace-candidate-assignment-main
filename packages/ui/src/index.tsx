@@ -44,6 +44,8 @@ export type { StatusBadgeProps } from "./atoms/StatusBadge";
 export { IconButton } from "./atoms/IconButton";
 export type { IconButtonProps } from "./atoms/IconButton";
 
+export { ThemeToggle } from "./atoms/ThemeToggle";
+
 export { SolaceLogo } from "./atoms/SolaceLogo";
 export type { SolaceLogoProps } from "./atoms/SolaceLogo";
 
@@ -66,8 +68,11 @@ export { HelpIcon } from "./atoms/HelpIcon";
 export type { HelpIconProps } from "./atoms/HelpIcon";
 
 export { MorningIllustration } from "./atoms/MorningIllustration";
+export { MorningIllustrationDark } from "./atoms/MorningIllustrationDark";
 export { AfternoonIllustration } from "./atoms/AfternoonIllustration";
+export { AfternoonIllustrationDark } from "./atoms/AfternoonIllustrationDark";
 export { EveningIllustration } from "./atoms/EveningIllustration";
+export { EveningIllustrationDark } from "./atoms/EveningIllustrationDark";
 
 export { BellIllustration } from "./atoms/BellIllustration";
 export type { BellIllustrationProps } from "./atoms/BellIllustration";

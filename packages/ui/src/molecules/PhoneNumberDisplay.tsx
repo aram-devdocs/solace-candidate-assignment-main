@@ -55,16 +55,16 @@ export function PhoneNumberDisplay({
   const restOfNumber = phoneNumber.substring(areaCodeWithParens.length).trim();
 
   const areaCodeClasses = isActiveAreaCode
-    ? "text-white bg-primary-600 hover:bg-primary-700 decoration-white"
-    : "text-primary-700 hover:text-primary-900 hover:bg-primary-50 decoration-primary-400";
+    ? "text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 decoration-white"
+    : "text-primary-700 hover:text-primary-900 hover:bg-primary-50 dark:text-primary-400 dark:hover:text-primary-300 dark:hover:bg-primary-900/30 decoration-primary-400 dark:decoration-primary-500";
 
   return (
-    <div className="bg-secondary-50 text-secondary-900 border-secondary-200 px-sm py-xs inline-flex items-center whitespace-nowrap rounded-full border text-sm">
+    <div className="bg-secondary-50 text-secondary-900 border-secondary-200 dark:bg-secondary-800 dark:text-secondary-200 dark:border-secondary-700 px-sm py-xs inline-flex items-center whitespace-nowrap rounded-full border text-sm">
       {clickable && onAreaCodeClick ? (
         <button
           type="button"
           onClick={handleAreaCodeClick}
-          className={`${areaCodeClasses} focus:ring-primary-500 px-xs -mx-xs cursor-pointer rounded font-semibold underline decoration-dotted underline-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1`}
+          className={`${areaCodeClasses} focus:ring-primary-500 dark:focus:ring-primary-400 px-xs -mx-xs cursor-pointer rounded font-semibold underline decoration-dotted underline-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1`}
           aria-label={`Filter by area code ${areaCode}`}
           aria-pressed={isActiveAreaCode}
         >

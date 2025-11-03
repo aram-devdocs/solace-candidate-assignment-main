@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
@@ -145,6 +146,27 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-banner": "linear-gradient(to right, #1D4239, #134239, #1e3a34)",
+        "gradient-banner-dark": "linear-gradient(to right, #0f2e28, #0a1f1c, #1a4239)",
+      },
+      backgroundColor: {
+        dark: {
+          primary: "#0d1117",
+          secondary: "#161b22",
+          tertiary: "#1f2937",
+        },
+      },
+      textColor: {
+        dark: {
+          primary: "#f3f4f6",
+          secondary: "#d1d5db",
+          tertiary: "#9ca3af",
+        },
+      },
+      borderColor: {
+        dark: {
+          primary: "#374151",
+          secondary: "#4b5563",
+        },
       },
       keyframes: {
         shimmer: {
@@ -193,6 +215,11 @@ const config: Config = {
           "&::-webkit-scrollbar": {
             display: "none",
           },
+        },
+        ".theme-transition": {
+          "transition-property": "background-color, border-color, color, fill, stroke",
+          "transition-timing-function": "ease-in-out",
+          "transition-duration": "300ms",
         },
       });
     },

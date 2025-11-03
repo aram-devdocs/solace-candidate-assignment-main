@@ -84,11 +84,15 @@ export const RangeInput: React.FC<RangeInputProps> = ({
   };
 
   const inputBaseClasses =
-    "px-md py-sm rounded-md border border-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700 transition-colors";
+    "px-md py-sm rounded-md border border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:focus:ring-primary-500 focus:border-primary-700 dark:focus:border-primary-500 transition-colors";
 
   return (
     <div className={`gap-sm flex flex-col ${className}`}>
-      {label && <label className="text-secondary-900 text-sm font-medium">{label}</label>}
+      {label && (
+        <label className="text-secondary-900 dark:text-secondary-200 text-sm font-medium">
+          {label}
+        </label>
+      )}
       <div className="gap-sm flex min-w-0 items-center">
         <input
           type="number"
@@ -100,7 +104,7 @@ export const RangeInput: React.FC<RangeInputProps> = ({
           min={0}
           aria-label={label ? `${label} minimum` : "Minimum value"}
         />
-        <span className="text-secondary-500 flex-shrink-0">to</span>
+        <span className="text-secondary-500 dark:text-secondary-400 flex-shrink-0">to</span>
         <input
           type="number"
           value={max}

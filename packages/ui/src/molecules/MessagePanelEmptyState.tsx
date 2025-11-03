@@ -20,7 +20,7 @@ export const MessagePanelEmptyState: React.FC<MessagePanelEmptyStateProps> = ({
       className={`px-lg py-3xl flex flex-col items-center justify-center text-center ${className}`}
     >
       <BellIllustration width={200} height={200} className="mb-lg" />
-      <h2 className="font-serif text-2xl font-light text-neutral-900">
+      <h2 className="dark:text-secondary-100 font-serif text-2xl font-light text-neutral-900">
         Start a conversation below!
       </h2>
     </div>

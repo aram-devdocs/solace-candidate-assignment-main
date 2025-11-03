@@ -118,11 +118,19 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`px-md py-sm border-secondary-400 flex w-full items-center justify-between rounded-md border bg-white transition-colors ${
-          disabled ? "cursor-not-allowed opacity-50" : "hover:border-primary-700 cursor-pointer"
-        } ${isOpen ? "ring-primary-700 border-primary-700 ring-2" : ""}`}
+        className={`px-md py-sm border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 flex w-full items-center justify-between rounded-md border bg-white transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-50"
+            : "hover:border-primary-700 dark:hover:border-primary-500 cursor-pointer"
+        } ${isOpen ? "ring-primary-700 border-primary-700 dark:ring-primary-500 dark:border-primary-500 ring-2" : ""}`}
       >
-        <span className={selectedCount === 0 ? "text-secondary-500" : "text-secondary-900"}>
+        <span
+          className={
+            selectedCount === 0
+              ? "text-secondary-500 dark:text-secondary-400"
+              : "text-secondary-900 dark:text-secondary-200"
+          }
+        >
           {displayText}
         </span>
         <div className="gap-xs flex items-center">
@@ -141,7 +149,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                   handleClearAll();
                 }
               }}
-              className="p-xs hover:bg-secondary-200 cursor-pointer rounded transition-colors"
+              className="p-xs hover:bg-secondary-200 dark:hover:bg-secondary-700 cursor-pointer rounded transition-colors"
               aria-label="Clear all selections"
             >
               <X className="h-4 w-4" />
@@ -155,37 +163,41 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
       {isOpen && (
         <div
-          className="mt-xs border-secondary-400 absolute z-50 w-full rounded-md border bg-white shadow-lg"
+          className="mt-xs border-secondary-400 dark:border-secondary-600 dark:bg-secondary-800 absolute z-50 w-full rounded-md border bg-white shadow-lg"
           style={{ maxHeight: `${maxHeight}px` }}
         >
-          <div className="p-sm border-secondary-200 border-b">
+          <div className="p-sm border-secondary-200 dark:border-secondary-700 border-b">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="px-sm py-xs border-secondary-400 focus:ring-primary-700 focus:border-primary-700 w-full rounded border focus:outline-none focus:ring-2"
+              className="px-sm py-xs border-secondary-400 dark:border-secondary-600 dark:bg-secondary-900 dark:text-secondary-200 focus:ring-primary-700 dark:focus:ring-primary-500 focus:border-primary-700 dark:focus:border-primary-500 w-full rounded border focus:outline-none focus:ring-2"
             />
           </div>
 
           <div className="overflow-y-auto" style={{ maxHeight: `${maxHeight - 60}px` }}>
             {filteredOptions.length === 0 ? (
-              <div className="p-md text-secondary-500 text-center">No options found</div>
+              <div className="p-md text-secondary-500 dark:text-secondary-400 text-center">
+                No options found
+              </div>
             ) : (
               filteredOptions.map((option) => {
                 const isSelected = value.includes(option.value);
                 return (
                   <label
                     key={option.value}
-                    className="px-md py-sm hover:bg-secondary-100 flex cursor-pointer items-center transition-colors"
+                    className="px-md py-sm hover:bg-secondary-100 dark:hover:bg-secondary-700 flex cursor-pointer items-center transition-colors"
                   >
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => handleToggle(option.value)}
-                      className="mr-sm text-primary-700 border-secondary-400 focus:ring-primary-700 h-4 w-4 cursor-pointer rounded focus:ring-2"
+                      className="mr-sm text-primary-700 dark:text-primary-500 border-secondary-400 dark:border-secondary-600 focus:ring-primary-700 dark:focus:ring-primary-500 h-4 w-4 cursor-pointer rounded focus:ring-2"
                     />
-                    <span className="text-secondary-900">{option.label}</span>
+                    <span className="text-secondary-900 dark:text-secondary-200">
+                      {option.label}
+                    </span>
                   </label>
                 );
               })
