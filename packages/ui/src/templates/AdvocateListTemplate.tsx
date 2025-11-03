@@ -133,6 +133,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   onSearchChange,
   onResetSearch,
   isLoading = false,
+  isFetching = false,
   isBackgroundFetching = false,
   error,
   totalRecords,
@@ -248,6 +249,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
       <div className={spacingClasses}>
         <AdvocateTable
           advocates={advocates}
+          isFetching={isFetching}
           deviceSize={deviceSize}
           expandedRows={expandedRows}
           onToggleRow={onToggleRow}

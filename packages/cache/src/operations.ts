@@ -8,8 +8,18 @@ import { CACHE_CONFIG } from "@repo/utils";
 export const CacheTTL = {
   FILTER_OPTIONS: 3600,
   PAGINATED_RESULTS: 300,
+  /**
+   * DEMO PURPOSE: Extended to 72 hours for demo environment where data doesn't change.
+   * In production, consider reducing to 1 hour based on data update frequency.
+   */
+  DEFAULT_PAGINATED_RESULTS: 259200, // 72 hours = 72 * 60 * 60
   SEARCH_RESULTS: 180,
   TOTAL_COUNT: 300,
+  /**
+   * DEMO PURPOSE: Extended to 72 hours for demo environment where data doesn't change.
+   * In production, consider reducing to 1 hour based on data update frequency.
+   */
+  DEFAULT_TOTAL_COUNT: 259200, // 72 hours = 72 * 60 * 60
   ADVOCATE_DETAIL: 600,
 } as const;
 

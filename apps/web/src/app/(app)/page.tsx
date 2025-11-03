@@ -12,6 +12,7 @@ export default function Home() {
   const {
     advocates,
     isLoading,
+    isFetching,
     isBackgroundFetching,
     error,
     searchTerm,
@@ -59,6 +60,7 @@ export default function Home() {
       onSearchChange={(e) => setSearchTerm(e.target.value)}
       onResetSearch={() => setSearchTerm("")}
       isLoading={isLoading}
+      isFetching={isFetching}
       isBackgroundFetching={isBackgroundFetching}
       error={error}
       totalRecords={totalRecords}
