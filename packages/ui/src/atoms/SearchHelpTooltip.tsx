@@ -101,6 +101,13 @@ export const SearchHelpTooltip: React.FC<SearchHelpTooltipProps> = ({ className 
                   works too!
                 </p>
               </div>
+
+              <div className="border-t border-neutral-200 pt-1">
+                <p className="font-medium">Quick tip:</p>
+                <p className="text-neutral-600">
+                  Click any highlighted badge to filter by it instantly
+                </p>
+              </div>
             </div>
           </div>
         </div>
