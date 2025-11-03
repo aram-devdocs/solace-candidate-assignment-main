@@ -90,6 +90,11 @@ export const advocates = pgTable(
       table.degreeId,
       table.yearsOfExperience
     ),
+    // Covering index for default query (no filters, firstName sort)
+    // Includes commonly accessed columns to enable index-only scans
+    defaultQueryIdx: index("idx_advocates_default_query")
+      .on(table.firstName, table.id, table.lastName, table.phoneNumber, table.yearsOfExperience)
+      .where(sql`${table.isActive} = true AND ${table.deletedAt} IS NULL`),
     // Partial index for active non-deleted records (common query pattern)
     activePaginationIdx: index("idx_advocates_active_pagination")
       .on(table.isActive, table.createdAt)

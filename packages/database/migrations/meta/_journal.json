@@ -36,6 +36,13 @@
       "when": 1762152138815,
       "tag": "0004_lying_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762177159896,
+      "tag": "0005_steady_black_tom",
+      "breakpoints": true
     }
   ]
 }

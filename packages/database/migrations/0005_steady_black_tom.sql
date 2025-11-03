@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "idx_advocates_default_query" ON "advocates" USING btree ("first_name","id","last_name","phone_number","years_of_experience") WHERE "advocates"."is_active" = true AND "advocates"."deleted_at" IS NULL;
