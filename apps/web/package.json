@@ -21,6 +21,7 @@
     "@repo/ui": "workspace:*",
     "@scalar/nextjs-api-reference": "^0.8.23",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "next": "^14.2.19",
     "openapi3-ts": "^4.5.0",
     "react": "^18.3.1",
