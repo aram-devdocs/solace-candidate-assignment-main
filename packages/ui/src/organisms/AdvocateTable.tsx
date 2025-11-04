@@ -147,7 +147,8 @@ function getCellValue(
   activeCityIds?: number[],
   activeDegreeIds?: number[],
   activeAreaCodes?: string[],
-  searchTokens?: string[]
+  searchTokens?: string[],
+  shouldTruncate?: boolean
 ): React.ReactNode {
   if (key === "specialties") {
     return (
@@ -176,6 +177,7 @@ function getCellValue(
         clickable={!!onCityClick}
         isActive={activeCityIds?.includes(advocate.city.id)}
         searchTokens={searchTokens}
+        truncate={shouldTruncate}
       />
     );
   }
@@ -349,7 +351,10 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
               </tr>
             ) : (
               advocates.map((advocate, index) => {
-                const cells: TableCellData[] = visibleColumns.map((key) => {
+                const cells: TableCellData[] = visibleColumns.map((key, columnIndex) => {
+                  const isLastVisibleColumn = columnIndex === visibleColumns.length - 1;
+                  const shouldTruncate = !isDesktop && isLastVisibleColumn;
+
                   return getCellValue(
                     advocate,
                     key,
@@ -361,7 +366,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
                     activeCityIds,
                     activeDegreeIds,
                     activeAreaCodes,
-                    searchTokens
+                    searchTokens,
+                    shouldTruncate
                   );
                 });
 

@@ -50,19 +50,22 @@ export const TableRow: React.FC<TableRowProps> = ({
           const isCellObject = typeof cell === "object" && cell !== null && "content" in cell;
           const content = isCellObject ? cell.content : cell;
           const align = isCellObject ? cell.align : undefined;
+          const isLastVisibleCell = index === cells.length - 1;
 
           return (
             <TableCell key={index} align={align}>
-              {content}
+              <div className={isLastVisibleCell && hasExpandableContent ? "pr-xs truncate" : ""}>
+                {content}
+              </div>
             </TableCell>
           );
         })}
         {hasExpandableContent && onToggleExpand && (
-          <TableCell className="!px-xs !py-xs sticky right-0 xl:hidden">
+          <TableCell className="!px-sm !py-sm hover:bg-primary-50 sticky right-0 bg-white xl:hidden">
             <button
               aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
               aria-expanded={isExpanded}
-              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"
+              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 p-xs flex items-center justify-center rounded transition-colors focus:outline-none focus-visible:ring-2"
             >
               {isExpanded ? "▲" : "▼"}
             </button>
