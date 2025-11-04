@@ -239,11 +239,12 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
   } = useAdvocates({
     // When filters active, use actual current page for server pagination
     // When no filters, use server batch page for cache loading
-    page: hasFilters ? currentPage : serverPageNeeded || 1,
+    page: hasFilters ? currentPage : serverPageNeeded || currentBatchNeeded,
     pageSize: hasFilters ? pageSize : MAX_INITIAL_FETCH,
     filters,
     sort: sortConfig,
-    enabled: hasFilters || serverPageNeeded !== null, // Fetch when filters active OR need specific page
+    // Always fetch when: filters active, specific page needed, OR cache is empty and we're on a valid page
+    enabled: hasFilters || serverPageNeeded !== null || (totalCount === 0 && cachedAdvocatesMap.size === 0),
   });
 
   const prevBatch =
@@ -279,8 +280,9 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
       setFilteredTotalCount(null);
     }
 
-    if (mainResponse?.success && Array.isArray(mainResponse.data) && serverPageNeeded !== null) {
-      const batchStartIndex = (serverPageNeeded - 1) * MAX_INITIAL_FETCH;
+    if (mainResponse?.success && Array.isArray(mainResponse.data) && !hasFilters) {
+      const actualServerPage = serverPageNeeded !== null ? serverPageNeeded : currentBatchNeeded;
+      const batchStartIndex = (actualServerPage - 1) * MAX_INITIAL_FETCH;
 
       setCachedAdvocatesMap((prevCache) => {
         const result = mergeAdvocateData(
@@ -302,9 +304,9 @@ export function useAdvocateTable(): UseAdvocateTableReturn {
         setTotalCount(mainResponse.pagination.totalRecords);
       }
 
-      setLoadedBatches((prev) => new Set(prev).add(serverPageNeeded));
+      setLoadedBatches((prev) => new Set(prev).add(actualServerPage));
 
-      if (fetchingPage !== null && serverPageNeeded === fetchingPage) {
+      if (fetchingPage !== null && actualServerPage === fetchingPage) {
         setFetchingPage(null);
       }
     }
