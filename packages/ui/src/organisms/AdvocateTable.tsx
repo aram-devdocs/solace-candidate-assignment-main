@@ -289,8 +289,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   // This prevents the pagination buttons from moving when content height changes (e.g., expanded rows)
   // Using fixed height with overflow ensures the container size never changes
   const tableContainerHeight = pageSize
-    ? `${pageSize.current * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX}px`
-    : "auto";
+    ? pageSize.current * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX
+    : null;
 
   return (
     <div className="space-y-md">
@@ -306,10 +306,13 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
         </div>
       )}
 
-      {/* Table */}
+      {/* Table - Fixed height container to keep pagination position stable */}
       <div
-        className="border-secondary-200 scrollbar-hide relative w-full overflow-auto rounded-lg border"
-        style={{ height: tableContainerHeight }}
+        className="border-secondary-200 relative w-full overflow-auto rounded-lg border"
+        style={{
+          height: tableContainerHeight ? `${tableContainerHeight}px` : undefined,
+          maxHeight: tableContainerHeight ? `${tableContainerHeight}px` : undefined,
+        }}
       >
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
