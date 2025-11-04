@@ -112,28 +112,10 @@ export interface AdvocateListTemplateProps {
 }
 
 /**
- * AdvocateListTemplate - complete page content template with search, filters, and table
+ * AdvocateListTemplate - page content template with search, filters, and table
  *
- * NOTE: This is a template component that should be wrapped by a layout component
- * (like AppLayout) which provides the page-level semantic structure (main, header, footer).
- * This template renders a div container, not a main element, to avoid nested main elements.
- *
- * Supports filtering, sorting, and pagination
- * Responsive: Adjusts padding and spacing for different screen sizes
- * Mobile: p-sm, my-lg
- * Tablet: p-md to p-lg, my-xl
- * Desktop: p-xl to p-md, my-2xl
- *
- * @param advocates - Array of advocates to display
- * @param searchTerm - Current search term
- * @param onSearchChange - Handler for search input changes
- * @param onResetSearch - Handler for reset button click
- * @param isLoading - Loading state
- * @param error - Error message if any
- * @param filters - Filter configuration
- * @param sort - Sort configuration
- * @param pagination - Pagination configuration
- * @param pageSize - Page size configuration
+ * Template component that renders content without semantic page elements.
+ * Should be wrapped by AppLayout which provides main/header/footer structure.
  */
 export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
   advocates,

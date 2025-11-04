@@ -221,28 +221,7 @@ function getCellValue(
  * AdvocateTable component for displaying advocate data in a responsive table
  *
  * Supports sorting, pagination, and responsive design with expandable rows on mobile.
- * Table allows natural height flow and only scrolls internally when viewport height is limited.
- *
- * Responsive: Shows different columns based on device size
- * - Mobile: 3 columns + expandable details
- * - Tablet: 5 columns
- * - Desktop: 7 columns (all data)
- *
- * Accessibility: Uses proper table semantics with ARIA labels and sortable column controls
- *
- * @param advocates - Array of advocate data to display
- * @param deviceSize - Current device size (mobile/tablet/desktop)
- * @param expandedRows - Set of expanded row indices
- * @param onToggleRow - Callback to toggle row expansion
- * @param sortColumn - Current sort column
- * @param sortDirection - Current sort direction
- * @param onSort - Callback for sorting
- * @param pagination - Pagination configuration
- * @param pageSize - Page size configuration
- * @param onSpecialtyClick - Callback when specialty badge is clicked
- * @param onCityClick - Callback when city badge is clicked
- * @param onDegreeClick - Callback when degree badge is clicked
- * @param onAreaCodeClick - Callback when area code badge is clicked
+ * Shows different columns based on device size (3 on mobile, 5 on tablet, 7 on desktop).
  */
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,

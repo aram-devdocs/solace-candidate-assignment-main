@@ -63,36 +63,15 @@ export interface RootLayoutProps {
 /**
  * RootLayout component - complete page layout with header, navigation, and footer
  *
- * This component provides the page-level semantic structure with a single main element
- * that handles vertical scrolling for the entire page. Child content should not use
- * main elements to avoid invalid nested main elements.
- *
- * Scrolling Architecture:
- * - Uses h-screen flex column layout to fill viewport
- * - Main element handles all vertical scrolling with overflow-y-auto
- * - Prevents horizontal overflow with overflow-x-hidden
- * - Child templates should allow natural content flow without overflow controls
+ * Provides page-level semantic structure with main element for scrolling.
+ * Child content should not use main elements.
  *
  * @example
  * ```tsx
- * import { RootLayout, NavigationItem, FOOTER_COPYRIGHT } from "@repo/ui";
- * import { Home, MessageSquare } from "lucide-react";
- *
  * <RootLayout
- *   header={{
- *     logo: <Logo />,
- *     userInitials: "AH",
- *     onMenuClick: () => {},
- *   }}
- *   navigation={
- *     <>
- *       <NavigationItem icon={Home} label="Home" href="/" active />
- *       <NavigationItem icon={MessageSquare} label="Messages" href="/messages" />
- *     </>
- *   }
- *   footer={{
- *     copyright: FOOTER_COPYRIGHT
- *   }}
+ *   header={{ logo: <Logo /> }}
+ *   renderNavigation={() => <NavigationItems />}
+ *   footer={{ copyright: FOOTER_COPYRIGHT }}
  * >
  *   <YourPageContent />
  * </RootLayout>
