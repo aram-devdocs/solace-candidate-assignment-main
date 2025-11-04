@@ -283,7 +283,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   const tableContainerHeight = currentPageSize * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX;
 
   return (
-    <div className="space-y-md">
+    <div className="gap-md flex flex-col">
       {/* Page Size Selector */}
       {pageSize && (
         <div className="flex items-center justify-between">
@@ -298,9 +298,10 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
 
       {/* Table */}
       <div
-        className="border-secondary-200 relative w-full overflow-auto rounded-lg border"
+        className="border-secondary-200 relative w-full flex-shrink-0 overflow-auto rounded-lg border"
         style={{
           height: `${tableContainerHeight}px`,
+          minHeight: `${tableContainerHeight}px`,
           maxHeight: `${tableContainerHeight}px`,
         }}
       >
