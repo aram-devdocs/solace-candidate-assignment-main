@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useDeviceSize, useExpandableRows, useAdvocateTable } from "@repo/hooks";
 import { AdvocateListTemplate } from "@repo/ui";
 import type { SortableColumn } from "@repo/utils";
@@ -51,7 +52,11 @@ export default function Home() {
     addAreaCodeFilter,
   } = useAdvocateTable();
 
-  const { expandedRows, toggleRow } = useExpandableRows(advocates.length);
+  const { expandedRows, toggleRow, collapseAll } = useExpandableRows(advocates.length);
+
+  useEffect(() => {
+    collapseAll();
+  }, [currentPage, collapseAll]);
 
   return (
     <AdvocateListTemplate
