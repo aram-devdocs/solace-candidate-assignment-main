@@ -275,6 +275,10 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
     "yearsOfExperience",
   ];
 
+  // Calculate minimum height for table container based on page size to keep pagination position stable
+  // This prevents the pagination buttons from moving when content height changes
+  const minTableHeight = pageSize ? `${pageSize.current * 65 + 100}px` : "auto";
+
   return (
     <div className="space-y-md">
       {/* Page Size Selector */}
@@ -290,7 +294,10 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 scrollbar-hide relative w-full overflow-x-auto rounded-lg border">
+      <div
+        className="border-secondary-200 scrollbar-hide relative w-full overflow-x-auto rounded-lg border"
+        style={{ minHeight: minTableHeight }}
+      >
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>
