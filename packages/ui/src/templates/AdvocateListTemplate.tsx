@@ -245,7 +245,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (isLoading) {
     return (
-      <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+      <div className={`${paddingClasses} w-full`}>
         <div className={spacingClasses}>
           <SkeletonGreeting />
         </div>
@@ -255,23 +255,23 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
         <div className={spacingClasses}>
           <SkeletonAdvocateTable />
         </div>
-      </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+      <div className={`${paddingClasses} w-full`}>
         <div className={spacingClasses}>
           <Greeting userName="Aram" timePeriod={timePeriod} />
         </div>
         <ErrorState error={error} />
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+    <div className={`${paddingClasses} w-full`}>
       <div className={spacingClasses}>
         <Greeting userName="Aram" timePeriod={timePeriod} />
       </div>
@@ -392,6 +392,6 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           deviceSize={deviceSize}
         />
       )}
-    </main>
+    </div>
   );
 };

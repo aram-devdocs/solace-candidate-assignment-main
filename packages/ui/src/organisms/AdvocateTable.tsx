@@ -288,7 +288,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
+      <div className="border-secondary-200 scrollbar-hide relative w-full overflow-x-auto rounded-lg border">
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>

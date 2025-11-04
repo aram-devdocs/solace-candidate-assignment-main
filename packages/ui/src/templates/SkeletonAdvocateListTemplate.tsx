@@ -21,7 +21,7 @@ export const SkeletonAdvocateListTemplate: React.FC<SkeletonAdvocateListTemplate
   rowCount = 7,
 }) => {
   return (
-    <main className="p-xl">
+    <div className="p-xl">
       <div className="my-2xl">
         <SkeletonGreeting />
       </div>
@@ -31,6 +31,6 @@ export const SkeletonAdvocateListTemplate: React.FC<SkeletonAdvocateListTemplate
       <div className="my-2xl">
         <SkeletonAdvocateTable rowCount={rowCount} />
       </div>
-    </main>
+    </div>
   );
 };
