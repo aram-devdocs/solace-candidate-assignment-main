@@ -28,6 +28,11 @@ const TABLE_ROW_HEIGHT_PX = 65;
  */
 const TABLE_BASE_HEIGHT_PX = 100;
 
+/**
+ * Default page size to use when calculating table height if pageSize prop is not provided
+ */
+const DEFAULT_PAGE_SIZE = 25;
+
 export interface AdvocateTableProps {
   advocates: AdvocateWithRelations[];
   /**
@@ -287,10 +292,9 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
 
   // Calculate fixed height for table container based on page size to keep pagination position stable
   // This prevents the pagination buttons from moving when content height changes (e.g., expanded rows)
-  // Using fixed height with overflow ensures the container size never changes
-  const tableContainerHeight = pageSize
-    ? pageSize.current * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX
-    : null;
+  // Always use a fixed height (never auto) to prevent layout shifts on initial render or pagination
+  const currentPageSize = pageSize?.current ?? DEFAULT_PAGE_SIZE;
+  const tableContainerHeight = currentPageSize * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX;
 
   return (
     <div className="space-y-md">
@@ -310,8 +314,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       <div
         className="border-secondary-200 relative w-full overflow-auto rounded-lg border"
         style={{
-          height: tableContainerHeight ? `${tableContainerHeight}px` : undefined,
-          maxHeight: tableContainerHeight ? `${tableContainerHeight}px` : undefined,
+          height: `${tableContainerHeight}px`,
+          maxHeight: `${tableContainerHeight}px`,
         }}
       >
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
