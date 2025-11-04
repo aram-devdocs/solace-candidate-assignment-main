@@ -20,3 +20,10 @@ export {
   paginatedPattern,
   searchPattern,
 } from "./keys";
+export {
+  getCacheAnalytics,
+  isCacheMemoryHigh,
+  evictLowPriorityCaches,
+  monitorAndOptimizeCache,
+} from "./analytics";
+export type { CacheStats, CacheAnalytics } from "./analytics";

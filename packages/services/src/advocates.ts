@@ -269,9 +269,17 @@ export async function getAdvocatesPaginated(
   sort?: AdvocateSortConfig
 ): Promise<Result<PaginatedResponse<AdvocateWithRelations>, DatabaseError>> {
   try {
-    // Detect if this is a default query (no filters, first page, default sort)
-    // DEMO PURPOSE: Default queries are cached for 72 hours to ensure instant load times
-    // since the demo data doesn't change. In production, adjust TTL based on update frequency.
+    // Tiered query classification for optimal caching
+    const isLandingPageQuery =
+      !filters &&
+      (page === 1 || page === 2) &&
+      pageSize === 100 &&
+      sort?.column === "firstName" &&
+      sort?.direction === "asc";
+
+    const isFrequentQuery =
+      !filters && page >= 1 && page <= 10 && pageSize >= 25 && pageSize <= 100;
+
     const isDefaultQuery =
       !filters &&
       page === 1 &&
@@ -405,8 +413,17 @@ export async function getAdvocatesPaginated(
 
       const countResult = await countQuery;
       totalRecords = countResult[0]?.count ?? 0;
-      // Use longer TTL for default query total count (72 hours for demo)
-      const countTTL = isDefaultQuery ? CacheTTL.DEFAULT_TOTAL_COUNT : CacheTTL.TOTAL_COUNT;
+
+      // Tiered TTL for count cache based on query type
+      let countTTL: number = CacheTTL.TOTAL_COUNT; // Default: 1 hour
+      if (isLandingPageQuery) {
+        countTTL = CacheTTL.LANDING_PAGE_COUNT; // 24 hours for landing page
+      } else if (isFrequentQuery) {
+        countTTL = CacheTTL.FREQUENT_TOTAL_COUNT; // 12 hours for frequent queries
+      } else if (isDefaultQuery) {
+        countTTL = CacheTTL.DEFAULT_TOTAL_COUNT; // 12 hours for default view
+      }
+
       await setCache(countCacheKey, totalRecords, countTTL);
     }
 
@@ -566,10 +583,16 @@ export async function getAdvocatesPaginated(
       pagination,
     };
 
-    // Cache with extended TTL for default queries (72 hours for demo) to improve initial load experience
-    const cacheTTL = isDefaultQuery
-      ? CacheTTL.DEFAULT_PAGINATED_RESULTS
-      : CacheTTL.PAGINATED_RESULTS;
+    // Tiered TTL for paginated results cache
+    let cacheTTL: number = CacheTTL.PAGINATED_RESULTS; // Default: 1 hour
+    if (isLandingPageQuery) {
+      cacheTTL = CacheTTL.LANDING_PAGE_RESULTS; // 24 hours for landing page
+    } else if (isFrequentQuery) {
+      cacheTTL = CacheTTL.FREQUENT_PAGINATED_RESULTS; // 12 hours for frequent queries
+    } else if (isDefaultQuery) {
+      cacheTTL = CacheTTL.DEFAULT_PAGINATED_RESULTS; // 12 hours for default view
+    }
+
     await setCache(cacheKey, response, cacheTTL);
 
     return success(response);

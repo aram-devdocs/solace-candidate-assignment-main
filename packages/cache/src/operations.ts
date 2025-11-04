@@ -3,24 +3,30 @@ import { CACHE_CONFIG } from "@repo/utils";
 
 /**
  * TTL (Time To Live) constants in seconds.
- * Optimized for 30MB Redis limit - shorter TTLs to prevent memory buildup.
+ * Optimized for 32MB Redis limit with tiered strategy prioritizing landing page.
+ *
+ * Strategy:
+ * - Landing page (page 1-2, pageSize=100): 24 hours (highest priority)
+ * - Frequently accessed pages (page 1-10): 12 hours
+ * - Other pages: 1 hour
+ * - Search results: 15 minutes
  */
 export const CacheTTL = {
-  FILTER_OPTIONS: 3600,
-  PAGINATED_RESULTS: 300,
-  /**
-   * DEMO PURPOSE: Extended to 72 hours for demo environment where data doesn't change.
-   * In production, consider reducing to 1 hour based on data update frequency.
-   */
-  DEFAULT_PAGINATED_RESULTS: 259200, // 72 hours = 72 * 60 * 60
-  SEARCH_RESULTS: 900, // 15 minutes - increased from 3 min for better UX
-  TOTAL_COUNT: 300,
-  /**
-   * DEMO PURPOSE: Extended to 72 hours for demo environment where data doesn't change.
-   * In production, consider reducing to 1 hour based on data update frequency.
-   */
-  DEFAULT_TOTAL_COUNT: 259200, // 72 hours = 72 * 60 * 60
-  ADVOCATE_DETAIL: 600,
+  FILTER_OPTIONS: 3600, // 1 hour
+  /** Landing page queries - page 1-2 with pageSize=100, sorted by firstName */
+  LANDING_PAGE_RESULTS: 86400, // 24 hours
+  LANDING_PAGE_COUNT: 86400, // 24 hours
+  /** Frequently accessed pages - page 1-10 */
+  FREQUENT_PAGINATED_RESULTS: 43200, // 12 hours
+  FREQUENT_TOTAL_COUNT: 43200, // 12 hours
+  /** Default paginated results for all other queries */
+  PAGINATED_RESULTS: 3600, // 1 hour (increased from 5 min)
+  TOTAL_COUNT: 3600, // 1 hour (increased from 5 min)
+  /** Legacy default query support (page=1, pageSize=25) */
+  DEFAULT_PAGINATED_RESULTS: 43200, // 12 hours
+  DEFAULT_TOTAL_COUNT: 43200, // 12 hours
+  SEARCH_RESULTS: 900, // 15 minutes
+  ADVOCATE_DETAIL: 600, // 10 minutes
 } as const;
 
 /**

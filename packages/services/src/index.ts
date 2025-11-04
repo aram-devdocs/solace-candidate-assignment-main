@@ -14,3 +14,6 @@ export {
   invalidateAdvocateCaches,
   healthCheck,
 } from "./advocates";
+
+export { warmAdvocateCache, isLandingPageCacheWarm } from "./cache-warming";
+export type { CacheWarmingResult } from "./cache-warming";

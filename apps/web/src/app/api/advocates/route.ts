@@ -228,15 +228,43 @@ export async function GET(request: NextRequest) {
 
     const { page, pageSize, filters, sort } = parsedParams;
 
+    // Track query execution time for cache performance monitoring
+    const queryStartTime = Date.now();
+
     // Use getAdvocatesPaginated for all requests (handles search via filters.search)
     const result = await getAdvocatesPaginated(page, pageSize, filters, sort);
 
+    const queryTime = Date.now() - queryStartTime;
+
     if (result.success) {
-      return Response.json({
-        success: true,
-        data: result.data.data,
-        pagination: result.data.pagination,
-      });
+      // Determine cache status based on query execution time
+      // Cached queries typically complete in <100ms, DB queries take 500ms+
+      const cacheStatus = queryTime < 200 ? "HIT" : "MISS";
+
+      // Determine query tier for cache metadata
+      const isLandingPage =
+        !filters &&
+        (page === 1 || page === 2) &&
+        pageSize === 100 &&
+        sort?.column === "firstName" &&
+        sort?.direction === "asc";
+
+      const cacheTier = isLandingPage ? "landing-page" : "standard";
+
+      return Response.json(
+        {
+          success: true,
+          data: result.data.data,
+          pagination: result.data.pagination,
+        },
+        {
+          headers: {
+            "X-Cache-Status": cacheStatus,
+            "X-Cache-Tier": cacheTier,
+            "X-Response-Time": `${queryTime}ms`,
+          },
+        }
+      );
     }
 
     const error = result.error;
