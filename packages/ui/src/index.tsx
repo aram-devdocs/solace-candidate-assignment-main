@@ -176,9 +176,6 @@ export type { PaginationProps } from "./molecules/Pagination";
 export { PageSizeSelector } from "./molecules/PageSizeSelector";
 export type { PageSizeSelectorProps } from "./molecules/PageSizeSelector";
 
-export { PageSelector } from "./molecules/PageSelector";
-export type { PageSelectorProps } from "./molecules/PageSelector";
-
 export { SortControl } from "./molecules/SortControl";
 export type { SortControlProps } from "./molecules/SortControl";
 

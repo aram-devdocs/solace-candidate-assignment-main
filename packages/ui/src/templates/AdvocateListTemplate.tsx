@@ -10,7 +10,6 @@ import { SearchBar } from "../molecules/SearchBar";
 import { SearchPills } from "../molecules/SearchPills";
 import { SearchHelpTooltip } from "../atoms/SearchHelpTooltip";
 import { ErrorState } from "../molecules/ErrorState";
-import { PageSelector } from "../molecules/PageSelector";
 import { AdvocateTable } from "../organisms/AdvocateTable";
 import { FilterPanel } from "../organisms/FilterPanel";
 import { ActiveFiltersBar } from "../organisms/ActiveFiltersBar";
@@ -332,27 +331,6 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
             itemLabel="advocates"
             isFiltered={filters ? filters.activeFilters.length > 0 : false}
             isBackgroundFetching={isBackgroundFetching}
-          />
-        </div>
-      )}
-
-      {/* Page Selector */}
-      {pagination && pageSize && pagination.totalPages > 1 && (
-        <div className={spacingClasses}>
-          <PageSelector
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            visiblePages={pagination.visiblePages}
-            hasPrevious={pagination.hasPrevious}
-            hasNext={pagination.hasNext}
-            onPageChange={pagination.onPageChange}
-            onFirstPage={pagination.onFirstPage}
-            onLastPage={pagination.onLastPage}
-            pageSize={pageSize.current}
-            pageSizeOptions={pageSize.options}
-            totalItems={pageSize.totalItems}
-            onPageSizeChange={pageSize.onPageSizeChange}
-            deviceSize={deviceSize}
           />
         </div>
       )}
