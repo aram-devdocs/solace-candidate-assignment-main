@@ -179,7 +179,7 @@ export function RootLayout({
       <NotificationDrawer isOpen={notificationDrawer.isOpen} onClose={notificationDrawer.close} />
 
       {/* Main content area with navigation */}
-      <div className="relative flex flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="relative flex flex-1 overflow-x-hidden">
         {/* Navigation sidebar */}
         {showNavigation && navigationContent && (
           <NavigationMenu
@@ -204,7 +204,7 @@ export function RootLayout({
 
         {/* Page content with push effect and overlay on mobile */}
         <div
-          className={`relative flex w-full flex-1 flex-col md:transform-none ${
+          className={`relative flex w-full flex-1 flex-col overflow-y-auto md:transform-none ${
             isMenuOpen ? "max-md:-translate-x-64" : ""
           }`}
           style={{
@@ -219,7 +219,7 @@ export function RootLayout({
               transition: "opacity 0.3s ease-in-out",
             }}
           />
-          <main className="w-full flex-1 overflow-x-hidden">
+          <main className="w-full overflow-x-hidden">
             <div className="mx-auto max-w-7xl">
               {isNavigating ? (
                 <div className="animate-fadeIn">
