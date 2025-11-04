@@ -63,17 +63,28 @@ export interface RootLayoutProps {
 /**
  * RootLayout component - complete page layout with header, navigation, and footer
  *
- * Provides page-level semantic structure with main element for scrolling.
- * Child content should not use main elements.
- *
  * @example
  * ```tsx
+ * import { RootLayout, NavigationItem, FOOTER_COPYRIGHT } from "@repo/ui";
+ * import { Home, MessageSquare } from "lucide-react";
+ *
  * <RootLayout
- *   header={{ logo: <Logo /> }}
- *   renderNavigation={() => <NavigationItems />}
- *   footer={{ copyright: FOOTER_COPYRIGHT }}
+ *   header={{
+ *     logo: <Logo />,
+ *     userInitials: "AH",
+ *     onMenuClick: () => {},
+ *   }}
+ *   navigation={
+ *     <>
+ *       <NavigationItem icon={Home} label="Home" href="/" active />
+ *       <NavigationItem icon={MessageSquare} label="Messages" href="/messages" />
+ *     </>
+ *   }
+ *   footer={{
+ *     copyright: FOOTER_COPYRIGHT
+ *   }}
  * >
- *   <YourPageContent />
+ *   <main>Your page content</main>
  * </RootLayout>
  * ```
  */

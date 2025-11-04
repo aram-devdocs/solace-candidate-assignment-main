@@ -11,7 +11,9 @@ export interface SkeletonAdvocateListTemplateProps {
 }
 
 /**
- * SkeletonAdvocateListTemplate - loading state skeleton for AdvocateListTemplate
+ * SkeletonAdvocateListTemplate - complete page skeleton for loading state
+ *
+ * Displays skeleton placeholder matching AdvocateListTemplate layout
  *
  * @param rowCount - Number of skeleton table rows to display (default: 7)
  */
