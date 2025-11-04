@@ -18,19 +18,8 @@ import { ARIA_LABELS } from "../constants/accessibility";
 import type { DeviceSize, SortableColumn, SortDirection } from "@repo/utils";
 import { formatPhoneNumber, extractAreaCode, getHighlightedSegments } from "@repo/utils";
 
-/**
- * Approximate height in pixels for a single table row including padding and borders
- */
 const TABLE_ROW_HEIGHT_PX = 65;
-
-/**
- * Base height in pixels for table header and margins
- */
 const TABLE_BASE_HEIGHT_PX = 100;
-
-/**
- * Default page size to use when calculating table height if pageSize prop is not provided
- */
 const DEFAULT_PAGE_SIZE = 25;
 
 export interface AdvocateTableProps {
@@ -290,9 +279,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
     "yearsOfExperience",
   ];
 
-  // Calculate fixed height for table container based on page size to keep pagination position stable
-  // This prevents the pagination buttons from moving when content height changes (e.g., expanded rows)
-  // Always use a fixed height (never auto) to prevent layout shifts on initial render or pagination
   const currentPageSize = pageSize?.current ?? DEFAULT_PAGE_SIZE;
   const tableContainerHeight = currentPageSize * TABLE_ROW_HEIGHT_PX + TABLE_BASE_HEIGHT_PX;
 
@@ -310,7 +296,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
         </div>
       )}
 
-      {/* Table - Fixed height container to keep pagination position stable */}
+      {/* Table */}
       <div
         className="border-secondary-200 relative w-full overflow-auto rounded-lg border"
         style={{
