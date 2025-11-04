@@ -189,7 +189,7 @@ export function RootLayout({
       <NotificationDrawer isOpen={notificationDrawer.isOpen} onClose={notificationDrawer.close} />
 
       {/* Main content area with navigation */}
-      <div className="relative flex flex-1 overflow-x-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         {/* Navigation sidebar */}
         {showNavigation && navigationContent && (
           <NavigationMenu
