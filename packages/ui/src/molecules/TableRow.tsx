@@ -50,32 +50,22 @@ export const TableRow: React.FC<TableRowProps> = ({
           const isCellObject = typeof cell === "object" && cell !== null && "content" in cell;
           const content = isCellObject ? cell.content : cell;
           const align = isCellObject ? cell.align : undefined;
-          const isLastCell = index === cells.length - 1;
+          const isLastVisibleCell = index === cells.length - 1;
 
           return (
-            <TableCell
-              key={index}
-              align={align}
-              className={hasExpandableContent && isLastCell ? "xl:pr-md pr-0" : ""}
-            >
-              <div
-                className={`${
-                  hasExpandableContent && isLastCell
-                    ? "xl:max-w-none max-w-[calc(100vw-16rem)] overflow-hidden"
-                    : ""
-                }`}
-              >
+            <TableCell key={index} align={align}>
+              <div className={isLastVisibleCell && hasExpandableContent ? "pr-xs truncate" : ""}>
                 {content}
               </div>
             </TableCell>
           );
         })}
         {hasExpandableContent && onToggleExpand && (
-          <TableCell className="!px-xs !py-xs sticky right-0 bg-inherit xl:hidden">
+          <TableCell className="!px-sm !py-sm hover:bg-primary-50 sticky right-0 bg-white xl:hidden">
             <button
               aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
               aria-expanded={isExpanded}
-              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 px-sm py-xs rounded transition-colors focus:outline-none focus-visible:ring-2"
+              className="text-primary-700 hover:text-primary-900 focus-visible:ring-primary-500 p-xs flex items-center justify-center rounded transition-colors focus:outline-none focus-visible:ring-2"
             >
               {isExpanded ? "▲" : "▼"}
             </button>

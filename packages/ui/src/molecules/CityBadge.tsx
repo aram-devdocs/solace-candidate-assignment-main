@@ -27,6 +27,10 @@ export interface CityBadgeProps {
    */
   searchTokens?: string[];
   /**
+   * Whether to truncate long city names with ellipsis
+   */
+  truncate?: boolean;
+  /**
    * Additional className
    */
   className?: string;
@@ -58,20 +62,23 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
   clickable = false,
   isActive = false,
   searchTokens,
+  truncate = false,
   className = "",
 }) => {
   const segments = getHighlightedSegments(city, searchTokens);
 
   const baseClasses = isActive
-    ? "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-600 text-white border-primary-700 whitespace-nowrap shadow-sm"
-    : "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-100 text-primary-800 border-primary-250 whitespace-nowrap shadow-xs";
+    ? "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-600 text-white border-primary-700 shadow-sm"
+    : "inline-flex items-center gap-1 justify-center px-2 py-0.5 text-sm font-medium rounded-full border bg-primary-100 text-primary-800 border-primary-250 shadow-xs";
+
+  const truncateClasses = truncate ? "max-w-full" : "whitespace-nowrap";
 
   const clickableClasses = clickable
     ? "cursor-pointer hover:bg-primary-200 hover:border-primary-300 hover:shadow-sm active:scale-95 active:ring-2 active:ring-primary-400 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
     : "";
 
   const renderText = () => (
-    <>
+    <span className={truncate ? "truncate" : ""}>
       {segments.map((segment, index) =>
         segment.highlighted ? (
           <mark key={index} className="bg-highlight/80 text-primary-900 rounded px-0.5">
@@ -81,7 +88,7 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
           <React.Fragment key={index}>{segment.text}</React.Fragment>
         )
       )}
-    </>
+    </span>
   );
 
   const handleClick = (): void => {
@@ -103,13 +110,13 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
         type="button"
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        className={`${baseClasses} ${clickableClasses} ${className}`.trim()}
+        className={`${baseClasses} ${truncateClasses} ${clickableClasses} ${className}`.trim()}
         aria-label={`Filter by ${city}`}
         aria-pressed={isActive}
       >
         {isActive && (
           <svg
-            className="h-3 w-3"
+            className="h-3 w-3 shrink-0"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +131,7 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
         )}
         {!isActive && clickable && (
           <svg
-            className="h-3 w-3 opacity-60"
+            className="h-3 w-3 shrink-0 opacity-60"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -144,5 +151,7 @@ export const CityBadge: React.FC<CityBadgeProps> = ({
     );
   }
 
-  return <span className={`${baseClasses} ${className}`.trim()}>{renderText()}</span>;
+  return (
+    <span className={`${baseClasses} ${truncateClasses} ${className}`.trim()}>{renderText()}</span>
+  );
 };
