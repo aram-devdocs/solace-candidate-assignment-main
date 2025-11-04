@@ -50,15 +50,28 @@ export const TableRow: React.FC<TableRowProps> = ({
           const isCellObject = typeof cell === "object" && cell !== null && "content" in cell;
           const content = isCellObject ? cell.content : cell;
           const align = isCellObject ? cell.align : undefined;
+          const isLastCell = index === cells.length - 1;
 
           return (
-            <TableCell key={index} align={align}>
-              {content}
+            <TableCell
+              key={index}
+              align={align}
+              className={hasExpandableContent && isLastCell ? "xl:pr-md pr-0" : ""}
+            >
+              <div
+                className={`${
+                  hasExpandableContent && isLastCell
+                    ? "xl:max-w-none max-w-[calc(100vw-16rem)] overflow-hidden"
+                    : ""
+                }`}
+              >
+                {content}
+              </div>
             </TableCell>
           );
         })}
         {hasExpandableContent && onToggleExpand && (
-          <TableCell className="!px-xs !py-xs sticky right-0 xl:hidden">
+          <TableCell className="!px-xs !py-xs sticky right-0 bg-inherit xl:hidden">
             <button
               aria-label={isExpanded ? ARIA_LABELS.collapseRow : ARIA_LABELS.expandRow}
               aria-expanded={isExpanded}
