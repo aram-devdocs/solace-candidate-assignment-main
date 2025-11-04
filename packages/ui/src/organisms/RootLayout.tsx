@@ -219,7 +219,7 @@ export function RootLayout({
               transition: "opacity 0.3s ease-in-out",
             }}
           />
-          <main className="w-full flex-1 overflow-y-auto overflow-x-hidden">
+          <main className="w-full flex-1 overflow-x-hidden">
             <div className="mx-auto max-w-7xl">
               {isNavigating ? (
                 <div className="animate-fadeIn">
