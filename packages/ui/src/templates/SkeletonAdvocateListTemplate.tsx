@@ -13,6 +13,10 @@ export interface SkeletonAdvocateListTemplateProps {
 /**
  * SkeletonAdvocateListTemplate - complete page skeleton for loading state
  *
+ * NOTE: This is a template component that should be wrapped by a layout component
+ * (like AppLayout) which provides the page-level semantic structure (main, header, footer).
+ * This template renders a div container, not a main element, to avoid nested main elements.
+ *
  * Displays skeleton placeholder matching AdvocateListTemplate layout
  *
  * @param rowCount - Number of skeleton table rows to display (default: 7)
@@ -21,7 +25,7 @@ export const SkeletonAdvocateListTemplate: React.FC<SkeletonAdvocateListTemplate
   rowCount = 7,
 }) => {
   return (
-    <main className="p-xl">
+    <div className="p-xl">
       <div className="my-2xl">
         <SkeletonGreeting />
       </div>
@@ -31,6 +35,6 @@ export const SkeletonAdvocateListTemplate: React.FC<SkeletonAdvocateListTemplate
       <div className="my-2xl">
         <SkeletonAdvocateTable rowCount={rowCount} />
       </div>
-    </main>
+    </div>
   );
 };

@@ -218,12 +218,17 @@ function getCellValue(
 }
 
 /**
- * AdvocateTable component for displaying advocate data in a table
- * Supports sorting, pagination, and responsive design
+ * AdvocateTable component for displaying advocate data in a responsive table
+ *
+ * Supports sorting, pagination, and responsive design with expandable rows on mobile.
+ * Table allows natural height flow and only scrolls internally when viewport height is limited.
+ *
  * Responsive: Shows different columns based on device size
- * Mobile: 3 columns + expandable details
- * Tablet: 5 columns
- * Desktop: 7 columns (all data)
+ * - Mobile: 3 columns + expandable details
+ * - Tablet: 5 columns
+ * - Desktop: 7 columns (all data)
+ *
+ * Accessibility: Uses proper table semantics with ARIA labels and sortable column controls
  *
  * @param advocates - Array of advocate data to display
  * @param deviceSize - Current device size (mobile/tablet/desktop)
@@ -288,7 +293,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       )}
 
       {/* Table */}
-      <div className="border-secondary-200 scrollbar-hide relative max-h-[600px] w-full overflow-auto rounded-lg border lg:max-h-[70vh]">
+      <div className="border-secondary-200 scrollbar-hide relative w-full overflow-x-auto rounded-lg border">
         <table className="w-full border-collapse" aria-label={ARIA_LABELS.advocateTable}>
           <thead className="bg-secondary-50 border-secondary-300 sticky top-0 z-10 border-b-2">
             <tr>

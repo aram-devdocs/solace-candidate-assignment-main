@@ -112,12 +112,17 @@ export interface AdvocateListTemplateProps {
 }
 
 /**
- * AdvocateListTemplate complete page layout with search, filters, and table
+ * AdvocateListTemplate - complete page content template with search, filters, and table
+ *
+ * NOTE: This is a template component that should be wrapped by a layout component
+ * (like AppLayout) which provides the page-level semantic structure (main, header, footer).
+ * This template renders a div container, not a main element, to avoid nested main elements.
+ *
  * Supports filtering, sorting, and pagination
  * Responsive: Adjusts padding and spacing for different screen sizes
- * Mobile: p-md, my-lg
- * Tablet: p-lg, my-xl
- * Desktop: p-xl, my-2xl
+ * Mobile: p-sm, my-lg
+ * Tablet: p-md to p-lg, my-xl
+ * Desktop: p-xl to p-md, my-2xl
  *
  * @param advocates - Array of advocates to display
  * @param searchTerm - Current search term
@@ -245,7 +250,7 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
 
   if (isLoading) {
     return (
-      <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+      <div className={`${paddingClasses} w-full`}>
         <div className={spacingClasses}>
           <SkeletonGreeting />
         </div>
@@ -255,23 +260,23 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
         <div className={spacingClasses}>
           <SkeletonAdvocateTable />
         </div>
-      </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+      <div className={`${paddingClasses} w-full`}>
         <div className={spacingClasses}>
           <Greeting userName="Aram" timePeriod={timePeriod} />
         </div>
         <ErrorState error={error} />
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className={`${paddingClasses} w-full overflow-x-hidden`}>
+    <div className={`${paddingClasses} w-full`}>
       <div className={spacingClasses}>
         <Greeting userName="Aram" timePeriod={timePeriod} />
       </div>
@@ -392,6 +397,6 @@ export const AdvocateListTemplate: React.FC<AdvocateListTemplateProps> = ({
           deviceSize={deviceSize}
         />
       )}
-    </main>
+    </div>
   );
 };

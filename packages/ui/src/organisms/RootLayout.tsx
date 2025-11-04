@@ -63,6 +63,16 @@ export interface RootLayoutProps {
 /**
  * RootLayout component - complete page layout with header, navigation, and footer
  *
+ * This component provides the page-level semantic structure with a single main element
+ * that handles vertical scrolling for the entire page. Child content should not use
+ * main elements to avoid invalid nested main elements.
+ *
+ * Scrolling Architecture:
+ * - Uses h-screen flex column layout to fill viewport
+ * - Main element handles all vertical scrolling with overflow-y-auto
+ * - Prevents horizontal overflow with overflow-x-hidden
+ * - Child templates should allow natural content flow without overflow controls
+ *
  * @example
  * ```tsx
  * import { RootLayout, NavigationItem, FOOTER_COPYRIGHT } from "@repo/ui";
@@ -84,7 +94,7 @@ export interface RootLayoutProps {
  *     copyright: FOOTER_COPYRIGHT
  *   }}
  * >
- *   <main>Your page content</main>
+ *   <YourPageContent />
  * </RootLayout>
  * ```
  */
@@ -219,7 +229,7 @@ export function RootLayout({
               transition: "opacity 0.3s ease-in-out",
             }}
           />
-          <main className="w-full flex-1 overflow-y-auto overflow-x-hidden">
+          <main className="w-full flex-1 overflow-y-auto overflow-x-hidden" role="main">
             <div className="mx-auto max-w-7xl">
               {isNavigating ? (
                 <div className="animate-fadeIn">
