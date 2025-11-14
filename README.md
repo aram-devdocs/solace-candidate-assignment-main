@@ -1,6 +1,6 @@
-# Goud Network - Advocate Management Platform
+# Goud Network - Advocate Platform Demo
 
-> A production-ready advocate management application built with Next.js 14, TypeScript, and PostgreSQL.
+> A tech demo built in a hackathon, this app showcases fullstack web development with a focus on scalable infrastructure and a strong developer experience. The app is mobile, tablet, and web responsive with accessible design system features
 
 ## Status & Tech Stack
 
