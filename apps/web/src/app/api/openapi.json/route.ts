@@ -22,7 +22,7 @@ export async function GET() {
     // filesystem access which may not work in all deployment environments
     const spec: OpenAPIObject = createOpenAPISpec(
       {
-        title: "Solace Health Advocates API",
+        title: "Goud Network Advocates API",
         description:
           "REST API for managing and querying health advocates. Supports filtering, pagination, and sorting.",
         version: "1.0.0",

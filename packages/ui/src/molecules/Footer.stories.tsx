@@ -54,7 +54,7 @@ export const CustomContent: Story = {
     children: (
       <div className="mb-4 flex flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex flex-col items-center md:items-start">
-          <span className="text-primary-700 text-lg font-bold">Solace Health</span>
+          <span className="text-primary-700 text-lg font-bold">Goud Network</span>
           <span className="text-secondary-500 text-sm">Compassionate care for everyone</span>
         </div>
         <div className="flex gap-4">

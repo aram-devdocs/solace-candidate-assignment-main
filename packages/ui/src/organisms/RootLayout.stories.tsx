@@ -58,7 +58,7 @@ const getContentForRoute = (route: string) => {
   const contentMap: Record<string, JSX.Element> = {
     home: (
       <div className="p-8">
-        <h1 className="text-secondary-900 mb-4 text-3xl font-bold">Welcome to Solace</h1>
+        <h1 className="text-secondary-900 mb-4 text-3xl font-bold">Welcome to Goud Network</h1>
         <p className="text-secondary-700 mb-4">
           This is the main content area of your application.
         </p>

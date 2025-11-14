@@ -26,7 +26,7 @@ export const HealthInsuranceEmptyState: React.FC<HealthInsuranceEmptyStateProps>
           onClick={onContactSupport}
           className="text-primary-600 hover:text-primary-700 underline"
         >
-          contact Solace Support
+          contact Goud Network Support
         </button>{" "}
         to modify your health insurance on file.
       </p>

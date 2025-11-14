@@ -1,6 +1,6 @@
 # @repo/openapi
 
-OpenAPI 3.1 specification generator and documentation utilities for the Solace Health Advocates API.
+OpenAPI 3.1 specification generator and documentation utilities for the Goud Network Advocates API.
 
 ## Overview
 

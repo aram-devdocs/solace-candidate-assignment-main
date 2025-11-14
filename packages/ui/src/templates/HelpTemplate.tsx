@@ -46,7 +46,7 @@ export const HelpTemplate: React.FC<HelpTemplateProps> = ({
 
         <div className="mt-xl gap-xl flex flex-col md:flex-row md:items-start">
           <HelpCard
-            title="Solace Help Center"
+            title="Goud Network Help Center"
             desktopImage="https://d3b2dvywdu5igv.cloudfront.net/illustrations/card/laptop-desktop.svg"
             desktopFillImage="https://d3b2dvywdu5igv.cloudfront.net/illustrations/card/laptop-desktop-fill.svg"
             mobileImage="https://d3b2dvywdu5igv.cloudfront.net/illustrations/card/laptop-mobile.svg"
@@ -72,7 +72,7 @@ export const HelpTemplate: React.FC<HelpTemplateProps> = ({
             onClick={onContactSupportClick}
             className="text-primary-600 hover:text-primary-700 font-normal underline"
           >
-            Solace Support
+            Goud Network Support
           </button>
           .
         </p>
