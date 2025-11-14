@@ -4,7 +4,7 @@
 
 ## Status & Tech Stack
 
-[![CI/CD](https://github.com/aram-devdocs/goud-network-main/actions/workflows/ci.yml/badge.svg)](https://github.com/aram-devdocs/goud-network-main/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/aram-devdocs/goud-network/actions/workflows/ci.yml/badge.svg)](https://github.com/aram-devdocs/goud-network/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
