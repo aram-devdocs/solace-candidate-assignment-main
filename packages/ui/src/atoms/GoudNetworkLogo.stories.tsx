@@ -75,20 +75,20 @@ export const Sizes: Story = {
   render: () => (
     <div className="bg-primary-600 flex flex-col items-start gap-8 rounded-lg p-8">
       <div className="flex items-center gap-4">
-        <GoudNetworkLogo width={100} height={18} fill="#FFF" />
-        <p className="text-xs text-white">Small (100x18)</p>
-      </div>
-      <div className="flex items-center gap-4">
-        <GoudNetworkLogo width={140} height={24} fill="#FFF" />
-        <p className="text-xs text-white">Default (140x24)</p>
+        <GoudNetworkLogo width={120} height={21} fill="#FFF" />
+        <p className="text-xs text-white">Small (120x21)</p>
       </div>
       <div className="flex items-center gap-4">
         <GoudNetworkLogo width={180} height={32} fill="#FFF" />
-        <p className="text-xs text-white">Large (180x32)</p>
+        <p className="text-xs text-white">Default (180x32)</p>
       </div>
       <div className="flex items-center gap-4">
-        <GoudNetworkLogo width={220} height={40} fill="#FFF" />
-        <p className="text-xs text-white">Extra Large (220x40)</p>
+        <GoudNetworkLogo width={240} height={42} fill="#FFF" />
+        <p className="text-xs text-white">Large (240x42)</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <GoudNetworkLogo width={300} height={53} fill="#FFF" />
+        <p className="text-xs text-white">Extra Large (300x53)</p>
       </div>
     </div>
   ),

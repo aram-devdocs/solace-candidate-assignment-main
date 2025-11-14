@@ -57,7 +57,7 @@ export interface HeaderProps {
  * ```
  */
 export function Header({
-  logo = <GoudNetworkLogo width={140} height={24} />,
+  logo = <GoudNetworkLogo width={180} height={32} />,
   onMenuClick,
   onMessagesClick,
   onNotificationsClick,

@@ -64,8 +64,8 @@ export function MessagesIcon({
           y2="31.3224"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="0.96875" stopColor="#DEB260" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="0.96875" stopColor="#78909c" />
         </linearGradient>
       </defs>
     </svg>

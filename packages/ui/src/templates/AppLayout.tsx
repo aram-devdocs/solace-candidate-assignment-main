@@ -118,7 +118,7 @@ export function AppLayout({
   children,
   navigationItems,
   currentPath,
-  logo = <GoudNetworkLogo width={140} height={24} />,
+  logo = <GoudNetworkLogo width={180} height={32} />,
   messageCount,
   notificationCount,
   onMessagesClick,

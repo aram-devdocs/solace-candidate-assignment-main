@@ -59,8 +59,8 @@ export function HomeIcon({ active = false, width = 32, height = 31, className }:
           y2="26.3224"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="0.96875" stopColor="#DEB260" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="0.96875" stopColor="#78909c" />
           <stop offset="1" stopColor="#D9D9D9" stopOpacity="0" />
         </linearGradient>
       </defs>

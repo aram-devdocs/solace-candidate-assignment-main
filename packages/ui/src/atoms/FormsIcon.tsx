@@ -59,8 +59,8 @@ export function FormsIcon({ active = false, width = 32, height = 36, className }
           y2="24.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="1" stopColor="#DEB260" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="1" stopColor="#78909c" />
         </linearGradient>
       </defs>
     </svg>

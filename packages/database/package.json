@@ -21,7 +21,7 @@
     "db:migrate": "cd ../.. && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} tsx packages/database/src/migrate.ts",
     "db:push": "cd ../.. && drizzle-kit push",
     "db:studio": "cd ../.. && drizzle-kit studio",
-    "db:seed": "cd ../.. && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} SEED_COUNT=${SEED_COUNT:-1139837} tsx packages/database/src/scripts/seed.ts",
+    "db:seed": "cd ../.. && DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db.localtest.me:5432/main} NODE_ENV=${NODE_ENV:-development} SEED_COUNT=${SEED_COUNT:-51512} tsx packages/database/src/scripts/seed.ts",
     "lint": "eslint src/",
     "type-check": "tsc --noEmit"
   },

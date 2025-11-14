@@ -29,12 +29,12 @@ export interface GoudNetworkLogoProps {
  * ```tsx
  * import { GoudNetworkLogo } from "@repo/ui";
  *
- * <GoudNetworkLogo width={140} height={24} />
+ * <GoudNetworkLogo width={180} height={32} />
  * ```
  */
 export function GoudNetworkLogo({
-  width = 140,
-  height = 24,
+  width = 180,
+  height = 32,
   fill = "#FFF",
   className,
 }: GoudNetworkLogoProps) {
@@ -42,18 +42,23 @@ export function GoudNetworkLogo({
     <svg
       width={width}
       height={height}
-      viewBox="0 0 140 24"
+      viewBox="0 0 180 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-label="Goud Network"
     >
+      {/* Decorative hexagon icon */}
+      <path d="M12 4L18 8V16L12 20L6 16V8L12 4Z" stroke={fill} strokeWidth="1.5" fill="none" />
+      <circle cx="12" cy="12" r="2" fill={fill} />
+
+      {/* Stylized "Goud Network" text with serif font */}
       <text
-        x="0"
-        y="18"
-        fontFamily="system-ui, -apple-system, sans-serif"
-        fontSize="18"
-        fontWeight="600"
+        x="26"
+        y="21"
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontSize="22"
+        fontWeight="700"
         fill={fill}
         letterSpacing="0.5"
       >
