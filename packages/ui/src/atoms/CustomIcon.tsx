@@ -36,7 +36,7 @@ export interface CustomIconProps {
 }
 
 /**
- * CustomIcon wrapper component for Solace Health custom icons.
+ * CustomIcon wrapper component for Goud Network custom icons.
  * Handles the gradient overlay pattern used across all custom navigation icons.
  * Provides smooth transition between active and inactive states.
  *

@@ -51,7 +51,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="115.154"
           x2="495.464"
           y2="115.154"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -60,7 +60,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="115.154"
           x2="40.1758"
           y2="115.154"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -69,7 +69,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="100.618"
           x2="53.4283"
           y2="11.7489"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -78,7 +78,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="86.9848"
           x2="92.9935"
           y2="-84.6979"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -87,7 +87,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="75.1812"
           x2="156.168"
           y2="-167.615"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -96,7 +96,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="66.0099"
           x2="238.655"
           y2="-231.353"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -105,7 +105,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="60.0734"
           x2="334.831"
           y2="-271.592"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -114,7 +114,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="57.8164"
           x2="438.135"
           y2="-285.549"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -123,7 +123,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="59.366"
           x2="541.532"
           y2="-272.299"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -132,7 +132,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="64.6434"
           x2="637.98"
           y2="-232.72"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -141,7 +141,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="73.2485"
           x2="720.895"
           y2="-169.547"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -150,7 +150,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="84.6178"
           x2="784.635"
           y2="-87.0648"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -159,7 +159,7 @@ export const AfternoonIllustration: React.FC = () => (
           y1="97.9783"
           x2="824.858"
           y2="9.10891"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -168,7 +168,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(-0.965926 0.258819 0.258819 0.965926 384.447 130.94)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -177,7 +177,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(-0.866025 0.5 0.5 0.866025 390.039 144.438)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -186,7 +186,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(-0.707107 0.707107 0.707107 0.707107 398.929 156.024)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
           fill="none"
         />
@@ -195,7 +195,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(-0.5 0.866025 0.866025 0.5 410.521 164.912)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -203,7 +203,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(-0.258819 0.965926 0.965926 0.258819 424.02 170.519)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -211,7 +211,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(6.09509e-07 1 1 -2.43803e-08 438.5 172.422)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -219,7 +219,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(0.258819 0.965926 0.965926 -0.258819 452.981 170.519)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -227,7 +227,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(0.5 0.866025 0.866025 -0.5 466.48 164.912)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -235,7 +235,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(0.707107 0.707107 0.707107 -0.707107 478.065 156.024)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -243,7 +243,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(0.866025 0.5 0.5 -0.866025 486.955 144.438)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
         <line
@@ -251,7 +251,7 @@ export const AfternoonIllustration: React.FC = () => (
           x2="343.365"
           y2="-1.36658"
           transform="matrix(0.965926 0.258819 0.258819 -0.965926 492.546 130.94)"
-          stroke="#DEB260"
+          stroke="#78909c"
           strokeWidth="2.73315"
         />
       </g>

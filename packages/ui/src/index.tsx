@@ -1,7 +1,7 @@
 /**
  * UI Component Library
  *
- * Reusable React components for the Solace application.
+ * Reusable React components for the Goud Network application.
  * Components follow atomic design principles with design tokens.
  */
 
@@ -44,8 +44,8 @@ export type { StatusBadgeProps } from "./atoms/StatusBadge";
 export { IconButton } from "./atoms/IconButton";
 export type { IconButtonProps } from "./atoms/IconButton";
 
-export { SolaceLogo } from "./atoms/SolaceLogo";
-export type { SolaceLogoProps } from "./atoms/SolaceLogo";
+export { GoudNetworkLogo } from "./atoms/GoudNetworkLogo";
+export type { GoudNetworkLogoProps } from "./atoms/GoudNetworkLogo";
 
 export { HomeIcon } from "./atoms/HomeIcon";
 export type { HomeIconProps } from "./atoms/HomeIcon";

@@ -28,7 +28,7 @@ export interface HelpIconProps {
 }
 
 /**
- * HelpIcon component - custom Solace Health help icon with gradient overlay
+ * HelpIcon component - custom Goud Network help icon with gradient overlay
  *
  * @example
  * ```tsx
@@ -59,8 +59,8 @@ export function HelpIcon({ active = false, width = 32, height = 32, className }:
           y2="22.5018"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="0.96875" stopColor="#D7A13B" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="0.96875" stopColor="#78909c" />
         </linearGradient>
       </defs>
     </svg>

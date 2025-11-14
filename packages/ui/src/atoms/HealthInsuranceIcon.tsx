@@ -28,7 +28,7 @@ export interface HealthInsuranceIconProps {
 }
 
 /**
- * HealthInsuranceIcon component - custom Solace Health insurance icon with gradient overlay
+ * HealthInsuranceIcon component - custom Goud Network insurance icon with gradient overlay
  *
  * @example
  * ```tsx
@@ -66,8 +66,8 @@ export function HealthInsuranceIcon({
           y2="30.9489"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="0.96875" stopColor="#DEB260" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="0.96875" stopColor="#78909c" />
           <stop offset="1" stopColor="#D9D9D9" stopOpacity="0" />
         </linearGradient>
         <clipPath id="clip0_255_4370">

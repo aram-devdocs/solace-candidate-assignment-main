@@ -3,7 +3,7 @@
 /**
  * API Documentation Page
  *
- * Renders the Scalar API reference UI for the Solace Health Advocates API.
+ * Renders the Scalar API reference UI for the Goud Network Advocates API.
  * The OpenAPI specification is fetched from /api/openapi.json.
  *
  * This page is publicly accessible and provides interactive API documentation

@@ -1,10 +1,10 @@
-# Solace Candidate Assignment
+# Goud Network - Advocate Management Platform
 
 > A production-ready advocate management application built with Next.js 14, TypeScript, and PostgreSQL.
 
 ## Status & Tech Stack
 
-[![CI/CD](https://github.com/aram-devdocs/solace-candidate-assignment-main/actions/workflows/ci.yml/badge.svg)](https://github.com/aram-devdocs/solace-candidate-assignment-main/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/aram-devdocs/goud-network-main/actions/workflows/ci.yml/badge.svg)](https://github.com/aram-devdocs/goud-network-main/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
@@ -12,9 +12,9 @@
 
 ## Quick Links
 
-[![Live App](https://img.shields.io/badge/🌐_Live_App-solace.aramhammoudeh.com-brightgreen)](https://solace.aramhammoudeh.com/)
-[![API Docs](https://img.shields.io/badge/📖_API_Docs-OpenAPI_3.1-blue)](https://solace.aramhammoudeh.com/api/docs)
-[![Storybook](https://img.shields.io/badge/📚_Storybook-Component_Library-ff4785?logo=storybook&logoColor=white)](https://solace-storybook.aramhammoudeh.com)
+[![Live App](https://img.shields.io/badge/🌐_Live_App-goud--network.aramhammoudeh.com-brightgreen)](https://goud-network.aramhammoudeh.com/)
+[![API Docs](https://img.shields.io/badge/📖_API_Docs-OpenAPI_3.1-blue)](https://goud-network.aramhammoudeh.com/api/docs)
+[![Storybook](https://img.shields.io/badge/📚_Storybook-Component_Library-ff4785?logo=storybook&logoColor=white)](https://goud-network-storybook.aramhammoudeh.com)
 [![Project Board](https://img.shields.io/badge/📋_Project_Board-Kanban-0366d6)](https://github.com/users/aram-devdocs/projects/3/views/1)
 [![Development Log](https://img.shields.io/badge/📝_Development_Log-DISCUSSION.md-yellow)](./DISCUSSION.md)
 

@@ -28,7 +28,7 @@ export interface NotesIconProps {
 }
 
 /**
- * NotesIcon component - custom Solace Health notes icon with gradient overlay
+ * NotesIcon component - custom Goud Network notes icon with gradient overlay
  *
  * @example
  * ```tsx
@@ -59,8 +59,8 @@ export function NotesIcon({ active = false, width = 32, height = 34, className }
           y2="28.7796"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#AFC8BF" />
-          <stop offset="0.96875" stopColor="#DEB260" />
+          <stop stopColor="#90a4ae" />
+          <stop offset="0.96875" stopColor="#78909c" />
         </linearGradient>
       </defs>
     </svg>

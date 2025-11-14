@@ -15,7 +15,7 @@ type Story = StoryObj<typeof HelpCard>;
 
 export const HelpCenter: Story = {
   args: {
-    title: "Solace Help Center",
+    title: "Goud Network Help Center",
     desktopImage: "https://d3b2dvywdu5igv.cloudfront.net/illustrations/card/laptop-desktop.svg",
     desktopFillImage:
       "https://d3b2dvywdu5igv.cloudfront.net/illustrations/card/laptop-desktop-fill.svg",
