@@ -1,6 +1,6 @@
 # Getting Started
 
-Check out the actual [app](https://solace.aramhammoudeh.com/) and [api documentation](https://solace.aramhammoudeh.com/api/docs) to get a feel for the project. If you want to dive deeper on the UI, check out the [storybook](https://solace-storybook.aramhammoudeh.com). If you are interested in high level summary, skip to [TLDR;](#tldr) but if you are up for a deep dive, read on.
+Check out the actual [app](https://goud-network.aramhammoudeh.com/) and [api documentation](https://goud-network.aramhammoudeh.com/api/docs) to get a feel for the project. If you want to dive deeper on the UI, check out the [storybook](https://goud-network-storybook.aramhammoudeh.com). If you are interested in high level summary, skip to [TLDR;](#tldr) but if you are up for a deep dive, read on.
 
 # Table of Contents
 
@@ -23,9 +23,9 @@ Check out the actual [app](https://solace.aramhammoudeh.com/) and [api documenta
   - [TLDR;](#tldr)
 - [References](#references)
   - [GitHub Kanban Board](https://github.com/users/aram-devdocs/projects/3/views/1)
-  - [Web App: https://solace.aramhammoudeh.com/](https://solace.aramhammoudeh.com/)
-  - [API Documentation: https://solace.aramhammoudeh.com/api/docs](https://solace.aramhammoudeh.com/api/docs)
-  - [Storybook: https://solace-storybook.aramhammoudeh.com](https://solace-storybook.aramhammoudeh.com)
+  - [Web App: https://goud-network.aramhammoudeh.com/](https://goud-network.aramhammoudeh.com/)
+  - [API Documentation: https://goud-network.aramhammoudeh.com/api/docs](https://goud-network.aramhammoudeh.com/api/docs)
+  - [Storybook: https://goud-network-storybook.aramhammoudeh.com](https://goud-network-storybook.aramhammoudeh.com)
 
 # Logs
 

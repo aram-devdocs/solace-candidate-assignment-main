@@ -23,21 +23,21 @@ const config: Config = {
       },
       colors: {
         primary: {
-          50: "#e8f3f1",
-          100: "#d1e7e3",
-          150: "#B0C8BF",
-          200: "#a8c5bf",
-          300: "#7fa79d",
-          400: "#5a8b7e",
-          500: "#14b8a6",
-          600: "#275E50",
-          700: "#1D4239",
-          800: "#1e3a34",
-          900: "#134239",
-          950: "#042f2e",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          150: "#bfdbfe",
+          200: "#93c5fd",
+          300: "#60a5fa",
+          400: "#3b82f6",
+          500: "#2563eb",
+          600: "#1d4ed8",
+          700: "#1e40af",
+          800: "#1e3a8a",
+          900: "#1e293b",
+          950: "#0f172a",
         },
         greeting: {
-          background: "#F6F9F8",
+          background: "#f0f7ff",
         },
         accent: {
           50: "#F5E6CB",
@@ -149,7 +149,7 @@ const config: Config = {
         full: "9999px",
       },
       backgroundImage: {
-        "gradient-banner": "linear-gradient(to right, #1D4239, #134239, #1e3a34)",
+        "gradient-banner": "linear-gradient(to right, #1e40af, #1e3a8a, #1e293b)",
       },
       keyframes: {
         shimmer: {
@@ -169,8 +169,8 @@ const config: Config = {
           "50%": { transform: "scale(1.05)", opacity: "0.95" },
         },
         badgeGlow: {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(20, 184, 166, 0)" },
-          "50%": { boxShadow: "0 0 8px 2px rgba(20, 184, 166, 0.3)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(37, 99, 235, 0)" },
+          "50%": { boxShadow: "0 0 8px 2px rgba(37, 99, 235, 0.3)" },
         },
         badgeNudge: {
           "0%, 100%": { transform: "translateY(0)" },

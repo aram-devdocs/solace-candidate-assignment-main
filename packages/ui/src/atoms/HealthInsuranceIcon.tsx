@@ -28,7 +28,7 @@ export interface HealthInsuranceIconProps {
 }
 
 /**
- * HealthInsuranceIcon component - custom Solace Health insurance icon with gradient overlay
+ * HealthInsuranceIcon component - custom Goud Network insurance icon with gradient overlay
  *
  * @example
  * ```tsx

@@ -28,7 +28,7 @@ export interface FormsIconProps {
 }
 
 /**
- * FormsIcon component - custom Solace Health forms icon with gradient overlay
+ * FormsIcon component - custom Goud Network forms icon with gradient overlay
  *
  * @example
  * ```tsx

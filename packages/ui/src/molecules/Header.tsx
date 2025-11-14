@@ -3,7 +3,7 @@
 import { Menu } from "lucide-react";
 import type { ReactNode } from "react";
 import { IconButton } from "../atoms/IconButton";
-import { SolaceLogo } from "../atoms/SolaceLogo";
+import { GoudNetworkLogo } from "../atoms/GoudNetworkLogo";
 
 /**
  * Props for the Header component
@@ -57,7 +57,7 @@ export interface HeaderProps {
  * ```
  */
 export function Header({
-  logo = <SolaceLogo width={86} height={24} />,
+  logo = <GoudNetworkLogo width={140} height={24} />,
   onMenuClick,
   onMessagesClick,
   onNotificationsClick,

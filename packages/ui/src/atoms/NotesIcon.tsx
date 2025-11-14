@@ -28,7 +28,7 @@ export interface NotesIconProps {
 }
 
 /**
- * NotesIcon component - custom Solace Health notes icon with gradient overlay
+ * NotesIcon component - custom Goud Network notes icon with gradient overlay
  *
  * @example
  * ```tsx

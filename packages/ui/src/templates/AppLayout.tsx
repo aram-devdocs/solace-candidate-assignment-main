@@ -8,7 +8,7 @@ import { NotesIcon } from "../atoms/NotesIcon";
 import { FormsIcon } from "../atoms/FormsIcon";
 import { HealthInsuranceIcon } from "../atoms/HealthInsuranceIcon";
 import { HelpIcon } from "../atoms/HelpIcon";
-import { SolaceLogo } from "../atoms/SolaceLogo";
+import { GoudNetworkLogo } from "../atoms/GoudNetworkLogo";
 import { RootLayout } from "../organisms/RootLayout";
 import { NavigationItem } from "../molecules/NavigationItem";
 import { FOOTER_COPYRIGHT_WITH_RIGHTS } from "../constants/footer";
@@ -118,7 +118,7 @@ export function AppLayout({
   children,
   navigationItems,
   currentPath,
-  logo = <SolaceLogo width={86} height={24} />,
+  logo = <GoudNetworkLogo width={140} height={24} />,
   messageCount,
   notificationCount,
   onMessagesClick,

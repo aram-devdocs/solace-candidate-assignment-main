@@ -5,7 +5,7 @@
 /**
  * Company name used in footer copyright text
  */
-export const COMPANY_NAME = "Solace Health";
+export const COMPANY_NAME = "Goud Network";
 
 /**
  * Current year (calculated once at module load)
@@ -18,7 +18,7 @@ const CURRENT_YEAR = new Date().getFullYear();
  * @example
  * ```tsx
  * <Footer copyright={FOOTER_COPYRIGHT} />
- * // Renders: © 2025 Solace Health
+ * // Renders: © 2025 Goud Network
  * ```
  */
 export const FOOTER_COPYRIGHT = `© ${CURRENT_YEAR} ${COMPANY_NAME}`;
@@ -28,7 +28,7 @@ export const FOOTER_COPYRIGHT = `© ${CURRENT_YEAR} ${COMPANY_NAME}`;
  * @example
  * ```tsx
  * <Footer copyright={FOOTER_COPYRIGHT_WITH_RIGHTS} />
- * // Renders: © 2025 Solace Health. All rights reserved.
+ * // Renders: © 2025 Goud Network. All rights reserved.
  * ```
  */
 export const FOOTER_COPYRIGHT_WITH_RIGHTS = `${FOOTER_COPYRIGHT}. All rights reserved.`;

@@ -28,7 +28,7 @@ export interface HelpIconProps {
 }
 
 /**
- * HelpIcon component - custom Solace Health help icon with gradient overlay
+ * HelpIcon component - custom Goud Network help icon with gradient overlay
  *
  * @example
  * ```tsx

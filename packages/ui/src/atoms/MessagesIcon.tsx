@@ -28,7 +28,7 @@ export interface MessagesIconProps {
 }
 
 /**
- * MessagesIcon component - custom Solace Health messages icon with gradient overlay
+ * MessagesIcon component - custom Goud Network messages icon with gradient overlay
  *
  * @example
  * ```tsx

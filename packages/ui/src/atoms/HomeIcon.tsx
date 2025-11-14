@@ -28,7 +28,7 @@ export interface HomeIconProps {
 }
 
 /**
- * HomeIcon component - custom Solace Health home icon with gradient overlay
+ * HomeIcon component - custom Goud Network home icon with gradient overlay
  *
  * @example
  * ```tsx
