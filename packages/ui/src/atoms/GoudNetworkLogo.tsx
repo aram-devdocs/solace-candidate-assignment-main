@@ -42,22 +42,18 @@ export function GoudNetworkLogo({
     <svg
       width={width}
       height={height}
-      viewBox="0 0 180 32"
+      viewBox="0 0 200 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-label="Goud Network"
     >
-      {/* Decorative hexagon icon */}
-      <path d="M12 4L18 8V16L12 20L6 16V8L12 4Z" stroke={fill} strokeWidth="1.5" fill="none" />
-      <circle cx="12" cy="12" r="2" fill={fill} />
-
-      {/* Stylized "Goud Network" text with serif font */}
+      {/* Stylized "Goud Network" text with serif font matching Advocate Directory */}
       <text
-        x="26"
-        y="21"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="22"
+        x="0"
+        y="24"
+        fontFamily="Mollie Glaston, Georgia, Cambria, Times New Roman, Times, serif"
+        fontSize="24"
         fontWeight="700"
         fill={fill}
         letterSpacing="0.5"
